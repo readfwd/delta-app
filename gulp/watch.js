@@ -21,17 +21,22 @@ gulp.task('watch', ['watch:common', 'serve'], function () {
   });
 });
 
-gulp.task('watch:gap', ['watch:common'], function () {
+function runPhoneGap() {
   return $.run('cd "' + paths.gap + '" && phonegap serve').exec()
     .pipe($.rename('stdout')) // Will certainly work on Windows!!!
     .pipe(gulp.dest('/dev'));
+}
+
+gulp.task('watch:gap', ['watch:common'], function () {
+  return  runPhoneGap();
 });
 
 gulp.task('serve', function (done) {
   browserSync({
     server: {
       baseDir: paths.tmp
-    }
+    },
+    port: 4000
   }, function () {
     done();
   });
@@ -41,9 +46,15 @@ gulp.task('serve:dist', function (done) {
   browserSync({
     server: {
       baseDir: paths.dist
-    }
+    },
+    port: 4000
   }, function () {
     done();
   });
 });
+
+gulp.task('serve:gap', function () {
+  return  runPhoneGap();
+});
+
 
