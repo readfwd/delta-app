@@ -89,14 +89,7 @@ gulp.task('prebuild:dist', ['index.html', 'js:no-istanbul', 'css'], function () 
 });
 
 gulp.task('build:dist', ['prebuild:dist'], function(){
-  gulp.src(paths.dist + '/**/*')
-    .pipe($.manifest({
-      hash: true,
-      preferOnline: true,
-      network: ['http://*', 'https://*', '*'],
-      filename: 'app.manifest',
-      exclude: 'app.manifest'
-    }))
+  return gulp.src(paths.dist + '/**/*')
     .pipe(gulp.dest(paths.dist));
 });
 
