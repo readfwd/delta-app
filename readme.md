@@ -98,7 +98,7 @@ It will start a testing server on `http://localhost:9876`. You can connect to th
 $ gulp test:once
 ```
 
-This will run `gulp build`, and then the tests just one time. Used by `travis`.
+This will run `gulp build`, and then the tests just one time. Used by `travis`. Additionally, it will also generate accurate coverage reports for `coveralls`.
 
 #### Production server
 
@@ -119,3 +119,46 @@ $ PORT=5000 gulp pagespeed
 
 Use this in combination with the production server to alias it to a [secure external tunnel URL](https://ngrok.com), which will then get passed to [Google Pagespeed Insights](https://developers.google.com/speed/pagespeed/insights/). You'll receive a report in your terminal about how to further improve the performance of the application.
 
+## Tools, libraries and languages used
+
+* `gulp` - build workflow
+* `browserify` - JavaScript bundle generation
+* `karma` - test runner
+* `mocha` - test framework
+* `should` - assertion library
+* `browserSync` - development server
+* `phonegap` - mobile app packaging
+* `famous` - view library
+* `jade` - HTML preprocessor
+* `stylus` - CSS preprocessor
+
+## Project structure
+
+Base folders:
+
+```bash
+.
+├── app           # raw application logic and assets
+├── gulp          # build tasks
+└── test          # frontend tests
+```
+
+Temporary folders:
+
+```bash
+.
+├── .tmp          # minimal build
+├── dist          # production build
+├── coverage      # coverage information
+└── node_modules  # node dependencies
+```
+
+## Contributing
+
+* All commits and pull requests get processed by `travis`, which runs the test suite. Successful builds on the `master` branch get deployed to Heroku. Every build will also report to `coveralls`.
+* Fork the project and send in pull requests.
+* Lint JavaScript code with `jshint`, which will automatically pick up the included `.jshintrc`.
+
+## License
+
+GPL.
