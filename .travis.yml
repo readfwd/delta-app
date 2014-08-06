@@ -9,5 +9,4 @@ deploy:
   app:
     master: readfwd-delta-app
   api_key:
-    secure: JSQN3yjoSabN0+ToWUnwRT/N91cBdNjsq5QyRjbEtiiSGpMDhs9dRAlAqaGgs5XielmL9Sny+EHmymLKRBJrwjqwAzSyzwqm+x7uWEBgVYVmF8Bvwsrkv9rvmgyUWDnXjp8a645iCZJ3YwnxzapznEQaqsrT3oYwQFyWTcuxXmU=
-
+    secure: HbBI7E1cdbY/t6epZSwvE9+H5NuR1CUEdbhLGkNGY/WSiAAFUVO3WPbl1HYt3UCvky82Z2Pd01zV5k97ArhivBHyhJakVbKwLURZy0++mc309Op0y0uWXlkRrrnyQCrf63ZiBa5Vx6wYtjKRJFS2DRlIqiS6DjrxasQdcCHDofQ=
