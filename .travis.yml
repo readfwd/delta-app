@@ -7,7 +7,7 @@ deploy:
   provider: heroku
   strategy: git
   app:
-    master: readfwd
+    master: readfwd-delta-app
   api_key:
     secure: JSQN3yjoSabN0+ToWUnwRT/N91cBdNjsq5QyRjbEtiiSGpMDhs9dRAlAqaGgs5XielmL9Sny+EHmymLKRBJrwjqwAzSyzwqm+x7uWEBgVYVmF8Bvwsrkv9rvmgyUWDnXjp8a645iCZJ3YwnxzapznEQaqsrT3oYwQFyWTcuxXmU=
 
