@@ -11,3 +11,8 @@ module.exports.paths = {
   'gap': './mobile'
 };
 
+module.exports.handleError = function (e) {
+  module.exports.plugins.util.log(e.message);
+  this.emit('end'); 
+};
+

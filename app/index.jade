@@ -5,8 +5,10 @@ html(lang="en", manifest="app.manifest")
     meta(name="fragment", content="!")
     meta(name="viewport", content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no, minimal-ui")
     title delta-app
+    // build:css({.tmp,dist}) css/famous.css
+    link(rel="stylesheet", href="css/famous.css")
+    // endbuild
   body
-    p Hello, world!
     // build:js({.tmp,dist}) js/main.js
     script(src="js/main.js")
     // endbuild

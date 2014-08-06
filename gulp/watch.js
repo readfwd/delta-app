@@ -8,21 +8,20 @@ var $ = config.plugins;
 
 var browserSync = require('browser-sync');
 
-function watch() {
+gulp.task('watch:common', ['build'], function () {
   gulp.watch(paths.app + '/index.jade', ['index.html']);
   gulp.watch(paths.app + '/templates/*.jade', ['jade']);
-  gulp.watch(paths.app + '/**/*.js', ['js']);
-}
+  gulp.watch(paths.app + '/**/*.js', ['js:no-istanbul']);
+  gulp.watch(paths.app + '/**/*.css', ['css']);
+});
 
-gulp.task('watch', ['build', 'serve'], function () {
-  watch();
-  gulp.watch(paths.tmp + '/*').on('change', function () {
+gulp.task('watch', ['watch:common', 'serve'], function () {
+  gulp.watch(paths.tmp + '/**/*').on('change', function () {
     browserSync.reload();
   });
 });
 
-gulp.task('watch:gap', ['build'], function () {
-  watch();
+gulp.task('watch:gap', ['watch:common'], function () {
   return $.run('cd "' + paths.gap + '" && phonegap serve').exec()
     .pipe($.rename('stdout')) // Will certainly work on Windows!!!
     .pipe(gulp.dest('/dev'));
