@@ -55,8 +55,8 @@ gulp.task('js:no-istanbul', function () {
 });
 
 gulp.task('css', function () {
-  // FIXME
-  return gulp.src('mama');
+  return gulp.src(paths.app + '/css/famous.css')
+    .pipe(gulp.dest(paths.tmp + '/css/'));
 });
 
 gulp.task('build', ['index.html', 'js', 'css']);
