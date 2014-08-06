@@ -1,0 +1,13 @@
+doctype html
+html(lang="en", manifest="app.manifest")
+  head
+    meta(charset="utf-8")
+    meta(name="fragment", content="!")
+    meta(name="viewport", content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no, minimal-ui")
+    title delta-app
+  body
+    p Hello, world!
+    // build:js({.tmp,dist}) js/main.js
+    script(src="js/main.js")
+    // endbuild
+

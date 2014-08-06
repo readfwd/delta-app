@@ -1,0 +1,9 @@
+node_modules
+*.swp
+*.swo
+.DS_Store
+dist
+npm-debug.log
+.tmp
+coverage
+
