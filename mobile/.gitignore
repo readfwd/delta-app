@@ -19,6 +19,4 @@ xcuserdata
 DerivedData/
 build/
 
-# Cordova's own source folder
-www
-
+platforms/**/www/
