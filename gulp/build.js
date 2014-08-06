@@ -46,7 +46,8 @@ gulp.task('js', function () {
 
 gulp.task('js:no-istanbul', function () {
   var bundleStream = browserify(paths.app + '/js/main.js')
-    .bundle();
+    .bundle()
+    .on('error', config.handleError);
 
   return bundleStream
     .pipe(source(paths.app + '/js/main.js'))
