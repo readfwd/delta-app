@@ -10,9 +10,10 @@ var browserSync = require('browser-sync');
 gulp.task('watch', ['build', 'serve'], function () {
   gulp.watch(paths.app + '/index.jade', ['index.html']);
   gulp.watch(paths.app + '/templates/*.jade', ['jade']);
-  gulp.watch(paths.app + '/**/*.js', ['js']);
+  gulp.watch(paths.app + '/**/*.js', ['js:no-istanbul']);
+  gulp.watch(paths.app + '/**/*.css', ['css']);
 
-  gulp.watch(paths.tmp + '/*').on('change', function () {
+  gulp.watch(paths.tmp + '/**/*').on('change', function () {
     browserSync.reload();
   });
 });

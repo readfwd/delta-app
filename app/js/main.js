@@ -1,5 +1,7 @@
 'use strict';
 
+require('famous-polyfills');
+
 var _ = require('lodash');
 
 module.exports = {
