@@ -23,6 +23,8 @@ $ npm install -g gulp
 $ npm install
 ```
 
+To run the `phonegap` related tasks, you'll also need to [install phonegap](http://phonegap.com/install/).
+
 ### Available build workflow commands
 
 #### Minimal build
