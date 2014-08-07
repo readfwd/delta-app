@@ -60,9 +60,14 @@ gulp.task('css', function () {
     .pipe(gulp.dest(paths.tmp + '/css/'));
 });
 
-gulp.task('build', ['index.html', 'js', 'css']);
+gulp.task('assets', function() {
+  return gulp.src(paths.app + '/assets/**/*')
+     .pipe(gulp.dest(paths.tmp + '/assets/'));
+});
 
-gulp.task('prebuild:dist', ['index.html', 'js:no-istanbul', 'css'], function () {
+gulp.task('build', ['index.html', 'js', 'css', 'assets']);
+
+gulp.task('prebuild:dist', ['index.html', 'js:no-istanbul', 'css', 'assets'], function () {
   var jsFilter = $.filter('**/*.js');
   var cssFilter = $.filter('**/*.css');
   var htmlFilter = $.filter('**/*.html');
