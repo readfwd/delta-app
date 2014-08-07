@@ -22,7 +22,20 @@ $ npm install -g gulp
 $ npm install
 ```
 
-To run the `phonegap` related tasks, you'll also need to [install phonegap](http://phonegap.com/install/).
+## Setting up Phonegap
+
+To run `phonegap` related tasks, you'll also need to [install phonegap](http://phonegap.com/install/).
+The android wrapper has been modified to include the [Crosswalk](https://crosswalk-project.org) runtime. Before using the Android platform in any way, you should run `build_deps.sh`.
+
+Installation steps summed up:
+
+```bash
+npm install -g phonegap cordova
+./mobile/build_deps.sh
+```
+
+After this, you can just `cd mobile` and use phonegap and cordova commands freely from there.
+
 
 ### Available build workflow commands
 
@@ -74,11 +87,33 @@ This will run the `gulp build` task, then a `gulp serve` server on top of it tha
 
 #### Developing with phonegap
 
+
 ```bash
 $ gulp watch:gap
 ```
 
-This will run the `gulp build` task, and then start a `phonegap` server that you can connect to from your mobile devices by using the [PhoneGap Developer App](http://app.phonegap.com). It will also livereload upon detecting changes.
+This will run the `gulp build` task, and then start a `phonegap serve` server that you can connect to from your mobile devices by using the [PhoneGap Developer App](http://app.phonegap.com). It will also livereload upon detecting changes.
+
+For running just the server with a livereload watch on `./.tmp` and without actually compiling anything:
+
+```bash
+$ gulp serve:gap
+```
+
+This is useful, for example, when running `gulp watch` and `gulp serve:gap` at the same time. This way, anything you modify in the sources will get picked up by `gulp watch`, compiled to `./.tmp` and pushed to `browserSync`, then picked up by `gulp serve:gap` and pushed to your phone.
+
+#### Deployment with phonegap
+
+After taking the steps described [above](#Setting-up-Phonegap), just use regular cordova:
+
+```bash
+$ cd mobile
+$ cordova run android
+$ # or
+$ cordova run ios
+$ # or
+$ cordova compile android --release # To get a publish-ready APK
+```
 
 #### Testing
 
