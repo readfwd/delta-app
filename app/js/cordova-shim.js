@@ -1,13 +1,19 @@
 var cordova = {
-  initialize: function() {
-    this.isMobile = window.cordova ? true : false;
+  initialize: function () {
+    /* istanbul ignore if */
+    if (window.cordova) {
+      this.isMobile = true;
+    } else {
+      this.isMobile = false;
+    }
   },
 
-  ready: function(cb) {
+  ready: function (cb) {
+    /* istanbul ignore if */
     if (this.isMobile) {
-      document.addEventListener("deviceready", cb);
+      document.addEventListener('deviceready', cb);
     } else {
-      window.addEventListener("load", cb);
+      window.addEventListener('load', cb);
     }
   }
 };
@@ -15,3 +21,4 @@ var cordova = {
 cordova.initialize();
 
 module.exports = cordova;
+
