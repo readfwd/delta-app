@@ -30,8 +30,8 @@ The android wrapper has been modified to include the [Crosswalk](https://crosswa
 Installation steps summed up:
 
 ```bash
-npm install -g phonegap cordova
-./mobile/build_deps.sh
+$ npm install -g phonegap cordova
+$ ./mobile/build_deps.sh
 ```
 
 After this, you can just `cd mobile` and use phonegap and cordova commands freely from there.
@@ -104,7 +104,7 @@ This is useful, for example, when running `gulp watch` and `gulp serve:gap` at t
 
 #### Deployment with phonegap
 
-After taking the steps described [above](#Setting-up-Phonegap), just use regular cordova:
+After taking the steps described [above](#setting-up-phonegap), just use regular cordova:
 
 ```bash
 $ cd mobile
