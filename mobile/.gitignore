@@ -5,6 +5,9 @@ platforms/**/ant-bin
 platforms/**/bin
 platforms/**/gen
 
+# Cordova doesn't use package.jsons
+!platforms/**/node_modules
+
 # iOS build products and per-user XCode settings
 *.pbxuser
 *.mode1v3

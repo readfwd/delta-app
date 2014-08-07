@@ -83,7 +83,7 @@ public class NativeToJsMessageQueue {
         this.cordova = cordova;
         this.webView = webView;
         registeredListeners = new BridgeMode[4];
-        registeredListeners[0] = new PollingBridgeMode();
+        registeredListeners[0] = null;  // Polling. Requires no logic.
         registeredListeners[1] = new LoadUrlBridgeMode();
         registeredListeners[2] = new OnlineEventsBridgeMode();
         registeredListeners[3] = new PrivateApiBridgeMode();
@@ -102,8 +102,7 @@ public class NativeToJsMessageQueue {
                 synchronized (this) {
                     activeListenerIndex = value;
                     BridgeMode activeListener = registeredListeners[value];
-                    activeListener.reset();
-                    if (!paused && !queue.isEmpty()) {
+                    if (!paused && !queue.isEmpty() && activeListener != null) {
                         activeListener.onNativeToJsMessageAvailable();
                     }
                 }
@@ -118,7 +117,6 @@ public class NativeToJsMessageQueue {
         synchronized (this) {
             queue.clear();
             setBridgeMode(DEFAULT_BRIDGE_MODE);
-            registeredListeners[activeListenerIndex].reset();
         }
     }
 
@@ -251,7 +249,7 @@ public class NativeToJsMessageQueue {
     private void enqueueMessage(JsMessage message) {
         synchronized (this) {
             queue.add(message);
-            if (!paused) {
+            if (!paused && registeredListeners[activeListenerIndex] != null) {
                 registeredListeners[activeListenerIndex].onNativeToJsMessageAvailable();
             }
         }        
@@ -266,7 +264,7 @@ public class NativeToJsMessageQueue {
         paused = value;
         if (!value) {
             synchronized (this) {
-                if (!queue.isEmpty()) {
+                if (!queue.isEmpty() && registeredListeners[activeListenerIndex] != null) {
                     registeredListeners[activeListenerIndex].onNativeToJsMessageAvailable();
                 }
             }   
@@ -280,15 +278,8 @@ public class NativeToJsMessageQueue {
     private abstract class BridgeMode {
         abstract void onNativeToJsMessageAvailable();
         void notifyOfFlush(boolean fromOnlineEvent) {}
-        void reset() {}
     }
-
-    /** Uses JS polls for messages on a timer.. */
-    private class PollingBridgeMode extends BridgeMode {
-        @Override void onNativeToJsMessageAvailable() {
-        }
-    }
-
+    
     /** Uses webView.loadUrl("javascript:") to execute messages. */
     private class LoadUrlBridgeMode extends BridgeMode {
         final Runnable runnable = new Runnable() {
@@ -307,7 +298,7 @@ public class NativeToJsMessageQueue {
 
     /** Uses online/offline events to tell the JS when to poll for messages. */
     private class OnlineEventsBridgeMode extends BridgeMode {
-        private boolean online;
+        boolean online = false;
         final Runnable runnable = new Runnable() {
             public void run() {
                 if (!queue.isEmpty()) {
@@ -315,8 +306,7 @@ public class NativeToJsMessageQueue {
                 }
             }                
         };
-        @Override void reset() {
-            online = false;
+        OnlineEventsBridgeMode() {
             webView.setNetworkAvailable(true);
         }
         @Override void onNativeToJsMessageAvailable() {
@@ -494,22 +484,9 @@ public class NativeToJsMessageQueue {
                   .append(success)
                   .append(",")
                   .append(status)
-                  .append(",[");
-                switch (pluginResult.getMessageType()) {
-                    case PluginResult.MESSAGE_TYPE_BINARYSTRING:
-                        sb.append("atob('")
-                          .append(pluginResult.getMessage())
-                          .append("')");
-                        break;
-                    case PluginResult.MESSAGE_TYPE_ARRAYBUFFER:
-                        sb.append("cordova.require('cordova/base64').toArrayBuffer('")
-                          .append(pluginResult.getMessage())
-                          .append("')");
-                        break;
-                    default:
-                    sb.append(pluginResult.getMessage());
-                }
-                sb.append("],")
+                  .append(",[")
+                  .append(pluginResult.getMessage())
+                  .append("],")
                   .append(pluginResult.getKeepCallback())
                   .append(");");
             }
