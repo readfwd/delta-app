@@ -34,7 +34,7 @@ module.exports = {
           extent: extent,
           center: ol.proj.transform([29.165, 44.965], 'EPSG:4326', 'EPSG:3857'),
           minZoom: 8,
-          maxZoom: 15,
+          maxZoom: 13,
           zoom: 9
         })
       });
