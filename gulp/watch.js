@@ -15,14 +15,12 @@ gulp.task('watch:common', ['build'], function () {
   gulp.watch(paths.app + '/**/*.css', ['css']);
 });
 
-gulp.task('build:serve', ['watch:common'], function(done) {
+gulp.task('build:serve', ['build'], function(done) {
   browserSyncRun(done, paths.tmp);
 });
 
-gulp.task('watch', ['build:serve'], function () {
-  gulp.watch(paths.tmp + '/**/*').on('change', function () {
-    browserSync.reload();
-  });
+gulp.task('watch', ['watch:common'], function (done) {
+  browserSyncRun(done, paths.tmp);
 });
 
 function runPhoneGap() {

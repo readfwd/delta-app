@@ -13,6 +13,8 @@ var source = require('vinyl-source-stream');
 var browserify = require('browserify');
 var istanbul = require('browserify-istanbul');
 
+var browserSync = require('browser-sync');
+
 gulp.task('clean', function () {
   return gulp.src(paths.tmp, { read: false })
     .pipe($.rimraf());
@@ -28,12 +30,14 @@ gulp.task('index.html', function () {
     .pipe($.jade({
       pretty: true
     }))
-    .pipe(gulp.dest(paths.tmp));
+    .pipe(gulp.dest(paths.tmp))
+    .pipe(browserSync.reload({stream: true}));
 });
 
 gulp.task('jade', function () {
   return gulp.src(paths.app + '/*.html')
-    .pipe(gulp.dest(paths.tmp));
+    .pipe(gulp.dest(paths.tmp))
+    .pipe(browserSync.reload({stream: true}));
 });
 
 gulp.task('js', function () {
@@ -44,7 +48,8 @@ gulp.task('js', function () {
   return bundleStream
     .pipe(source(paths.app + '/js/main.js'))
     .pipe($.rename('main.js'))
-    .pipe(gulp.dest(paths.tmp + '/js/'));
+    .pipe(gulp.dest(paths.tmp + '/js/'))
+    .pipe(browserSync.reload({stream: true}));
 });
 
 gulp.task('js:no-istanbul', function () {
@@ -55,12 +60,14 @@ gulp.task('js:no-istanbul', function () {
   return bundleStream
     .pipe(source(paths.app + '/js/main.js'))
     .pipe($.rename('main.js'))
-    .pipe(gulp.dest(paths.tmp + '/js/'));
+    .pipe(gulp.dest(paths.tmp + '/js/'))
+    .pipe(browserSync.reload({stream: true}));
 });
 
 gulp.task('css', function () {
   return gulp.src(paths.app + '/css/*.css')
-    .pipe(gulp.dest(paths.tmp + '/css/'));
+    .pipe(gulp.dest(paths.tmp + '/css/'))
+    .pipe(browserSync.reload({stream: true}));
 });
 
 gulp.task('assets:clean', function() {
