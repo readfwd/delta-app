@@ -1,5 +1,4 @@
 var ol = require('./ol');
-var $ = require('jquery');
 
 var Maps = {
   createMap: function (opts) {
