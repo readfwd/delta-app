@@ -15,11 +15,11 @@ gulp.task('watch:common', ['build'], function () {
   gulp.watch(paths.app + '/**/*.css', ['css']);
 });
 
-gulp.task('watch:serve', ['watch:common'], function(done) {
+gulp.task('build:serve', ['watch:common'], function(done) {
   browserSyncRun(done, paths.tmp);
 });
 
-gulp.task('watch', ['watch:serve'], function () {
+gulp.task('watch', ['build:serve'], function () {
   gulp.watch(paths.tmp + '/**/*').on('change', function () {
     browserSync.reload();
   });
