@@ -59,7 +59,7 @@ gulp.task('js:no-istanbul', function () {
 });
 
 gulp.task('css', function () {
-  return gulp.src(paths.app + '/css/famous.css')
+  return gulp.src(paths.app + '/css/*.css')
     .pipe(gulp.dest(paths.tmp + '/css/'));
 });
 
@@ -75,9 +75,9 @@ gulp.task('assets', ['assets:clean', 'mktmp'], function() {
   return nodefn.call(fs.symlink, '../app/assets', paths.tmp + '/assets');
 });
 
-gulp.task('assets:dist', ['assets:clean', 'mktmp'], function() {
+gulp.task('assets:dist', function() {
   return gulp.src(paths.app + '/assets/**/*')
-     .pipe(gulp.dest(paths.tmp + '/assets/'));
+     .pipe(gulp.dest(paths.dist + '/assets/'));
 });
 
 gulp.task('build', ['index.html', 'js', 'css', 'assets']);
