@@ -34,7 +34,6 @@ function MapView(options) {
 util.inherits(MapView, View);
 
 MapView.prototype.createMap = function (opts) {
-  console.log(opts)
   var extent = ol.proj.transformExtent(opts.extent, 'EPSG:4326', 'EPSG:3857');
   var center = [
     (opts.extent[0] + opts.extent[2]) * 0.5,
