@@ -4,8 +4,8 @@ require('famous-polyfills');
 
 var _ = require('lodash');
 var $ = require('jquery');
-var cordova = require('./cordova-shim');
-var maps = require('./maps');
+var cordova = require('./shims/cordova');
+var maps = require('./shims/maps');
 var templates = require('./lib/templates');
 
 module.exports = {

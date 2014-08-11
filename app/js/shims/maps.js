@@ -1,4 +1,4 @@
-var ol = require('./lib/ol');
+var ol = require('../lib/ol');
 
 var Maps = {
   createMap: function (opts) {
