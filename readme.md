@@ -162,11 +162,15 @@ Use this in combination with the production server to alias it to a [secure exte
 * `karma` - test runner
 * `mocha` - test framework
 * `should` - assertion library
+* `istanbul` - coverage reports
 * `browserSync` - development server
 * `phonegap` - mobile app packaging
 * `famous` - view library
 * `jade` - HTML preprocessor
 * `stylus` - CSS preprocessor
+* `jshint` - JavaScript linting
+* `travis` - continuous integration
+* `coveralls` - online coverage reports
 
 ## Project structure
 
@@ -191,7 +195,7 @@ Temporary folders:
 
 ## Contributing
 
-* All commits and pull requests get processed by `travis`, which runs the test suite. Successful builds on the `master` branch get deployed to Heroku. Every build will also report to `coveralls`.
+* All commits and pull requests get processed by `travis`, which runs the test suite. Every build will also report to `coveralls`.
 * Fork the project and send in pull requests.
 * Lint JavaScript code with `jshint`, which will automatically pick up the included `.jshintrc`.
 

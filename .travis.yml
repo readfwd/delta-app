@@ -1,10 +1,4 @@
 language: node_js
 node_js:
   - 0.10.29
-deploy:
-  provider: heroku
-  strategy: git
-  app:
-    master: readfwd-delta-app
-  api_key:
-    secure: HbBI7E1cdbY/t6epZSwvE9+H5NuR1CUEdbhLGkNGY/WSiAAFUVO3WPbl1HYt3UCvky82Z2Pd01zV5k97ArhivBHyhJakVbKwLURZy0++mc309Op0y0uWXlkRrrnyQCrf63ZiBa5Vx6wYtjKRJFS2DRlIqiS6DjrxasQdcCHDofQ=
+
