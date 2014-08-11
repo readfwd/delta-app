@@ -3,9 +3,10 @@
 require('famous-polyfills');
 
 var _ = require('lodash');
-var cordova = require('./cordova-shim');
 var $ = require('jquery');
+var cordova = require('./cordova-shim');
 var maps = require('./maps');
+var templates = require('./templates');
 
 module.exports = {
   launch: _.once(function () {

@@ -12,8 +12,8 @@ var exec = require('child_process').exec;
 var source = require('vinyl-source-stream');
 var browserify = require('browserify');
 var istanbul = require('browserify-istanbul');
-
 var browserSync = require('browser-sync');
+var templatizer = require('templatizer');
 
 gulp.task('clean', function () {
   return gulp.src(paths.tmp, { read: false })
@@ -34,13 +34,11 @@ gulp.task('index.html', function () {
     .pipe(browserSync.reload({stream: true}));
 });
 
-gulp.task('jade', function () {
-  return gulp.src(paths.app + '/*.html')
-    .pipe(gulp.dest(paths.tmp))
-    .pipe(browserSync.reload({stream: true}));
+gulp.task('templates', function () {
+  templatizer(paths.app + '/templates', paths.app + '/js/templates.js');
 });
 
-gulp.task('js', function () {
+gulp.task('js', ['templates'], function () {
   var bundleStream = browserify(paths.app + '/js/main.js')
     .transform(istanbul)
     .bundle();
