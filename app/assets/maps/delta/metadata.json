@@ -1,0 +1,11 @@
+{
+    "attribution": "", 
+    "description": "A faithful reimplementation of the standard OpenStreetMap style", 
+    "center": "29.0945,44.9745,9", 
+    "bounds": "28.5,44.33,29.83,45.6", 
+    "minzoom": "8", 
+    "version": "1.0.0", 
+    "template": "", 
+    "maxzoom": "13", 
+    "name": "OpenStreetMap Carto"
+}

@@ -15,10 +15,12 @@ gulp.task('watch:common', ['build'], function () {
   gulp.watch(paths.app + '/**/*.css', ['css']);
 });
 
-gulp.task('watch', ['watch:common', 'serve'], function () {
-  gulp.watch(paths.tmp + '/**/*').on('change', function () {
-    browserSync.reload();
-  });
+gulp.task('build:serve', ['build'], function(done) {
+  browserSyncRun(done, paths.tmp);
+});
+
+gulp.task('watch', ['watch:common'], function (done) {
+  browserSyncRun(done, paths.tmp);
 });
 
 function runPhoneGap() {
@@ -31,30 +33,26 @@ gulp.task('watch:gap', ['watch:common'], function () {
   return  runPhoneGap();
 });
 
-gulp.task('serve', function (done) {
+function browserSyncRun(done, path) {
   browserSync({
     server: {
-      baseDir: paths.tmp
+      baseDir: path
     },
     port: 4000
   }, function () {
     done();
   });
+}
+
+gulp.task('serve', function (done) {
+  browserSyncRun(done, paths.tmp);
 });
 
 gulp.task('serve:dist', function (done) {
-  browserSync({
-    server: {
-      baseDir: paths.dist
-    },
-    port: 4000
-  }, function () {
-    done();
-  });
+  browserSyncRun(done, paths.dist);
 });
 
 gulp.task('serve:gap', function () {
   return  runPhoneGap();
 });
-
 
