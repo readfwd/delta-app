@@ -35,12 +35,14 @@ gulp.task('index.html', function () {
 });
 
 gulp.task('templates', function () {
-  templatizer(paths.app + '/templates', paths.app + '/js/templates.js');
+  templatizer(paths.app + '/templates', paths.app + '/js/lib/templates.js');
 });
 
 gulp.task('js', ['templates'], function () {
   var bundleStream = browserify(paths.app + '/js/main.js')
-    .transform(istanbul)
+    .transform(istanbul({
+      ignore: ['**/lib/**'] 
+    }))
     .bundle();
 
   return bundleStream

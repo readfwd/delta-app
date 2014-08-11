@@ -6,7 +6,7 @@ var _ = require('lodash');
 var $ = require('jquery');
 var cordova = require('./cordova-shim');
 var maps = require('./maps');
-var templates = require('./templates');
+var templates = require('./lib/templates');
 
 module.exports = {
   launch: _.once(function () {

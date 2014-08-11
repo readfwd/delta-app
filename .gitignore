@@ -6,5 +6,5 @@ dist
 npm-debug.log
 .tmp
 coverage
-app/js/templates.js
+app/js/lib/templates.js
 
