@@ -1,4 +1,4 @@
-var ol = require('./ol');
+var ol = require('./lib/ol');
 
 var Maps = {
   createMap: function (opts) {
@@ -20,6 +20,7 @@ var Maps = {
       extent: extent
     });
 
+    /* istanbul ignore next */
     mapLayer.on('precompose', function(event) {
       var ctx = event.context;
       ctx.save();
@@ -43,6 +44,7 @@ var Maps = {
       ctx.setTransform(1, 0, 0, 1, 0, 0);
     });
 
+    /* istanbul ignore next */
     mapLayer.on('postcompose', function(event) {
       var ctx = event.context;
       ctx.restore();
