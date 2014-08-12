@@ -17,14 +17,29 @@ function MapView(options) {
 
   self.add(surface);
 
-  var onResize = _.throttle(function () {
-    Timer.after(function() {
+  function once(emitter, type, f) {
+    function cb() {
+      f();
+      emitter.removeListener(type, cb);
+    }
+    emitter.on(type, cb);
+  }
+
+  var resizeScheduled = false;
+  function onResize() {
+    if (resizeScheduled) {
+      return;
+    }
+    resizeScheduled = true;
+    once(Engine, 'postrender', _.throttle(function () {
       self.map.updateSize();
-    }, 2);
-  }, 100);
+      resizeScheduled = false;
+    }, 300));
+  };
+
 
   surface.on('deploy', function () {
-    Timer.after(function() {
+    once(Engine, 'postrender', function () {
       $('#' + id).html('');
       self.createMap(_.extend({
         target: id
@@ -35,7 +50,7 @@ function MapView(options) {
       self.startHeadingUpdates();
 
       Engine.on('resize', onResize);
-    }, 1);
+    });
   });
 
   surface.on('recall', function () {
@@ -108,8 +123,8 @@ MapView.prototype.stopLocationUpdates = function () {
 };
 
 MapView.prototype.updateMapDotLocation = function () {
-    coords = ol.proj.transform(self.lastLocation, 'EPSG:4326', 'EPSG:3857');
-    if (self.navDot) {
+    if (self.navDot && self.lastLocation) {
+      coords = ol.proj.transform(self.lastLocation, 'EPSG:4326', 'EPSG:3857');
       self.navDot.setPosition(coords);
     }
     if (self.jumpControl) {
