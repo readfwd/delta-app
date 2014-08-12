@@ -1,7 +1,7 @@
-function ViewController() {
+function ViewController () {
 }
 
-ViewController.prototype.getView = function() {
+ViewController.prototype.getView = function () {
   if (!this.view) {
     this.loadView();
   }

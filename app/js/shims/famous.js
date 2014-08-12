@@ -8,13 +8,16 @@ Famous.RenderNode = require('famous/core/RenderNode');
 
 Famous.StateModifier = require('famous/modifiers/StateModifier');
 
+Famous.Transitionable = require('famous/transitions/Transitionable');
+Famous.SnapTransition = require('famous/transitions/SnapTransition');
+Famous.SpringTransition = require('famous/transitions/SpringTransition');
+Famous.Transitionable.registerMethod('snap', SnapTransition);
+Famous.Transitionable.registerMethod('spring', SpringTransition);
+
 Famous.GridLayout = require('famous/views/GridLayout');
 Famous.RenderController = require('famous/views/RenderController');
 Famous.HeaderFooterLayout = require('famous/views/HeaderFooterLayout');
 
-Famous.Transitionable = require('famous/transitions/Transitionable');
-Famous.SpringTransition = require('famous/transitions/SpringTransition');
-
-Famous.Transitionable.registerMethod('spring', SpringTransition);
+Famous.Timer = require('famous/utilities/Timer');
 
 module.exports = Famous;

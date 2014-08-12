@@ -1,29 +1,26 @@
 var util = require('util');
-var View = require('famous/core/View');
-var Surface = require('famous/core/Surface');
-var Timer = require('famous/utilities/Timer');
 var _ = require('lodash');
-var Engine = require('famous/core/Engine');
+var Famous = require('../shims/famous');
 
 function MapView(options) {
   var self = this;
 
   View.apply(this, arguments);
-  var surface = new Surface({
+  var surface = new Famous.Surface({
     content: '<div id="map" style="width: 100%; height: 100%"></div>',
   });
 
   self.add(surface);
 
   surface.on('deploy', function() {
-    Timer.after(function() {
+    Famous.Timer.after(function() {
       var map = self.createMap(_.extend({
         target: 'map'
       }, options));
 
       map.updateSize();
 
-      Engine.on('resize', _.throttle(function () {
+      Famous.Engine.on('resize', _.throttle(function () {
         Timer.after(function() {
           map.updateSize();
         }, 2);
@@ -31,7 +28,7 @@ function MapView(options) {
     }, 1);
   });
 }
-util.inherits(MapView, View);
+util.inherits(MapView, Famous.View);
 
 MapView.prototype.createMap = function (opts) {
   var extent = ol.proj.transformExtent(opts.extent, 'EPSG:4326', 'EPSG:3857');

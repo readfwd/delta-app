@@ -2,13 +2,14 @@ var util = require('util');
 var cordova = require('../shims/cordova');
 var Famous = require('../shims/famous');
 var ViewController = require('./view-controller');
+var MenuController = require('./Menu-controller');
 
 function RootController () {
   ViewController.apply(this, arguments);
 
   var self = this;
   self.context = Engine.createContext();
-  self.menuController = new Famous.MenuController();
+  self.menuController = new MenuController();
   self.context.add(self.getView());
 }
 util.inherits(RootController, ViewController);
