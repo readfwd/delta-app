@@ -11,8 +11,8 @@ Famous.StateModifier = require('famous/modifiers/StateModifier');
 Famous.Transitionable = require('famous/transitions/Transitionable');
 Famous.SnapTransition = require('famous/transitions/SnapTransition');
 Famous.SpringTransition = require('famous/transitions/SpringTransition');
-Famous.Transitionable.registerMethod('snap', SnapTransition);
-Famous.Transitionable.registerMethod('spring', SpringTransition);
+Famous.Transitionable.registerMethod('snap', Famous.SnapTransition);
+Famous.Transitionable.registerMethod('spring', Famous.SpringTransition);
 
 Famous.GridLayout = require('famous/views/GridLayout');
 Famous.RenderController = require('famous/views/RenderController');
