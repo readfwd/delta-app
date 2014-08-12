@@ -32,6 +32,7 @@ function MapView(options) {
 
       self.map.updateSize();
       self.startLocationUpdates();
+      self.startHeadingUpdates();
 
       Engine.on('resize', onResize);
     }, 1);
@@ -40,8 +41,10 @@ function MapView(options) {
   surface.on('recall', function () {
     self.map = undefined;
     self.navDot = undefined;
+    self.jumpControl = undefined;
     Engine.removeListener('resize', onResize);
     self.stopLocationUpdates();
+    self.stopHeadingUpdates();
   });
 }
 util.inherits(MapView, View);
@@ -87,6 +90,7 @@ MapView.prototype.createNavDot = function (opts) {
   });
   this.map.addOverlay(overlay);
   this.navDot = overlay;
+  this.map.getView().on('change:rotation', this.updateNavDotHeading.bind(this));
 };
 
 MapView.prototype.setNavDotHidden = function(hidden) {
@@ -101,7 +105,18 @@ MapView.prototype.stopLocationUpdates = function () {
     }
     self.watchId = undefined;
   }
-}
+};
+
+MapView.prototype.updateMapDotLocation = function () {
+    coords = ol.proj.transform(self.lastLocation, 'EPSG:4326', 'EPSG:3857');
+    if (self.navDot) {
+      self.navDot.setPosition(coords);
+    }
+    if (self.jumpControl) {
+      self.jumpControl.toggleClass('hidden', 
+        !ol.extent.containsCoordinate(self.boundingExtent, self.lastLocation));
+    }
+};
 
 MapView.prototype.startLocationUpdates = function () {
   var self = this;
@@ -111,18 +126,9 @@ MapView.prototype.startLocationUpdates = function () {
   if (window.navigator.geolocation) {
     self.watchId = window.navigator.geolocation.watchPosition(function (position) {
       var coords = [position.coords.latitude, position.coords.longitude];
-      coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
-      if (self.navDot) {
-        self.navDot.setPosition(coords);
-      }
-      console.log('Latitude: '          + position.coords.latitude          + '\n' /*+
-          'Longitude: '         + position.coords.longitude         + '\n' +
-          'Altitude: '          + position.coords.altitude          + '\n' +
-          'Accuracy: '          + position.coords.accuracy          + '\n' +
-          'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
-          'Heading: '           + position.coords.heading           + '\n' +
-          'Speed: '             + position.coords.speed             + '\n' +
-          'Timestamp: '         + position.timestamp                + '\n'*/);
+      //coords = [29, 45];
+      self.lastLocation = coords;
+      self.updateMapDotLocation();
     }, function (err) {
       alert(err.message);
     }, {
@@ -130,7 +136,79 @@ MapView.prototype.startLocationUpdates = function () {
       maximumAge: 15 * 60 * 1000,
     });
   }
-}
+};
+
+MapView.prototype.stopHeadingUpdates = function () {
+  var self = this;
+  if (self.watchIdCompass !== undefined) {
+    if (window.navigator.compass) {
+      window.navigator.compass.clearWatch(self.watchIdCompass);
+    }
+    self.watchIdCompass = undefined;
+  }
+};
+
+MapView.prototype.updateNavDotHeading = function () {
+  var self = this;
+
+  if (self.heading === undefined || self.map === undefined) {
+    return;
+  }
+
+  var rot = self.heading + self.map.getView().getRotation() * (180 / Math.PI);
+  $(self.navDot.getElement()).css('transform', 'rotate(' + rot + 'deg)');
+};
+
+MapView.prototype.startHeadingUpdates = function () {
+  var self = this;
+  if (self.watchIdCompass !== undefined) {
+    self.stopHeadingUpdates();
+  }
+  if (window.navigator.compass) {
+    self.watchIdCompass = window.navigator.compass.watchHeading(function (heading) {
+      if (self.navDot) {
+        self.heading = heading.magneticHeading;
+        self.updateNavDotHeading();
+      }
+    }, function (err) {
+    }, {
+      frequency: 100,
+    });
+  }
+};
+
+MapView.prototype.createJumpHomeControl = function () {
+  var self = this;
+
+  var control = $('<div class="ol-control ol-unselectable map-jumpcontrol hidden"></div>');
+  var button = $('<button class="ol-has-tooltip" type="button"><span role="tooltip">Jump to my location</span>I</button>');
+  control.append(button);
+  button.on('click', function() {
+    if (!self.map || !self.lastLocation || !ol.extent.containsCoordinate(self.boundingExtent, self.lastLocation)) {
+      return;
+    }
+    var view = self.map.getView();
+    var pan = ol.animation.pan({
+      duration: 700,
+      source: view.getCenter()
+    });
+    var zoom = ol.animation.zoom({
+      duration: 700,
+      resolution: view.getResolution()
+    });
+    self.map.beforeRender(pan);
+    self.map.beforeRender(zoom);
+    view.setCenter(ol.proj.transform(self.lastLocation, 'EPSG:4326', 'EPSG:3857'));
+    view.setZoom(12);
+  });
+  self.jumpControl = control;
+
+  console.log('this runs');
+
+  self.map.addControl(new ol.control.Control({
+    element: control[0],
+  }));
+};
 
 MapView.prototype.createMap = function (opts) {
   var map = new ol.Map({
@@ -138,6 +216,7 @@ MapView.prototype.createMap = function (opts) {
   });
   this.map = map;
 
+  this.boundingExtent = opts.extent;
   var extent = ol.proj.transformExtent(opts.extent, 'EPSG:4326', 'EPSG:3857');
 
   var mapLayer = new ol.layer.Tile({
@@ -162,6 +241,7 @@ MapView.prototype.createMap = function (opts) {
   view.setZoom(view.getZoom() + 1);
 
   this.createNavDot();
+  this.createJumpHomeControl();
 }
 
 module.exports = MapView;
