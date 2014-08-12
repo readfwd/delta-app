@@ -57,7 +57,6 @@
     "karma-osx-reporter": "^0.1.0",
     "karma-phantomjs-launcher": "^0.1.4",
     "lodash": "^2.4.1",
-    "mean-seo": "git://github.com/readfwd/mean-seo.git#cb96a28",
     "mocha": "^1.21.3",
     "ngrok": "^0.1.97",
     "psi": "^0.1.1",
