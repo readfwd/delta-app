@@ -15,6 +15,10 @@
                         {
                             "xml": "<feature name=\"Geolocation\"><param name=\"ios-package\" value=\"CDVLocation\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Compass\"><param name=\"ios-package\" value=\"CDVCompass\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -24,7 +28,7 @@
                     "CoreLocation.framework": [
                         {
                             "xml": "false",
-                            "count": 1
+                            "count": 2
                         }
                     ]
                 }
@@ -36,6 +40,9 @@
             "PACKAGE_NAME": "com.readfwd.deltaapp"
         },
         "org.apache.cordova.geolocation": {
+            "PACKAGE_NAME": "com.readfwd.deltaapp"
+        },
+        "org.apache.cordova.device-orientation": {
             "PACKAGE_NAME": "com.readfwd.deltaapp"
         }
     },
