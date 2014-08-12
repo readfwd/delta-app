@@ -7,24 +7,16 @@ var $ = require('jquery');
 var cordova = require('./shims/cordova');
 var maps = require('./shims/maps');
 var templates = require('./lib/templates');
+var RootController = require('./controllers/root-controller');
 
 module.exports = {
   launch: _.once(function () {
     var self = this;
-    cordova.ready(function() {
+    cordova.ready(function () {
       window.app = self;
-
-      $('body').append('<div id="map"></div>');
-      self.map = maps.createMap({
-        target: 'map',
-        url: 'assets/maps/delta',
-        extent: [28.5, 44.33, 29.83, 45.6],
-
-      });
-
+      self.rootController = new RootController();
     });
   })
 };
 
 module.exports.launch();
-
