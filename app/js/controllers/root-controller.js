@@ -47,6 +47,6 @@ RootController.prototype.loadView = function() {
 
   console.log(self.contentView);
   self.contentView.add(self.menuController.getView());
-}
+};
 
 module.exports = RootController;

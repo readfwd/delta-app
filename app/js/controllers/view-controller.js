@@ -6,6 +6,6 @@ ViewController.prototype.getView = function() {
     this.loadView();
   }
   return this.view;
-}
+};
 
 module.exports = ViewController;
