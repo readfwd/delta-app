@@ -45,7 +45,6 @@ RootController.prototype.loadView = function() {
     self.view = contentView;
   }
 
-  console.log(self.contentView);
   self.contentView.add(self.menuController.getView());
 }
 

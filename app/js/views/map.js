@@ -218,8 +218,6 @@ MapView.prototype.createJumpHomeControl = function () {
   });
   self.jumpControl = control;
 
-  console.log('this runs');
-
   self.map.addControl(new ol.control.Control({
     element: control[0],
   }));
