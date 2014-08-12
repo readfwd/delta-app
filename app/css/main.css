@@ -13,7 +13,8 @@
 .map-navdot {
     width: 30px;
     height: 30px;
-    background-color: #03c
+    background: url(../assets/map-arrow.png);
+    background-size: cover
 }
 
 .map-navdot .hidden {

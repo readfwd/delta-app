@@ -17,20 +17,31 @@ function MapView(options) {
 
   self.add(surface);
 
-  surface.on('deploy', function() {
+  var onResize = _.throttle(function () {
     Timer.after(function() {
+      self.map.updateSize();
+    }, 2);
+  }, 100);
+
+  surface.on('deploy', function () {
+    Timer.after(function() {
+      $('#' + id).html('');
       self.createMap(_.extend({
         target: id
       }, options));
 
       self.map.updateSize();
+      self.startLocationUpdates();
 
-      Engine.on('resize', _.throttle(function () {
-        Timer.after(function() {
-          self.map.updateSize();
-        }, 2);
-      }, 100));
+      Engine.on('resize', onResize);
     }, 1);
+  });
+
+  surface.on('recall', function () {
+    self.map = undefined;
+    self.navDot = undefined;
+    Engine.removeListener('resize', onResize);
+    self.stopLocationUpdates();
   });
 }
 util.inherits(MapView, View);
@@ -99,14 +110,19 @@ MapView.prototype.startLocationUpdates = function () {
   }
   if (window.navigator.geolocation) {
     self.watchId = window.navigator.geolocation.watchPosition(function (position) {
-      alert('Latitude: '          + position.coords.latitude          + '\n' +
+      var coords = [position.coords.latitude, position.coords.longitude];
+      coords = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
+      if (self.navDot) {
+        self.navDot.setPosition(coords);
+      }
+      console.log('Latitude: '          + position.coords.latitude          + '\n' /*+
           'Longitude: '         + position.coords.longitude         + '\n' +
           'Altitude: '          + position.coords.altitude          + '\n' +
           'Accuracy: '          + position.coords.accuracy          + '\n' +
           'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
           'Heading: '           + position.coords.heading           + '\n' +
           'Speed: '             + position.coords.speed             + '\n' +
-          'Timestamp: '         + position.timestamp                + '\n');
+          'Timestamp: '         + position.timestamp                + '\n'*/);
     }, function (err) {
       alert(err.message);
     }, {
