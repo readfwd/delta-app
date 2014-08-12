@@ -8,14 +8,15 @@ var $ = config.plugins;
 
 var browserSync = require('browser-sync');
 
-gulp.task('watch:common', ['build'], function () {
+
+gulp.task('watch:common', ['build:watch'], function () {
   gulp.watch(paths.app + '/index.jade', ['index.html']);
   gulp.watch(paths.app + '/templates/*.jade', ['templates']);
-  gulp.watch(paths.app + '/**/*.js', ['js:no-istanbul']);
+  gulp.watch(paths.app + '/**/*.js', ['js:dev']);
   gulp.watch(paths.app + '/**/*.css', ['css']);
 });
 
-gulp.task('build:serve', ['build'], function(done) {
+gulp.task('build:serve', ['build'], function (done) {
   browserSyncRun(done, paths.tmp);
 });
 
@@ -30,7 +31,7 @@ function runPhoneGap() {
 }
 
 gulp.task('watch:gap', ['watch:common'], function () {
-  return  runPhoneGap();
+  return runPhoneGap();
 });
 
 function browserSyncRun(done, path) {
@@ -55,4 +56,3 @@ gulp.task('serve:dist', function (done) {
 gulp.task('serve:gap', function () {
   return  runPhoneGap();
 });
-

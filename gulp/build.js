@@ -38,29 +38,42 @@ gulp.task('templates', function () {
   templatizer(paths.app + '/templates', paths.app + '/js/lib/templates.js');
 });
 
+var spitJs = function (bundleStream) {
+  return bundleStream
+    .pipe(source(paths.app + '/js/main.js'))
+    .pipe($.rename('main.js'))
+    .pipe(gulp.dest(paths.tmp + '/js/'));
+};
+
+// Bundles Browserify for production.
 gulp.task('js', ['templates'], function () {
   var bundleStream = browserify(paths.app + '/js/main.js')
+    .bundle();
+
+  return spitJs(bundleStream);
+});
+
+// Bundles Browserify with Istanbul.
+gulp.task('js:istanbul', ['templates'], function () {
+  var bundleStream = browserify(paths.app + '/js/main.js')
     .transform(istanbul({
-      ignore: ['**/lib/**'] 
+      ignore: ['**/lib/**']
     }))
     .bundle();
 
-  return bundleStream
-    .pipe(source(paths.app + '/js/main.js'))
-    .pipe($.rename('main.js'))
-    .pipe(gulp.dest(paths.tmp + '/js/'))
-    .pipe(browserSync.reload({stream: true}));
+  return spitJs(bundleStream);
 });
 
-gulp.task('js:no-istanbul', function () {
-  var bundleStream = browserify(paths.app + '/js/main.js')
+// Bundles Browserify with sourcemaps.
+gulp.task('js:dev', function () {
+  var bundleStream = browserify({
+      entries: paths.app + '/js/main.js',
+      debug: true
+    })
     .bundle()
     .on('error', config.handleError);
 
-  return bundleStream
-    .pipe(source(paths.app + '/js/main.js'))
-    .pipe($.rename('main.js'))
-    .pipe(gulp.dest(paths.tmp + '/js/'))
+  return spitJs(bundleStream)
     .pipe(browserSync.reload({stream: true}));
 });
 
@@ -89,7 +102,11 @@ gulp.task('assets:dist', function() {
 
 gulp.task('build', ['index.html', 'js', 'css', 'assets']);
 
-gulp.task('prebuild:dist', ['index.html', 'js:no-istanbul', 'css', 'assets:dist'], function () {
+gulp.task('build:watch', ['index.html', 'js:dev', 'css', 'assets']);
+
+gulp.task('build:test', ['index.html', 'js:istanbul', 'css', 'assets']);
+
+gulp.task('build:dist', ['index.html', 'js', 'css', 'assets:dist'], function () {
   var jsFilter = $.filter('**/*.js');
   var cssFilter = $.filter('**/*.css');
   var htmlFilter = $.filter('**/*.html');
@@ -111,12 +128,6 @@ gulp.task('prebuild:dist', ['index.html', 'js:no-istanbul', 'css', 'assets:dist'
     .pipe(htmlFilter)
     .pipe($.minifyHtml())
     .pipe(htmlFilter.restore())
-    
+
     .pipe(gulp.dest(paths.dist));
 });
-
-gulp.task('build:dist', ['prebuild:dist'], function(){
-  return gulp.src(paths.dist + '/**/*')
-    .pipe(gulp.dest(paths.dist));
-});
-

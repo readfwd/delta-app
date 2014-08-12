@@ -36,7 +36,7 @@ gulp.task('test', function (done) {
   karma.start(karmaConf, done);
 });
 
-gulp.task('test:once', ['build'], function () {
+gulp.task('test:once', ['build:test'], function () {
   karma.start(_.assign({}, karmaConf, { singleRun: true }));
 });
 
@@ -51,4 +51,3 @@ gulp.task('pagespeed', ['build:dist'], function (done) {
     });
   });
 });
-
