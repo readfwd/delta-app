@@ -83,7 +83,7 @@ This will start a `browserSync` server with either the `./.tmp` or `./dist` dire
 $ gulp watch
 ```
 
-This will run the `gulp build` task, then a `gulp serve` server on top of it that will automatically refresh when you change anything relevant in `./app`.
+This will run the build task, then a `gulp serve` server on top of it that will automatically refresh when you change anything relevant in `./app`.
 
 #### Developing with phonegap
 
@@ -92,7 +92,7 @@ This will run the `gulp build` task, then a `gulp serve` server on top of it tha
 $ gulp watch:gap
 ```
 
-This will run the `gulp build` task, and then start a `phonegap serve` server that you can connect to from your mobile devices by using the [PhoneGap Developer App](http://app.phonegap.com). It will also livereload upon detecting changes.
+This will run the build task, and then start a `phonegap serve` server that you can connect to from your mobile devices by using the [PhoneGap Developer App](http://app.phonegap.com). It will also livereload upon detecting changes.
 
 For running just the server with a livereload watch on `./.tmp` and without actually compiling anything:
 
@@ -134,7 +134,7 @@ It will start a testing server on `http://localhost:9876`. You can connect to th
 $ gulp test:once
 ```
 
-This will run `gulp build`, and then the tests just one time. Used by `travis`. Additionally, it will also generate accurate coverage reports for `coveralls`.
+This will run the build task, and then the tests just one time. Used by `travis`. Additionally, it will also generate accurate coverage reports for `coveralls`.
 
 #### Production server
 
@@ -144,7 +144,7 @@ $ # or
 $ ./node_modules/gulp/bin/gulp.js build:dist && node index.js
 ```
 
-This will start the production `express` server (using the `./dist` folder) that doesn't do any fancy live-reloading or scroll synchronization, but does `gzip` your assets and handles single page application `seo`.
+This will start the production `express` server (using the `./dist` folder) that doesn't do any fancy live-reloading or scroll synchronization, but does `gzip` your assets.
 
 #### Pagespeed
 
