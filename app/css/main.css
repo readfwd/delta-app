@@ -9,3 +9,13 @@
 .famous-surface {
     color: #fff
 }
+
+.map-navdot {
+    width: 30px;
+    height: 30px;
+    background-color: #03c
+}
+
+.map-navdot .hidden {
+    display: none;
+}
