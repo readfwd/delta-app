@@ -22,7 +22,7 @@ MenuController.prototype.loadView = function () {
   node.add(new Famous.StateModifier({
     origin: [1, 1],
     align: [1, 1],
-    transform: Transform.inFront,
+    transform: Famous.Transform.inFront,
     size: [undefined, 50]
   })).add(grid);
 
@@ -49,14 +49,16 @@ MenuController.prototype.loadView = function () {
     }
   }));
 
-  renderNodes.push(new Famous.MapView({
+  renderNodes.push(new MapView({
     url: 'assets/maps/delta',
     extent: [28.5, 44.33, 29.83, 45.6],
   }));
 
   renderNodes.push(
     (new Famous.RenderNode())
-      .add(new Famous.StateModifier({transform: Transform.inFront}))
+      .add(new Famous.StateModifier({
+        transform: Famous.Transform.inFront
+      }))
       .add(new Famous.Surface({
         content: 'ipsum',
         properties: {
@@ -84,10 +86,10 @@ MenuController.prototype.loadView = function () {
   }
 
   renderController.inTransformFrom(function (progress) {
-    return Transform.translate(window.innerWidth * (progress - 1), 0, 0);
+    return Famous.Transform.translate(window.innerWidth * (progress - 1), 0, 0);
   });
   renderController.outTransformFrom(function (progress) {
-    return Transform.translate(window.innerWidth * (progress - 1), 0, 0);
+    return Famous.Transform.translate(window.innerWidth * (progress - 1), 0, 0);
   });
 
   renderController.inOpacityFrom(function () {

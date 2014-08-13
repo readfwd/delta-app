@@ -8,7 +8,7 @@ function RootController () {
   ViewController.apply(this, arguments);
 
   var self = this;
-  self.context = Engine.createContext();
+  self.context = Famous.Engine.createContext();
   self.menuController = new MenuController();
   self.context.add(self.getView());
 }
@@ -18,8 +18,8 @@ RootController.prototype.loadView = function () {
   var self = this;
   var contentView = new Famous.View();
 
-  contentView.add(new Famous.Modifier({
-    transform: Transform.behind
+  contentView.add(new Famous.StateModifier({
+    transform: Famous.Transform.behind
   })).add(new Famous.Surface({
     classes: ['content-bg']
   }));

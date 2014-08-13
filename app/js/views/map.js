@@ -1,11 +1,12 @@
 var util = require('util');
 var _ = require('lodash');
+var ol = require('../lib/ol');
 var Famous = require('../shims/famous');
 
 function MapView(options) {
   var self = this;
 
-  View.apply(this, arguments);
+  Famous.View.apply(this, arguments);
   var surface = new Famous.Surface({
     content: '<div id="map" style="width: 100%; height: 100%"></div>',
   });
