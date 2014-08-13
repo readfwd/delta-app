@@ -36,7 +36,6 @@ function MapSurface(options) {
 
   self.on('deploy', function () {
     once(Famous.Engine, 'postrender', function () {
-      console.log($('#' + id).length);
       $('#' + id).html('');
       self.createMap(_.extend({
         target: id
@@ -250,7 +249,6 @@ MapSurface.prototype.createMap = function (opts) {
   var map = new ol.Map({
     target: opts.target
   });
-  console.log($('#'+opts.target).length);
   this.map = map;
 
   this.boundingExtent = opts.extent;
