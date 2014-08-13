@@ -4,16 +4,13 @@ var ol = require('../lib/ol');
 var Famous = require('../shims/famous');
 var $ = require('jquery');
 
-function MapView(options) {
+function MapSurface(options) {
   var self = this;
 
-  Famous.View.apply(this, arguments);
   var id = 'map-' + (Math.random().toString(36)+'00000000000000000').slice(2, 7);
-  var surface = new Famous.Surface({
-    content: '<div id="' + id + '" class="map" style="width: 100%; height: 100%"></div>',
-  });
+  options.content = '<div id="' + id + '" class="map" style="width: 100%; height: 100%"></div>';
 
-  self.add(surface);
+  Famous.Surface.call(this, options);
 
   function once(emitter, type, f) {
     function cb() {
@@ -37,8 +34,9 @@ function MapView(options) {
   }
 
 
-  surface.on('deploy', function () {
+  self.on('deploy', function () {
     once(Famous.Engine, 'postrender', function () {
+      console.log($('#' + id).length);
       $('#' + id).html('');
       self.createMap(_.extend({
         target: id
@@ -52,7 +50,7 @@ function MapView(options) {
     });
   });
 
-  surface.on('recall', function () {
+  self.on('recall', function () {
     self.map = undefined;
     self.navDot = undefined;
     self.jumpControl = undefined;
@@ -61,9 +59,9 @@ function MapView(options) {
     self.stopHeadingUpdates();
   });
 }
-util.inherits(MapView, Famous.View);
+util.inherits(MapSurface, Famous.Surface);
 
-MapView.prototype.trimLayer = function (layer, extent) {
+MapSurface.prototype.trimLayer = function (layer, extent) {
   var self = this;
 
   layer.on('precompose', function(event) {
@@ -95,7 +93,7 @@ MapView.prototype.trimLayer = function (layer, extent) {
   });
 };
 
-MapView.prototype.createNavDot = function () {
+MapSurface.prototype.createNavDot = function () {
   var navDot = $('<div class="map-navdot">');
   var overlay = new ol.Overlay({
     element: navDot,
@@ -107,11 +105,11 @@ MapView.prototype.createNavDot = function () {
   this.map.getView().on('change:rotation', this.updateNavDotHeading.bind(this));
 };
 
-MapView.prototype.setNavDotHidden = function(hidden) {
+MapSurface.prototype.setNavDotHidden = function(hidden) {
   $(this.navDot.getElement()).toggleClass('hidden', hidden);
 };
 
-MapView.prototype.stopLocationUpdates = function () {
+MapSurface.prototype.stopLocationUpdates = function () {
   var self = this;
   if (self.watchId !== undefined) {
     if (window.navigator.geolocation) {
@@ -121,7 +119,7 @@ MapView.prototype.stopLocationUpdates = function () {
   }
 };
 
-MapView.prototype.updateMapDotLocation = function () {
+MapSurface.prototype.updateMapDotLocation = function () {
   var self = this;
   if (self.navDot && self.lastLocation) {
     coords = ol.proj.transform(self.lastLocation, 'EPSG:4326', 'EPSG:3857');
@@ -133,7 +131,7 @@ MapView.prototype.updateMapDotLocation = function () {
   }
 };
 
-MapView.prototype.startLocationUpdates = function () {
+MapSurface.prototype.startLocationUpdates = function () {
   var self = this;
   if (self.watchId !== undefined) {
     self.stopLocationUpdates();
@@ -155,7 +153,7 @@ MapView.prototype.startLocationUpdates = function () {
   }
 };
 
-MapView.prototype.stopHeadingUpdates = function () {
+MapSurface.prototype.stopHeadingUpdates = function () {
   var self = this;
   if (self.watchIdCompass !== undefined) {
     if (window.navigator.compass) {
@@ -165,7 +163,7 @@ MapView.prototype.stopHeadingUpdates = function () {
   }
 };
 
-MapView.prototype.updateNavDotHeading = function () {
+MapSurface.prototype.updateNavDotHeading = function () {
   var self = this;
 
   if (self.heading === undefined || self.map === undefined) {
@@ -195,7 +193,7 @@ MapView.prototype.updateNavDotHeading = function () {
   $(self.navDot.getElement()).css('transform', 'rotate(' + rot + 'deg)');
 };
 
-MapView.prototype.startHeadingUpdates = function () {
+MapSurface.prototype.startHeadingUpdates = function () {
   var self = this;
   if (self.watchIdCompass !== undefined) {
     self.stopHeadingUpdates();
@@ -213,7 +211,7 @@ MapView.prototype.startHeadingUpdates = function () {
   }
 };
 
-MapView.prototype.createJumpHomeControl = function () {
+MapSurface.prototype.createJumpHomeControl = function () {
   var self = this;
 
   var control = $('<div class="ol-control ol-unselectable map-jumpcontrol hidden"></div>');
@@ -248,10 +246,11 @@ MapView.prototype.createJumpHomeControl = function () {
   }));
 };
 
-MapView.prototype.createMap = function (opts) {
+MapSurface.prototype.createMap = function (opts) {
   var map = new ol.Map({
     target: opts.target
   });
+  console.log($('#'+opts.target).length);
   this.map = map;
 
   this.boundingExtent = opts.extent;
@@ -282,4 +281,4 @@ MapView.prototype.createMap = function (opts) {
   this.createJumpHomeControl();
 };
 
-module.exports = MapView;
+module.exports = MapSurface;

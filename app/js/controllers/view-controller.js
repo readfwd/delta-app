@@ -1,11 +1,7 @@
 function ViewController () {
 }
 
-ViewController.prototype.getView = function () {
-  if (!this.view) {
-    this.loadView();
-  }
-  return this.view;
+ViewController.prototype.buildRenderTree = function (/*parentNode*/) {
 };
 
 module.exports = ViewController;

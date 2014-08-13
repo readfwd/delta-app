@@ -10,21 +10,13 @@ function RootController () {
   var self = this;
   self.context = Famous.Engine.createContext();
   self.menuController = new MenuController();
-  self.context.add(self.getView());
+  self.buildRenderTree(self.context);
 }
 util.inherits(RootController, ViewController);
 
-RootController.prototype.loadView = function () {
+RootController.prototype.buildRenderTree = function (parentNode) {
   var self = this;
-  var contentView = new Famous.View();
-
-  contentView.add(new Famous.StateModifier({
-    transform: Famous.Transform.behind
-  })).add(new Famous.Surface({
-    classes: ['content-bg']
-  }));
-
-  self.contentView = contentView;
+  var contentView = parentNode;
 
   var iOS7 = (cordova.present &&
               window.device.platform === 'iOS' &&
@@ -36,14 +28,12 @@ RootController.prototype.loadView = function () {
     layout.header.add(new Famous.Surface({
       classes: ['status-bar']
     }));
-    layout.content.add(contentView);
 
-    self.view = layout;
-  } else {
-    self.view = contentView;
+    contentView = layout.content;
+    parentNode.add(layout);
   }
 
-  self.contentView.add(self.menuController.getView());
+  self.menuController.buildRenderTree(contentView);
 };
 
 module.exports = RootController;

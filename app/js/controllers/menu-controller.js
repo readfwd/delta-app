@@ -1,16 +1,13 @@
 var util = require('util');
 var ViewController = require('./view-controller');
-var MapView = require('../views/map');
+var MapSurface = require('../views/map-surface');
 var Famous = require('../shims/famous');
 
 function MenuController() {
-
 }
 util.inherits(MenuController, ViewController);
 
-MenuController.prototype.loadView = function () {
-  var self = this;
-
+MenuController.prototype.buildRenderTree = function (parentNode) {
   var grid = new Famous.GridLayout({
     dimensions: [4, 1]
   });
@@ -18,15 +15,12 @@ MenuController.prototype.loadView = function () {
   var surfaces = [];
   grid.sequenceFrom(surfaces);
 
-  var node = new Famous.RenderNode();
-  node.add(new Famous.StateModifier({
+  parentNode.add(new Famous.StateModifier({
     origin: [1, 1],
     align: [1, 1],
     transform: Famous.Transform.inFront,
     size: [undefined, 50]
   })).add(grid);
-
-  self.view = node;
 
   var renderController = new Famous.RenderController({
     inTransition: {
@@ -49,7 +43,7 @@ MenuController.prototype.loadView = function () {
     }
   }));
 
-  renderNodes.push(new MapView({
+  renderNodes.push(new MapSurface({
     url: 'assets/maps/delta',
     extent: [28.5, 44.33, 29.83, 45.6],
   }));
@@ -99,7 +93,7 @@ MenuController.prototype.loadView = function () {
     return 1;
   });
 
-  node.add(renderController);
+  parentNode.add(renderController);
 };
 
 module.exports = MenuController;
