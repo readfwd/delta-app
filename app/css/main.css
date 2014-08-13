@@ -9,3 +9,24 @@
 .famous-surface {
     color: #fff
 }
+
+.map-navdot {
+    width: 30px;
+    height: 30px;
+    background: url(../assets/map-arrow.png);
+    background-size: cover
+}
+
+.map-navdot .hidden {
+    display: none;
+}
+
+.map-jumpcontrol {
+    content: 'J';
+    left: 0.5em;
+    bottom: 5em;
+}
+
+.map-jumpcontrol.hidden {
+    display: none;
+}
