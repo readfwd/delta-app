@@ -14,7 +14,11 @@
     width: 30px;
     height: 30px;
     background: url(../assets/map-arrow.png);
-    background-size: cover
+    background-size: cover;
+    transition: transform 0.2s ease;
+    transition: -webkit-transform 0.2s ease;
+    -webkit-transition: transform 0.2s ease;
+    -webkit-transition: -webkit-transform 0.2s ease;
 }
 
 .map-navdot .hidden {

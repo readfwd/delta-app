@@ -31,6 +31,7 @@ function MapView(options) {
     resizeScheduled = true;
     once(Famous.Engine, 'postrender', _.throttle(function () {
       self.map.updateSize();
+      self.updateNavDotHeading();
       resizeScheduled = false;
     }, 300));
   }
@@ -121,14 +122,15 @@ MapView.prototype.stopLocationUpdates = function () {
 };
 
 MapView.prototype.updateMapDotLocation = function () {
-    if (self.navDot && self.lastLocation) {
-      coords = ol.proj.transform(self.lastLocation, 'EPSG:4326', 'EPSG:3857');
-      self.navDot.setPosition(coords);
-    }
-    if (self.jumpControl) {
-      self.jumpControl.toggleClass('hidden',
-        !ol.extent.containsCoordinate(self.boundingExtent, self.lastLocation));
-    }
+  var self = this;
+  if (self.navDot && self.lastLocation) {
+    coords = ol.proj.transform(self.lastLocation, 'EPSG:4326', 'EPSG:3857');
+    self.navDot.setPosition(coords);
+  }
+  if (self.jumpControl) {
+    self.jumpControl.toggleClass('hidden', 
+      !ol.extent.containsCoordinate(self.boundingExtent, self.lastLocation));
+  }
 };
 
 MapView.prototype.startLocationUpdates = function () {
@@ -139,7 +141,9 @@ MapView.prototype.startLocationUpdates = function () {
   if (window.navigator.geolocation) {
     self.watchId = window.navigator.geolocation.watchPosition(function (position) {
       var coords = [position.coords.latitude, position.coords.longitude];
-      //coords = [29, 45];
+      //Mock coords
+      //coords = [28.787548, 45.172372]; //Fabrica de șnițele
+      //coords = [26.030969, 44.930918]; //Service de MacBook-uri
       self.lastLocation = coords;
       self.updateMapDotLocation();
     }, function (err) {
@@ -168,7 +172,26 @@ MapView.prototype.updateNavDotHeading = function () {
     return;
   }
 
+  function lowPass(lastVal, newVal, period, cutoff) {
+    var RC = 1.0 / cutoff;
+    var alpha = period / (period + RC);
+    return newVal * alpha + lastVal * (1.0 - alpha);
+  }
+
   var rot = self.heading + self.map.getView().getRotation() * (180 / Math.PI);
+  if (window.orientation) {
+    rot += window.orientation;
+  }
+  var lrot = self.lastNavDotRotation;
+  if (lrot) {
+    // To prevent animation jerkyness
+    while (rot > lrot + 180) { rot -= 360; }
+    while (rot < lrot - 180) { rot += 360; }
+
+    // Add a low pass filter for good measure
+    rot = lowPass(lrot, rot, 0.1, 10/*Hz*/);
+  }
+  self.lastNavDotRotation = rot;
   $(self.navDot.getElement()).css('transform', 'rotate(' + rot + 'deg)');
 };
 
