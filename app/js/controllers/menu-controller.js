@@ -7,93 +7,80 @@ function MenuController() {
 }
 util.inherits(MenuController, ViewController);
 
-MenuController.prototype.buildRenderTree = function (parentNode) {
-  var grid = new Famous.GridLayout({
-    dimensions: [4, 1]
+MenuController.prototype.buildSectionButton = function(section) {
+  var renderNode = new Famous.RenderNode();
+  var surface = new Famous.Surface({
+    classes: ['menu-button'],
   });
-
-  var surfaces = [];
-  grid.sequenceFrom(surfaces);
-
-  parentNode.add(new Famous.StateModifier({
-    origin: [1, 1],
-    align: [1, 1],
+  var buttonText = new Famous.Surface({
+    classes: ['menu-button-text'],
+    content: section + 1,
+    size: [true, true],
+  });
+  var textModifier = new Famous.StateModifier({
     transform: Famous.Transform.inFront,
-    size: [undefined, 50]
-  })).add(grid);
-
-  var renderController = new Famous.RenderController({
-    inTransition: {
-      method: 'spring',
-      period: 400,
-      dampingRatio: 0.4,
-    },
-    outTransition: {
-      method: 'spring',
-      period: 400,
-      dampingRatio: 0.4,
-    }
+    align: [0.5, 0.5],
+    origin: [0.5, 0.5],
   });
-  var renderNodes = [];
+  renderNode.add(surface);
+  renderNode.add(textModifier).add(buttonText);
+  return renderNode;
+};
 
-  renderNodes.push(new Famous.Surface({
-    content: 'lorem',
-    properties: {
-      backgroundColor: 'red'
+MenuController.prototype.buildRenderTree = function (parentNode) {
+  var verticalLayout = new Famous.FlexibleLayout({
+    ratios: [true, 1, true, 1, true, 1, true, 1, true],
+    direction: 1,
+  });
+
+  var borderWidth = 15;
+
+  function verticalSpacer(ratio) {
+    if (!ratio) {
+      ratio = 1;
     }
-  }));
-
-  renderNodes.push(new MapSurface({
-    url: 'assets/maps/delta',
-    extent: [28.5, 44.33, 29.83, 45.6],
-  }));
-
-  renderNodes.push(
-    (new Famous.RenderNode())
-      .add(new Famous.StateModifier({
-        transform: Famous.Transform.inFront
-      }))
-      .add(new Famous.Surface({
-        content: 'ipsum',
-        properties: {
-          backgroundColor: 'blue'
-        }
-      }))
-  );
-
-  renderController.show(renderNodes[0]);
-
-  var showSurface = function (i) {
-    return function () {
-      renderController.show(renderNodes[i]);
-    };
-  };
-
-  for (var i = 0; i < 4; i++) {
-    var surface = new Famous.Surface({
-      content: i + 1,
-      size: [undefined, undefined]
+    return new Famous.Surface({ 
+      size: [undefined, borderWidth]
     });
-    surfaces.push(surface);
-
-    surface.on('click', showSurface(i));
   }
 
-  renderController.inTransformFrom(function (progress) {
-    return Famous.Transform.translate(window.innerWidth * (progress - 1), 0, 0);
-  });
-  renderController.outTransformFrom(function (progress) {
-    return Famous.Transform.translate(window.innerWidth * (progress - 1), 0, 0);
-  });
+  function horizontalSpacer(ratio) {
+    if (!ratio) {
+      ratio = 1;
+    }
+    return new Famous.Surface({ 
+      size: [borderWidth, undefined]
+    });
+  }
 
-  renderController.inOpacityFrom(function () {
-    return 1;
-  });
-  renderController.outOpacityFrom(function () {
-    return 1;
-  });
+  var verticalViews = [];
+  var horizontalLayout, horizontalViews;
+  verticalLayout.sequenceFrom(verticalViews);
+  for (var i = 0; i < 4; i++) {
+    verticalViews.push(verticalSpacer(i ? 1 : 0.5));
 
-  parentNode.add(renderController);
+    horizontalViews = [];
+    horizontalLayout = new Famous.FlexibleLayout({
+      ratios: (i === 3) ? [true, 1, true] : [true, 1, true, 1, true]
+    });
+
+    verticalViews.push(horizontalLayout);
+    horizontalLayout.sequenceFrom(horizontalViews);
+
+    horizontalViews.push(horizontalSpacer(0.5));
+
+    if (i === 3) {
+      horizontalViews.push(this.buildSectionButton(i * 2));
+    } else {
+      horizontalViews.push(this.buildSectionButton(i * 2));
+      horizontalViews.push(horizontalSpacer(1));
+      horizontalViews.push(this.buildSectionButton(i * 2 + 1));
+    }
+
+    horizontalViews.push(horizontalSpacer(0.5));
+  }
+  verticalViews.push(verticalSpacer(0.5));
+  parentNode.add(verticalLayout);
 };
 
 module.exports = MenuController;

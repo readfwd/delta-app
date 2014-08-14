@@ -15,6 +15,7 @@ Famous.Transitionable.registerMethod('snap', Famous.SnapTransition);
 Famous.Transitionable.registerMethod('spring', Famous.SpringTransition);
 
 Famous.GridLayout = require('famous/views/GridLayout');
+Famous.FlexibleLayout = require('famous/views/FlexibleLayout');
 Famous.RenderController = require('famous/views/RenderController');
 Famous.HeaderFooterLayout = require('famous/views/HeaderFooterLayout');
 

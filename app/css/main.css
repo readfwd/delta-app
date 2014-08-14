@@ -1,5 +1,5 @@
 body {
-    background-color: #333
+    background-color: #000
 }
 
 .status-bar {
@@ -33,4 +33,14 @@ body {
 
 .map-jumpcontrol.hidden {
     display: none;
+}
+
+.menu-button {
+    background: #fff
+}
+
+.menu-button-text {
+    color: #000;
+    font-face: sans-serif;
+    font-size: 40px;
 }
