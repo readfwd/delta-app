@@ -1,49 +1,40 @@
 @import 'famous'
 @import 'ol'
 
-body {
-    background-color: #000
-}
+body
+  background-color: #000
 
-.status-bar {
-    background-color: #000
-}
+.status-bar
+  background-color: #000
 
-.famous-surface {
-    color: #fff
-}
+.famous-surface
+  color: #fff
 
-.map-navdot {
-    width: 30px;
-    height: 30px;
-    background: url(../assets/map-arrow.png);
-    background-size: cover;
-    transition: transform 0.2s ease;
-    transition: -webkit-transform 0.2s ease;
-    -webkit-transition: transform 0.2s ease;
-    -webkit-transition: -webkit-transform 0.2s ease;
-}
+.map-navdot
+  width: 30px
+  height: 30px
+  background: url(../assets/map-arrow.png)
+  background-size: cover
+  transition: transform 0.2s ease
+  transition: -webkit-transform 0.2s ease
+  -webkit-transition: transform 0.2s ease
+  -webkit-transition: -webkit-transform 0.2s ease
 
-.map-navdot .hidden {
-    display: none;
-}
+  &.hidden
+    display: none
 
-.map-jumpcontrol {
-    content: 'J';
-    left: 0.5em;
-    bottom: 5em;
-}
+.map-jumpcontrol
+  content: 'J'
+  left: 0.5em
+  bottom: 5em
 
-.map-jumpcontrol.hidden {
-    display: none;
-}
+  &.hidden
+    display: none
 
-.menu-button {
-    background: #fff
-}
+.menu-button
+  background: #fff
 
-.menu-button-text {
-    color: #000;
-    font-face: sans-serif;
-    font-size: 40px;
-}
+.menu-button-text
+  color: #000
+  font-face: sans-serif
+  font-size: 40px

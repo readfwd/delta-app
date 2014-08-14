@@ -24,7 +24,7 @@ NavigationController.prototype.setNavigationItem = function (viewController) {
   }
   self.viewController = viewController;
 
-  //Defer this to next tick to smoothen up animation
+  //Defer animation to next tick to prevent heavy load from ruining it
   Famous.Timer.after(function () {
     if (view) {
       self.renderController.show(view);

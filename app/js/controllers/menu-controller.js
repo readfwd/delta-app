@@ -51,20 +51,26 @@ MenuController.prototype.buildSectionButton = function(section) {
 };
 
 MenuController.prototype.navigateToSection = function (section) {
-  if (this.viewController) { return; }
-  this.presentOut(section);
+  var self = this;
+  if (self.viewController) { return; }
 
   var viewController = null;
   if (section === 6) {
     viewController = new MapController();
   }
-  this.setNavigationItem(viewController);
+  self.setNavigationItem(viewController);
+
+  //Defer animation to next tick to prevent heavy load from ruining it
+  Famous.Timer.after(function () {
+    self.presentOut(section);
+  }, 2);
 };
 
 MenuController.prototype.present = function (isIn, skip) {
   var self = this;
 
   var distance = 30;
+  var delayOff = isIn ? 40 : 30;
 
   var start = isIn ? 0 : 1;
   var end = isIn ? 1 : 0;
@@ -72,7 +78,7 @@ MenuController.prototype.present = function (isIn, skip) {
 
   var buttons = _.shuffle(self.buttonModifiers);
   _.each(buttons, function(modifier, i) {
-    var delay = i * 20;
+    var delay = i * delayOff;
     if (modifier.section === skip) {
       delay = 150;
     }
