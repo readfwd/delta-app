@@ -26,6 +26,4 @@ Famous.HeaderFooterLayout = require('famous/views/HeaderFooterLayout');
 
 Famous.Timer = require('famous/utilities/Timer');
 
-require('famous/inputs/FastClick');
-
 module.exports = Famous;

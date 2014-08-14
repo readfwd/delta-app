@@ -19,7 +19,6 @@ NavigationController.prototype.setNavigationItem = function (viewController) {
   var view = null;
   if (viewController) {
     viewController.on('back', self.backHandler);
-    Famous.Timer.setTimeout(function() { viewController.emit('back'); }, 5000);
     view = viewController.getView();
   }
   self.viewController = viewController;

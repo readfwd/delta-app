@@ -20,6 +20,8 @@ function MenuController() {
 util.inherits(MenuController, NavigationController);
 
 MenuController.prototype.buildSectionButton = function(section) {
+  var self = this;
+
   var menuButtonTexts = [
     'Schedule',
     'Venues',
@@ -52,11 +54,15 @@ MenuController.prototype.buildSectionButton = function(section) {
   node.add(surface);
   surface.add(textModifier).add(buttonText);
 
-  this.buttonModifiers[section] = modifier;
-  this.buttonShowModifiers[section] = showModifier;
+  self.buttonModifiers[section] = modifier;
+  self.buttonShowModifiers[section] = showModifier;
   modifier.section = section;
 
-  surface.on('click', this.navigateToSection.bind(this, section));
+  surface.on('click', function (evt) {
+    self.navigateToSection(section);
+    evt.stopPropagation();
+  });
+
   return renderNode;
 };
 
