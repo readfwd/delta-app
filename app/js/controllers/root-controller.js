@@ -9,6 +9,7 @@ function RootController () {
 
   var self = this;
   self.context = Famous.Engine.createContext();
+  self.context.setPerspective(100);
   self.menuController = new MenuController();
   self.buildRenderTree(self.context);
 }
