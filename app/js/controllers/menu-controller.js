@@ -96,59 +96,55 @@ MenuController.prototype.presentIn = function () {
 MenuController.prototype.buildRenderTree = function (parentNode) {
   var self = this;
 
-  var verticalLayout = new Famous.FlexibleLayout({
-    ratios: [true, 1, true, 1, true, 1, true, 1, true],
-    direction: 1,
-  });
-
   var borderWidth = 15;
 
-  function verticalSpacer(ratio) {
-    if (!ratio) {
-      ratio = 1;
-    }
-    return new Famous.Surface({ 
-      size: [undefined, borderWidth]
-    });
-  }
-
-  function horizontalSpacer(ratio) {
-    if (!ratio) {
-      ratio = 1;
-    }
-    return new Famous.Surface({ 
-      size: [borderWidth, undefined]
-    });
-  }
+  var verticalLayout = new Famous.GridLayout({
+    dimensions: [1, 4],
+    gutterSize: [0, borderWidth],
+  });
 
   var verticalViews = [];
   var horizontalLayout, horizontalViews;
   verticalLayout.sequenceFrom(verticalViews);
   for (var i = 0; i < 4; i++) {
-    verticalViews.push(verticalSpacer(i ? 1 : 0.5));
-
     horizontalViews = [];
-    horizontalLayout = new Famous.FlexibleLayout({
-      ratios: (i === 3) ? [true, 1, true] : [true, 1, true, 1, true]
+    horizontalLayout = new Famous.GridLayout({
+      dimensions: [((i === 3) ? 1 : 2), 1],
+      gutterSize: [borderWidth, 0]
     });
 
     verticalViews.push(horizontalLayout);
     horizontalLayout.sequenceFrom(horizontalViews);
 
-    horizontalViews.push(horizontalSpacer(0.5));
-
     if (i === 3) {
       horizontalViews.push(self.buildSectionButton(i * 2));
     } else {
       horizontalViews.push(self.buildSectionButton(i * 2));
-      horizontalViews.push(horizontalSpacer(1));
       horizontalViews.push(self.buildSectionButton(i * 2 + 1));
     }
-
-    horizontalViews.push(horizontalSpacer(0.5));
   }
-  verticalViews.push(verticalSpacer(0.5));
-  parentNode.add(verticalLayout);
+
+  var verticalGutter = new Famous.FlexibleLayout({
+    ratios: [true, 1, true],
+    direction: 1,
+  });
+  verticalGutter.sequenceFrom([new Famous.Surface({
+    size: [undefined, borderWidth],
+  }), verticalLayout, new Famous.Surface({
+    size: [undefined, borderWidth],
+  })]);
+
+  var horizontalGutter = new Famous.FlexibleLayout({
+    ratios: [true, 1, true],
+    direction: 0,
+  });
+  horizontalGutter.sequenceFrom([new Famous.Surface({
+    size: [borderWidth, undefined],
+  }), verticalGutter, new Famous.Surface({
+    size: [borderWidth, undefined],
+  })]);
+
+  parentNode.add(horizontalGutter);
 
   Famous.Timer.setTimeout(function () {
     console.log('plm');
