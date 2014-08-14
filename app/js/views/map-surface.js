@@ -69,7 +69,21 @@ MapSurface.prototype.trimLayer = function (layer, extent) {
     var pos1 = self.map.getPixelFromCoordinate([extent[0], extent[1]]);
     var pos2 = self.map.getPixelFromCoordinate([extent[2], extent[3]]);
     var ratio = window.devicePixelRatio;
-    var rotation = self.map.getView().getRotation();
+
+    var sin, cos;
+    var rot2 = self.map.getPixelFromCoordinate([0, 0]);
+    var rot1 = self.map.getPixelFromCoordinate([0, 10]);
+    rot1[0] -= rot2[0];
+    rot1[1] -= rot2[1];
+    var len = Math.sqrt(rot1[0] * rot1[0] + rot2[0] * rot2[0]);
+    if (len) {
+      sin = rot1[1] / len;
+      cos = rot1[0] / len;
+      rotation = Math.atan2(sin, cos);
+    } else {
+      rotation = self.map.getView().getRotation();
+    }
+
     pos1[0] *= ratio;
     pos1[1] *= ratio;
     pos2[0] *= ratio;
@@ -80,6 +94,7 @@ MapSurface.prototype.trimLayer = function (layer, extent) {
     var sin = Math.sin(-rotation);
     var cos = Math.cos(-rotation);
     delta = [delta[0] * cos - delta[1] * sin, delta[0] * sin + delta[1] * cos];
+    console.log(pos1[0], pos1[1], delta[0], delta[1], rotation);
     ctx.beginPath();
     ctx.rect(0, 0, delta[0], delta[1]);
     ctx.clip();
