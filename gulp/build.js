@@ -85,11 +85,23 @@ gulp.task('js:dev', function () {
     .pipe(browserSync.reload({stream: true}));
 });
 
-// Copies over CSS.
-gulp.task('css', function () {
+// Common actions between all of the CSS tasks
+function spitCss() {
   return gulp.src(paths.app + '/css/main.styl')
     .pipe($.stylus())
     .pipe($.autoprefixer(opts.autoprefixer))
+}
+
+// Copies over and minifies CSS.
+gulp.task('css', function () {
+  return spitCss()
+    .pipe($.minifyCss())
+    .pipe(gulp.dest(paths.tmp + '/css'));
+});
+
+// Copies over CSS.
+gulp.task('css:dev', function () {
+  return spitCss()
     .pipe(gulp.dest(paths.tmp + '/css'))
     .pipe(browserSync.reload({stream: true}));
 });
@@ -115,17 +127,14 @@ gulp.task('assets:dist', function () {
      .pipe(gulp.dest(paths.dist + '/assets/'));
 });
 
-// Common tasks between all the different builds.
-gulp.task('build:common', ['index.html', 'css']);
-
 // Minimal development build.
-gulp.task('build', ['build:common', 'js:dev', 'assets']);
+gulp.task('build', ['index.html', 'js:dev', 'css:dev', 'assets']);
 
 // CI testing build, with coverage maps.
-gulp.task('build:test', ['build:common', 'js:istanbul', 'assets']);
+gulp.task('build:test', ['index.html', 'js:istanbul', 'css:dev', 'assets']);
 
 // Production-ready build.
-gulp.task('build:dist', ['build:common', 'js', 'assets:dist'], function () {
+gulp.task('build:dist', ['index.html', 'js', 'css', 'assets:dist'], function () {
   var jsFilter = $.filter('**/*.js');
   var cssFilter = $.filter('**/*.css');
   var htmlFilter = $.filter('**/*.html');
