@@ -8,6 +8,8 @@ Famous.RenderNode = require('famous/core/RenderNode');
 Famous.Modifier = require('famous/core/Modifier');
 Famous.EventEmitter = require('famous/core/EventEmitter');
 
+Famous.ContainerSurface = require('famous/surfaces/ContainerSurface');
+
 Famous.StateModifier = require('famous/modifiers/StateModifier');
 Famous.ShowModifier = require('./famous-ShowModifier');
 

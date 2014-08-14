@@ -20,13 +20,23 @@ function MenuController() {
 util.inherits(MenuController, NavigationController);
 
 MenuController.prototype.buildSectionButton = function(section) {
+  var menuButtonTexts = [
+    'Schedule',
+    'Venues',
+    'Open',
+    'People',
+    'Tabs',
+    'Guide',
+    'Maps',
+  ];
+
   var renderNode = new Famous.RenderNode();
-  var surface = new Famous.Surface({
-    classes: ['menu-button'],
+  var surface = new Famous.ContainerSurface({
+    classes: ['menu-button', 'menu-' + section],
   });
   var buttonText = new Famous.Surface({
-    classes: ['menu-button-text'],
-    content: section + 1,
+    classes: ['menu-button-text', 'menu-' + section],
+    content: menuButtonTexts[section],
     size: [true, true],
   });
   var textModifier = new Famous.StateModifier({
@@ -40,7 +50,7 @@ MenuController.prototype.buildSectionButton = function(section) {
   });
   var node = renderNode.add(modifier).add(showModifier);
   node.add(surface);
-  node.add(textModifier).add(buttonText);
+  surface.add(textModifier).add(buttonText);
 
   this.buttonModifiers[section] = modifier;
   this.buttonShowModifiers[section] = showModifier;
@@ -53,6 +63,8 @@ MenuController.prototype.buildSectionButton = function(section) {
 MenuController.prototype.navigateToSection = function (section) {
   var self = this;
   if (self.viewController) { return; }
+  
+  console.log(section);
 
   var viewController = null;
   if (section === 6) {
