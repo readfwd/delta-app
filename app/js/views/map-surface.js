@@ -53,7 +53,7 @@ function MapSurface(options) {
     self.map = undefined;
     self.navDot = undefined;
     self.jumpControl = undefined;
-    Engine.removeListener('resize', onResize);
+    Famous.Engine.removeListener('resize', onResize);
     self.stopLocationUpdates();
     self.stopHeadingUpdates();
   });

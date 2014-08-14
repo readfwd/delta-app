@@ -4,6 +4,7 @@ var util = require('util');
 var Famous = require('../shims/famous');
 
 function MapController() {
+  ViewController.apply(this, arguments);
 }
 util.inherits(MapController, ViewController);
 

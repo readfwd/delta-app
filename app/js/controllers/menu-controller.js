@@ -1,12 +1,15 @@
 var util = require('util');
 var ViewController = require('./view-controller');
-var MapSurface = require('../views/map-surface');
+var MapController = require('./map-controller');
 var Famous = require('../shims/famous');
 var _ = require('lodash');
 
 function MenuController() {
+  ViewController.apply(this, arguments);
+
   this.buttonModifiers = [];
   this.buttonShowModifiers = [];
+  this.backHandler = this.navigateBack.bind(this);
 }
 util.inherits(MenuController, ViewController);
 
@@ -41,16 +44,42 @@ MenuController.prototype.buildSectionButton = function(section) {
   return renderNode;
 };
 
-var distance = 30;
+
+MenuController.prototype.setNavigationItem = function (viewController) {
+  var self = this;
+  if (self.viewController) {
+    self.viewController.removeListener('back', self.backHandler);
+  }
+  if (viewController) {
+    viewController.on('back', self.backHandler);
+    Famous.Timer.setTimeout(function() { viewController.emit('back'); }, 5000);
+    self.renderController.show(viewController.getView());
+  } else {
+    self.renderController.hide();
+  }
+  self.viewController = viewController;
+};
+
+MenuController.prototype.navigateBack = function () {
+  this.setNavigationItem(null);
+  this.presentIn();
+};
 
 MenuController.prototype.navigateToSection = function (section) {
-  if (this.navigatedAway) { return; }
+  if (this.viewController) { return; }
   this.presentOut(section);
-  this.navigatedAway = true;
+
+  var viewController = null;
+  if (section === 6) {
+    viewController = new MapController();
+  }
+  this.setNavigationItem(viewController);
 };
 
 MenuController.prototype.present = function (isIn, skip) {
   var self = this;
+
+  var distance = 30;
 
   var start = isIn ? 0 : 1;
   var end = isIn ? 1 : 0;
@@ -93,7 +122,7 @@ MenuController.prototype.presentIn = function () {
   this.present(true);
 };
 
-MenuController.prototype.buildRenderTree = function (parentNode) {
+MenuController.prototype.buildGrid = function (parentNode) {
   var self = this;
 
   var borderWidth = 15;
@@ -145,6 +174,15 @@ MenuController.prototype.buildRenderTree = function (parentNode) {
   })]);
 
   parentNode.add(horizontalGutter);
+};
+
+MenuController.prototype.buildRenderTree = function (parentNode) {
+  var self = this;
+
+  self.buildGrid(parentNode);
+
+  self.renderController = new Famous.RenderController();
+  parentNode.add(self.renderController);
 
   Famous.Timer.setTimeout(function () {
     console.log('plm');
