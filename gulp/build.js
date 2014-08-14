@@ -15,6 +15,20 @@ var istanbul = require('browserify-istanbul');
 var browserSync = require('browser-sync');
 var templatizer = require('templatizer');
 
+var opts = {
+  autoprefixer: [
+    'ie >= 10',
+    'ie_mob >= 10',
+    'ff >= 30',
+    'chrome >= 34',
+    'safari >= 7',
+    'opera >= 23',
+    'ios >= 7',
+    'android >= 4.4',
+    'bb >= 10'
+  ]
+};
+
 // Turn index.jade into an HTML file.
 gulp.task('index.html', function () {
   return gulp.src(paths.app + '/index.jade')
@@ -73,8 +87,10 @@ gulp.task('js:dev', function () {
 
 // Copies over CSS.
 gulp.task('css', function () {
-  return gulp.src(paths.app + '/css/*.css')
-    .pipe(gulp.dest(paths.tmp + '/css/'))
+  return gulp.src(paths.app + '/css/main.styl')
+    .pipe($.stylus())
+    .pipe($.autoprefixer(opts.autoprefixer))
+    .pipe(gulp.dest(paths.tmp + '/css'))
     .pipe(browserSync.reload({stream: true}));
 });
 
