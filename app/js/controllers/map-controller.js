@@ -25,10 +25,13 @@ MapController.prototype.buildRenderTree = function (parentNode) {
 
   headerLayout.content.add(modifier).add(map);
 
-  var header = headerLayout.header.add(new Famous.Surface({
-    classes: ['title-bar'],
-    size: [undefined, 44],
+  var header = headerLayout.header.add(new Famous.StateModifier({
+    transform: Famous.Transform.inFront,
   }));
+  header.add(new Famous.Surface({
+      classes: ['title-bar'],
+      size: [undefined, 44],
+    }));
 
   var homeContainer = new Famous.ContainerSurface({
     size: [44, 44],
@@ -53,13 +56,13 @@ MapController.prototype.buildRenderTree = function (parentNode) {
     size: [true, true],
   });
 
-  headerLayout.header.add(new Famous.StateModifier({
+  header.add(new Famous.StateModifier({
     align: [0.5, 0.5],
     origin: [0.5, 0.5],
     transform: Famous.Transform.inFront,
   })).add(titleText);
 
-  headerLayout.header.add(new Famous.StateModifier({
+  header.add(new Famous.StateModifier({
     align: [0, 0.5],
     origin: [0, 0.5],
     transform: Famous.Transform.inFront,

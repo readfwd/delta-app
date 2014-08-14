@@ -91,8 +91,8 @@ MapSurface.prototype.trimLayer = function (layer, extent) {
     ctx.translate(pos1[0], pos1[1]);
     ctx.rotate(rotation);
     var delta = [pos2[0] - pos1[0], pos2[1] - pos1[1]];
-    var sin = Math.sin(-rotation);
-    var cos = Math.cos(-rotation);
+    sin = Math.sin(-rotation);
+    cos = Math.cos(-rotation);
     delta = [delta[0] * cos - delta[1] * sin, delta[0] * sin + delta[1] * cos];
     console.log(pos1[0], pos1[1], delta[0], delta[1], rotation);
     ctx.beginPath();
