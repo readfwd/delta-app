@@ -1,17 +1,23 @@
 var util = require('util');
-var ViewController = require('./view-controller');
+var NavigationController = require('./navigation-controller');
 var MapController = require('./map-controller');
 var Famous = require('../shims/famous');
 var _ = require('lodash');
 
 function MenuController() {
-  ViewController.apply(this, arguments);
+  NavigationController.apply(this, arguments);
 
-  this.buttonModifiers = [];
-  this.buttonShowModifiers = [];
-  this.backHandler = this.navigateBack.bind(this);
+  var self = this;
+
+  self.buttonModifiers = [];
+  self.buttonShowModifiers = [];
+  self.on('navigateBack', function() {
+    Famous.Timer.setTimeout(function() {
+      self.presentIn();
+    }, 200);
+  });
 }
-util.inherits(MenuController, ViewController);
+util.inherits(MenuController, NavigationController);
 
 MenuController.prototype.buildSectionButton = function(section) {
   var renderNode = new Famous.RenderNode();
@@ -42,27 +48,6 @@ MenuController.prototype.buildSectionButton = function(section) {
 
   surface.on('click', this.navigateToSection.bind(this, section));
   return renderNode;
-};
-
-
-MenuController.prototype.setNavigationItem = function (viewController) {
-  var self = this;
-  if (self.viewController) {
-    self.viewController.removeListener('back', self.backHandler);
-  }
-  if (viewController) {
-    viewController.on('back', self.backHandler);
-    Famous.Timer.setTimeout(function() { viewController.emit('back'); }, 5000);
-    self.renderController.show(viewController.getView());
-  } else {
-    self.renderController.hide();
-  }
-  self.viewController = viewController;
-};
-
-MenuController.prototype.navigateBack = function () {
-  this.setNavigationItem(null);
-  this.presentIn();
 };
 
 MenuController.prototype.navigateToSection = function (section) {
@@ -176,16 +161,40 @@ MenuController.prototype.buildGrid = function (parentNode) {
   parentNode.add(horizontalGutter);
 };
 
+MenuController.prototype.createNavRenderController = function () {
+  var renderController = new Famous.RenderController({
+    inTransition: {
+      /*duration: 500,
+      curve: 'easeOut',*/
+      method: 'spring',
+      period: 500,
+      dampingRatio: 0.5,
+    },
+    outTransition: {
+      duration: 500,
+      curve: 'easeIn',
+    }
+  });
+
+  var distance = 30;
+
+  renderController.inTransformFrom(function (progress) {
+    return Famous.Transform.translate(0, 0, distance * (progress - 1));
+  });
+  renderController.outTransformFrom(function (progress) {
+    return Famous.Transform.translate(0, 0, distance * (progress - 1));
+  });
+
+  return renderController;
+};
+
 MenuController.prototype.buildRenderTree = function (parentNode) {
   var self = this;
 
   self.buildGrid(parentNode);
-
-  self.renderController = new Famous.RenderController();
-  parentNode.add(self.renderController);
+  self.buildNavRenderController(parentNode);
 
   Famous.Timer.setTimeout(function () {
-    console.log('plm');
     self.presentIn();
   }, 600);
 };
