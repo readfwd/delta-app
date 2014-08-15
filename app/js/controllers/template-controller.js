@@ -2,6 +2,8 @@ var TitleBarController = require('./titlebar-controller');
 var util = require('util');
 var Famous = require('../shims/famous');
 var $ = require('jquery');
+var templates = require('../lib/templates');
+var _ = require('lodash');
 
 function TemplateController(options) {
   options = options || {};
@@ -26,12 +28,20 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
   var scrollView = new Famous.ScrollView();
   scrollView.sequenceFrom([surface]);
   surface.pipe(scrollView);
-  parentNode.add(scrollView);
+
+  parentNode.add(new Famous.Surface({
+    classes: ['template-bg'],
+    size: [undefined, undefined],
+  }));
+
+  parentNode.add(new Famous.StateModifier({
+    transform: Famous.Transform.inFront,
+  })).add(scrollView);
+
 
   function resizeScrollView() {
     Famous.Engine.once('postrender', function () {
       var el = $('#' + id + ' > .template-container-inner');
-      console.log(el);
       surface.setSize([undefined, $('#' + id + ' > .template-container-inner').outerHeight()]);
     });
   }
@@ -41,6 +51,25 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
 
   surface.on('deploy', function () {
     Famous.Engine.on('resize', resizeScrollView);
+    Famous.Engine.once('postrender', function () {
+      $('#' + id + ' a').click(function(evt) {
+        evt.preventDefault();
+        evt.stopPropagation();
+
+        var href = $(evt.target).attr('href');
+        var t = templates;
+        _.each(href.split('/'), function (el) {
+          t = t[el];
+        });
+
+        var viewController = new TemplateController({
+          titleBar: self.titleBar,
+          title: $(evt.target).data('title'),
+          template: t,
+        });
+        self.setNavigationItem(viewController);
+      });
+    });
     resizeScrollView();
   });
   surface.on('recall', function () {

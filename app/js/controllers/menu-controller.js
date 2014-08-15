@@ -78,10 +78,13 @@ MenuController.prototype.navigateToSection = function (section) {
       viewController = new TemplateController({
         template: templates.article,
         title: 'Some Template',
+        backIcon: 'fa-home',
       });
       break;
     case 6: 
-      viewController = new MapController();
+      viewController = new MapController({
+        backIcon: 'fa-home',
+      });
       break;
   }
   self.setNavigationItem(viewController);
@@ -196,9 +199,9 @@ MenuController.prototype.buildGrid = function (parentNode) {
 MenuController.prototype.createNavRenderController = function () {
   var renderController = new Famous.RenderController({
     inTransition: {
-      /*duration: 500,
-      curve: 'easeOut',*/
-      method: 'spring',
+      method: 'delay',
+      delay: 300,
+      delayMethod: Famous.SpringTransition,
       period: 500,
       dampingRatio: 0.5,
     },

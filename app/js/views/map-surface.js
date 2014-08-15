@@ -150,7 +150,7 @@ MapSurface.prototype.startLocationUpdates = function () {
       self.lastLocation = coords;
       self.updateMapDotLocation();
     }, function (err) {
-      alert(err.message);
+      console.log('Could not get location: ' + err.message);
     }, {
       enableHighAccuracy: true,
       maximumAge: 15 * 60 * 1000,

@@ -13,6 +13,10 @@ util.inherits(NavigationController, ViewController);
 
 NavigationController.prototype.setNavigationItem = function (viewController) {
   var self = this;
+  if (self.viewController === viewController) {
+    return;
+  }
+
   if (self.viewController) {
     self.viewController.removeListener('back', self.backHandler);
   }
@@ -31,15 +35,23 @@ NavigationController.prototype.setNavigationItem = function (viewController) {
       self.renderController.hide();
     }
   }, 1);
+
+  self.emit('navigate');
 };
 
 NavigationController.prototype.navigateBack = function () {
+  if (!this.viewController) {
+    return;
+  }
+  if ((this.viewController instanceof NavigationController) && this.viewController.viewController) {
+    return;
+  }
   this.setNavigationItem(null);
   this.emit('navigateBack');
 };
 
 NavigationController.prototype.buildNavRenderController = function (parentNode) {
-  this.renderController = this.createNavRenderController(this.renderController);
+  this.renderController = this.createNavRenderController();
   parentNode.add(this.renderController);
 };
 
