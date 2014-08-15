@@ -41,7 +41,6 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
 
   function resizeScrollView() {
     Famous.Engine.once('postrender', function () {
-      var el = $('#' + id + ' > .template-container-inner');
       surface.setSize([undefined, $('#' + id + ' > .template-container-inner').outerHeight()]);
     });
   }
