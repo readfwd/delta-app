@@ -201,4 +201,4 @@ Temporary folders:
 
 ## License
 
-GPL.
+CC-BY-NC-SA.
