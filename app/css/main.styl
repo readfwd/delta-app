@@ -2,61 +2,8 @@
 @import 'ol'
 @import 'fonts'
 @import 'font-awesome'
-
-body
-  background-color: #000
-
-.status-bar
-  background-color: #000
-
-.famous-surface
-  color: #fff
-
-.map-navdot
-  width: 30px
-  height: 30px
-  background: url(../assets/map-arrow.png)
-  background-size: cover
-  transition: transform 0.2s ease
-  transition: -webkit-transform 0.2s ease
-  -webkit-transition: transform 0.2s ease
-  -webkit-transition: -webkit-transform 0.2s ease
-
-  &.hidden
-    display: none
-
-.map-jumpcontrol
-  content: 'J'
-  left: 0.5em
-  bottom: 5em
-
-  &.hidden
-    display: none
-
-.menu-button
-  background: #fff
-
-.menu-button-text
-  color: #000
-  font-family: 'Source Sans Pro', sans-serif
-  font-size: 40px
-
-.menu-button-text.menu-0
-  content: '1'
-
-.title-bar
-  background-color: #fff
-
-.title-bar-text
-  color: #000
-  font-family: 'Source Sans Pro', sans-serif
-  font-size: 17pt
-
-.title-button
-  color: #000
-
-.template-container
-  overflow-y: visible
-
-.template-container-inner
-  overflow-x: hidden //Collapses margins
+@import 'map'
+@import 'title'
+@import 'menu'
+@import 'global'
+@import 'template'
