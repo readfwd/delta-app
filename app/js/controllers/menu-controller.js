@@ -199,9 +199,9 @@ MenuController.prototype.buildGrid = function (parentNode) {
 MenuController.prototype.createNavRenderController = function () {
   var renderController = new Famous.RenderController({
     inTransition: {
-      /*duration: 500,
-      curve: 'easeOut',*/
-      method: 'spring',
+      method: 'delay',
+      delay: 300,
+      delayMethod: Famous.SpringTransition,
       period: 500,
       dampingRatio: 0.5,
     },
