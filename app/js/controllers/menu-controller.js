@@ -78,10 +78,13 @@ MenuController.prototype.navigateToSection = function (section) {
       viewController = new TemplateController({
         template: templates.article,
         title: 'Some Template',
+        backIcon: 'fa-home',
       });
       break;
     case 6: 
-      viewController = new MapController();
+      viewController = new MapController({
+        backIcon: 'fa-home',
+      });
       break;
   }
   self.setNavigationItem(viewController);
@@ -94,7 +97,6 @@ MenuController.prototype.navigateToSection = function (section) {
 
 MenuController.prototype.present = function (isIn, skip) {
   var self = this;
-  console.log('present');
 
   var distance = 30;
   var delayOff = isIn ? 40 : 30;

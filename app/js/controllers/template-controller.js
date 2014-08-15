@@ -28,12 +28,20 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
   var scrollView = new Famous.ScrollView();
   scrollView.sequenceFrom([surface]);
   surface.pipe(scrollView);
-  parentNode.add(scrollView);
+
+  parentNode.add(new Famous.Surface({
+    classes: ['template-bg'],
+    size: [undefined, undefined],
+  }));
+
+  parentNode.add(new Famous.StateModifier({
+    transform: Famous.Transform.inFront,
+  })).add(scrollView);
+
 
   function resizeScrollView() {
     Famous.Engine.once('postrender', function () {
       var el = $('#' + id + ' > .template-container-inner');
-      console.log(el);
       surface.setSize([undefined, $('#' + id + ' > .template-container-inner').outerHeight()]);
     });
   }

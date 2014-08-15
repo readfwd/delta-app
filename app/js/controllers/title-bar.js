@@ -23,7 +23,16 @@ function TitleBar(options) {
       size: [undefined, 44],
     }));
 
-  var renderController = new Famous.RenderController();
+  var renderController = new Famous.RenderController({
+    inTransition: {
+      curve: 'easeIn',
+      duration: 500,
+    },
+    outTransition: {
+      curve: 'easeOut',
+      duration: 500,
+    }
+  });
   self.barItemRenderController = renderController;
 
   header.add(new Famous.StateModifier({
@@ -34,34 +43,45 @@ function TitleBar(options) {
 }
 util.inherits(TitleBar, Famous.View);
 
-TitleBar.prototype.pushItem = function(barItem) {
-  var self = this;
-
-  if (self.barItems.length) {
-    self.barItemRenderController.show(barItem.view, { duration: 0 });
-  } else {
-    //set up in/out transitions
-    var transition = {
-      easing: 'easeInOut',
-      duration: 500,
-    };
-    self.barItemRenderController.show(barItem.view, transition);
+TitleBar.prototype.animateTitleBar = function(newTitle, oldTitle, push) {
+  if (!newTitle || !oldTitle) {
+    return;
   }
-  self.barItem.push(barItem);
+
+  var state = new Famous.Transitionable(0);
+  var transition = push ? {
+    method: 'spring',
+    period: 500,
+    dampingRatio: 0.5,
+  } : {
+    curve: 'easeOut',
+    duration: 500,
+  };
+  state.set(1, transition);
+
+  var mult = push ? -1 : 1;
+  var distance = window.innerWidth * 0.25;
+
+  newTitle.transformFrom(function () {
+    return Famous.Transform.translate(distance * mult * (state.get() - 1), 0, 0);
+  });
+
+  oldTitle.transformFrom(function () {
+    return Famous.Transform.translate(distance * mult * state.get(), 0, 0);
+  });
 };
 
 TitleBar.prototype.pushItem = function(barItem) {
   var self = this;
 
-  if (self.barItems.length) {
+  var n = self.barItems.length;
+  if (!n) {
     self.barItemRenderController.show(barItem.view, { duration: 0 });
+    barItem.titleModifier.transformFrom(Famous.Transform.identity);
   } else {
-    //set up in/out transitions
-    var transition = {
-      easing: 'easeOut',
-      duration: 500,
-    };
-    self.barItemRenderController.show(barItem.view, transition);
+    var oldBarItem = self.barItems[n - 1];
+    self.barItemRenderController.show(barItem.view);
+    self.animateTitleBar(barItem.titleModifier, oldBarItem.titleModifier, true);
   }
   self.barItems.push(barItem);
 };
@@ -74,15 +94,10 @@ TitleBar.prototype.popItem = function() {
     return;
   }
 
-  self.barItems.pop();
+  var oldBarItem = self.barItems.pop();
   var barItem = self.barItems[n - 2];
-
-  //set up in/out transitions
-  var transition = {
-    easing: 'easeOut',
-    duration: 500,
-  };
-  self.barItemRenderController.show(barItem.view, transition);
+  self.barItemRenderController.show(barItem.view);
+  self.animateTitleBar(barItem.titleModifier, oldBarItem.titleModifier, false);
 };
 
 module.exports = TitleBar;
