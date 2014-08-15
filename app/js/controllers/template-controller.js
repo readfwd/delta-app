@@ -68,8 +68,6 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
           template: t,
         });
         self.setNavigationItem(viewController);
-
-        console.log(t());
       });
     });
     resizeScrollView();
