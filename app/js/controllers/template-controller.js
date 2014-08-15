@@ -2,6 +2,8 @@ var TitleBarController = require('./titlebar-controller');
 var util = require('util');
 var Famous = require('../shims/famous');
 var $ = require('jquery');
+var templates = require('../lib/templates');
+var _ = require('lodash');
 
 function TemplateController(options) {
   options = options || {};
@@ -41,6 +43,27 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
 
   surface.on('deploy', function () {
     Famous.Engine.on('resize', resizeScrollView);
+    Famous.Engine.once('postrender', function () {
+      $('#' + id + ' a').click(function(evt) {
+        evt.preventDefault();
+        evt.stopPropagation();
+
+        var href = $(evt.target).attr('href');
+        var t = templates;
+        _.each(href.split('/'), function (el) {
+          t = t[el];
+        });
+
+        var viewController = new TemplateController({
+          titleBar: self.titleBar,
+          title: $(evt.target).data('title'),
+          template: t,
+        });
+        self.setNavigationItem(viewController);
+
+        console.log(t());
+      });
+    });
     resizeScrollView();
   });
   surface.on('recall', function () {

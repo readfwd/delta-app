@@ -94,6 +94,7 @@ MenuController.prototype.navigateToSection = function (section) {
 
 MenuController.prototype.present = function (isIn, skip) {
   var self = this;
+  console.log('present');
 
   var distance = 30;
   var delayOff = isIn ? 40 : 30;

@@ -34,12 +34,15 @@ NavigationController.prototype.setNavigationItem = function (viewController) {
 };
 
 NavigationController.prototype.navigateBack = function () {
+  if (!this.viewController) {
+    return;
+  }
   this.setNavigationItem(null);
   this.emit('navigateBack');
 };
 
 NavigationController.prototype.buildNavRenderController = function (parentNode) {
-  this.renderController = this.createNavRenderController(this.renderController);
+  this.renderController = this.createNavRenderController();
   parentNode.add(this.renderController);
 };
 
