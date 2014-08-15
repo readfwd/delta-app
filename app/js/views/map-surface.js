@@ -4,24 +4,13 @@ var ol = require('../lib/ol');
 var Famous = require('../shims/famous');
 var $ = require('jquery');
 
-function MapView(options) {
+function MapSurface(options) {
   var self = this;
 
-  Famous.View.apply(this, arguments);
   var id = 'map-' + (Math.random().toString(36)+'00000000000000000').slice(2, 7);
-  var surface = new Famous.Surface({
-    content: '<div id="' + id + '" class="map" style="width: 100%; height: 100%"></div>',
-  });
+  options.content = '<div id="' + id + '" class="map" style="width: 100%; height: 100%"></div>';
 
-  self.add(surface);
-
-  function once(emitter, type, f) {
-    function cb() {
-      f();
-      emitter.removeListener(type, cb);
-    }
-    emitter.on(type, cb);
-  }
+  Famous.Surface.call(this, options);
 
   var resizeScheduled = false;
   function onResize() {
@@ -29,15 +18,16 @@ function MapView(options) {
       return;
     }
     resizeScheduled = true;
-    once(Famous.Engine, 'postrender', _.throttle(function () {
+    Famous.Engine.once('postrender', _.throttle(function () {
       self.map.updateSize();
+      self.updateNavDotHeading();
       resizeScheduled = false;
     }, 300));
   }
 
 
-  surface.on('deploy', function () {
-    once(Famous.Engine, 'postrender', function () {
+  self.on('deploy', function () {
+    Famous.Engine.once('postrender', function () {
       $('#' + id).html('');
       self.createMap(_.extend({
         target: id
@@ -51,18 +41,18 @@ function MapView(options) {
     });
   });
 
-  surface.on('recall', function () {
+  self.on('recall', function () {
     self.map = undefined;
     self.navDot = undefined;
     self.jumpControl = undefined;
-    Engine.removeListener('resize', onResize);
+    Famous.Engine.removeListener('resize', onResize);
     self.stopLocationUpdates();
     self.stopHeadingUpdates();
   });
 }
-util.inherits(MapView, Famous.View);
+util.inherits(MapSurface, Famous.Surface);
 
-MapView.prototype.trimLayer = function (layer, extent) {
+MapSurface.prototype.trimLayer = function (layer, extent) {
   var self = this;
 
   layer.on('precompose', function(event) {
@@ -71,7 +61,21 @@ MapView.prototype.trimLayer = function (layer, extent) {
     var pos1 = self.map.getPixelFromCoordinate([extent[0], extent[1]]);
     var pos2 = self.map.getPixelFromCoordinate([extent[2], extent[3]]);
     var ratio = window.devicePixelRatio;
-    var rotation = self.map.getView().getRotation();
+
+    var sin, cos;
+    var rot2 = self.map.getPixelFromCoordinate([0, 0]);
+    var rot1 = self.map.getPixelFromCoordinate([0, 10]);
+    rot1[0] -= rot2[0];
+    rot1[1] -= rot2[1];
+    var len = Math.sqrt(rot1[0] * rot1[0] + rot2[0] * rot2[0]);
+    if (len) {
+      sin = rot1[1] / len;
+      cos = rot1[0] / len;
+      rotation = Math.atan2(sin, cos);
+    } else {
+      rotation = self.map.getView().getRotation();
+    }
+
     pos1[0] *= ratio;
     pos1[1] *= ratio;
     pos2[0] *= ratio;
@@ -79,8 +83,8 @@ MapView.prototype.trimLayer = function (layer, extent) {
     ctx.translate(pos1[0], pos1[1]);
     ctx.rotate(rotation);
     var delta = [pos2[0] - pos1[0], pos2[1] - pos1[1]];
-    var sin = Math.sin(-rotation);
-    var cos = Math.cos(-rotation);
+    sin = Math.sin(-rotation);
+    cos = Math.cos(-rotation);
     delta = [delta[0] * cos - delta[1] * sin, delta[0] * sin + delta[1] * cos];
     ctx.beginPath();
     ctx.rect(0, 0, delta[0], delta[1]);
@@ -94,7 +98,7 @@ MapView.prototype.trimLayer = function (layer, extent) {
   });
 };
 
-MapView.prototype.createNavDot = function () {
+MapSurface.prototype.createNavDot = function () {
   var navDot = $('<div class="map-navdot">');
   var overlay = new ol.Overlay({
     element: navDot,
@@ -106,11 +110,11 @@ MapView.prototype.createNavDot = function () {
   this.map.getView().on('change:rotation', this.updateNavDotHeading.bind(this));
 };
 
-MapView.prototype.setNavDotHidden = function(hidden) {
+MapSurface.prototype.setNavDotHidden = function(hidden) {
   $(this.navDot.getElement()).toggleClass('hidden', hidden);
 };
 
-MapView.prototype.stopLocationUpdates = function () {
+MapSurface.prototype.stopLocationUpdates = function () {
   var self = this;
   if (self.watchId !== undefined) {
     if (window.navigator.geolocation) {
@@ -120,18 +124,19 @@ MapView.prototype.stopLocationUpdates = function () {
   }
 };
 
-MapView.prototype.updateMapDotLocation = function () {
-    if (self.navDot && self.lastLocation) {
-      coords = ol.proj.transform(self.lastLocation, 'EPSG:4326', 'EPSG:3857');
-      self.navDot.setPosition(coords);
-    }
-    if (self.jumpControl) {
-      self.jumpControl.toggleClass('hidden',
-        !ol.extent.containsCoordinate(self.boundingExtent, self.lastLocation));
-    }
+MapSurface.prototype.updateMapDotLocation = function () {
+  var self = this;
+  if (self.navDot && self.lastLocation) {
+    coords = ol.proj.transform(self.lastLocation, 'EPSG:4326', 'EPSG:3857');
+    self.navDot.setPosition(coords);
+  }
+  if (self.jumpControl) {
+    self.jumpControl.toggleClass('hidden', 
+      !ol.extent.containsCoordinate(self.boundingExtent, self.lastLocation));
+  }
 };
 
-MapView.prototype.startLocationUpdates = function () {
+MapSurface.prototype.startLocationUpdates = function () {
   var self = this;
   if (self.watchId !== undefined) {
     self.stopLocationUpdates();
@@ -139,7 +144,9 @@ MapView.prototype.startLocationUpdates = function () {
   if (window.navigator.geolocation) {
     self.watchId = window.navigator.geolocation.watchPosition(function (position) {
       var coords = [position.coords.latitude, position.coords.longitude];
-      //coords = [29, 45];
+      //Mock coords
+      //coords = [28.787548, 45.172372]; //Fabrica de șnițele
+      //coords = [26.030969, 44.930918]; //Service de MacBook-uri
       self.lastLocation = coords;
       self.updateMapDotLocation();
     }, function (err) {
@@ -151,7 +158,7 @@ MapView.prototype.startLocationUpdates = function () {
   }
 };
 
-MapView.prototype.stopHeadingUpdates = function () {
+MapSurface.prototype.stopHeadingUpdates = function () {
   var self = this;
   if (self.watchIdCompass !== undefined) {
     if (window.navigator.compass) {
@@ -161,18 +168,37 @@ MapView.prototype.stopHeadingUpdates = function () {
   }
 };
 
-MapView.prototype.updateNavDotHeading = function () {
+MapSurface.prototype.updateNavDotHeading = function () {
   var self = this;
 
   if (self.heading === undefined || self.map === undefined) {
     return;
   }
 
+  function lowPass(lastVal, newVal, period, cutoff) {
+    var RC = 1.0 / cutoff;
+    var alpha = period / (period + RC);
+    return newVal * alpha + lastVal * (1.0 - alpha);
+  }
+
   var rot = self.heading + self.map.getView().getRotation() * (180 / Math.PI);
+  if (window.orientation) {
+    rot += window.orientation;
+  }
+  var lrot = self.lastNavDotRotation;
+  if (lrot) {
+    // To prevent animation jerkyness
+    while (rot > lrot + 180) { rot -= 360; }
+    while (rot < lrot - 180) { rot += 360; }
+
+    // Add a low pass filter for good measure
+    rot = lowPass(lrot, rot, 0.1, 10/*Hz*/);
+  }
+  self.lastNavDotRotation = rot;
   $(self.navDot.getElement()).css('transform', 'rotate(' + rot + 'deg)');
 };
 
-MapView.prototype.startHeadingUpdates = function () {
+MapSurface.prototype.startHeadingUpdates = function () {
   var self = this;
   if (self.watchIdCompass !== undefined) {
     self.stopHeadingUpdates();
@@ -190,7 +216,7 @@ MapView.prototype.startHeadingUpdates = function () {
   }
 };
 
-MapView.prototype.createJumpHomeControl = function () {
+MapSurface.prototype.createJumpHomeControl = function () {
   var self = this;
 
   var control = $('<div class="ol-control ol-unselectable map-jumpcontrol hidden"></div>');
@@ -225,7 +251,7 @@ MapView.prototype.createJumpHomeControl = function () {
   }));
 };
 
-MapView.prototype.createMap = function (opts) {
+MapSurface.prototype.createMap = function (opts) {
   var map = new ol.Map({
     target: opts.target
   });
@@ -259,4 +285,4 @@ MapView.prototype.createMap = function (opts) {
   this.createJumpHomeControl();
 };
 
-module.exports = MapView;
+module.exports = MapSurface;
