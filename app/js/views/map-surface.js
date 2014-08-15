@@ -12,21 +12,13 @@ function MapSurface(options) {
 
   Famous.Surface.call(this, options);
 
-  function once(emitter, type, f) {
-    function cb() {
-      f();
-      emitter.removeListener(type, cb);
-    }
-    emitter.on(type, cb);
-  }
-
   var resizeScheduled = false;
   function onResize() {
     if (resizeScheduled) {
       return;
     }
     resizeScheduled = true;
-    once(Famous.Engine, 'postrender', _.throttle(function () {
+    Famous.Engine.once('postrender', _.throttle(function () {
       self.map.updateSize();
       self.updateNavDotHeading();
       resizeScheduled = false;
@@ -35,7 +27,7 @@ function MapSurface(options) {
 
 
   self.on('deploy', function () {
-    once(Famous.Engine, 'postrender', function () {
+    Famous.Engine.once('postrender', function () {
       $('#' + id).html('');
       self.createMap(_.extend({
         target: id
@@ -94,7 +86,6 @@ MapSurface.prototype.trimLayer = function (layer, extent) {
     sin = Math.sin(-rotation);
     cos = Math.cos(-rotation);
     delta = [delta[0] * cos - delta[1] * sin, delta[0] * sin + delta[1] * cos];
-    console.log(pos1[0], pos1[1], delta[0], delta[1], rotation);
     ctx.beginPath();
     ctx.rect(0, 0, delta[0], delta[1]);
     ctx.clip();

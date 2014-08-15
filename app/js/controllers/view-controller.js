@@ -1,8 +1,10 @@
 var util = require('util'); 
 var Famous = require('../shims/famous');
 
-function ViewController () {
-  Famous.EventEmitter.apply(this, arguments);
+function ViewController (options) {
+  Famous.EventEmitter.call(this);
+  options = options || {};
+  this.options = options;
 }
 util.inherits(ViewController, Famous.EventEmitter);
 

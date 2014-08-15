@@ -3,6 +3,8 @@ var NavigationController = require('./navigation-controller');
 var MapController = require('./map-controller');
 var Famous = require('../shims/famous');
 var _ = require('lodash');
+var templates = require('../lib/templates');
+var TemplateController = require('./template-controller');
 
 function MenuController() {
   NavigationController.apply(this, arguments);
@@ -70,11 +72,17 @@ MenuController.prototype.navigateToSection = function (section) {
   var self = this;
   if (self.viewController) { return; }
   
-  console.log(section);
-
   var viewController = null;
-  if (section === 6) {
-    viewController = new MapController();
+  switch (section) {
+    case 0:
+      viewController = new TemplateController({
+        template: templates.article,
+        title: 'Some Template',
+      });
+      break;
+    case 6: 
+      viewController = new MapController();
+      break;
   }
   self.setNavigationItem(viewController);
 
