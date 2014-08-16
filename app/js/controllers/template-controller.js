@@ -45,9 +45,6 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
     });
   }
 
-  window.surface = surface;
-  window.id = id;
-
   surface.on('deploy', function () {
     Famous.Engine.on('resize', resizeScrollView);
     Famous.Engine.once('postrender', function () {
