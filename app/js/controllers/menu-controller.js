@@ -6,13 +6,16 @@ var _ = require('lodash');
 var templates = require('../lib/templates');
 var TemplateController = require('./template-controller');
 
-function MenuController() {
-  NavigationController.apply(this, arguments);
+function MenuController(options) {
+  options = options || {};
+  options.buttonDescriptors = options.buttonDescriptors || {};
+  options.displayedButtons = options.displayedButtons || [];
+  options.columns = options.columns || 2;
+  NavigationController.call(this, options);
 
   var self = this;
 
-  self.buttonModifiers = [];
-  self.buttonShowModifiers = [];
+  self.buttons = [];
   self.on('navigateBack', function() {
     Famous.Timer.setTimeout(function() {
       self.presentIn();
@@ -21,26 +24,18 @@ function MenuController() {
 }
 util.inherits(MenuController, NavigationController);
 
-MenuController.prototype.buildSectionButton = function(section) {
+MenuController.prototype.buildButtonForLabel = function(label) {
   var self = this;
 
-  var menuButtonTexts = [
-    'Schedule',
-    'Venues',
-    'Open',
-    'People',
-    'Tabs',
-    'Guide',
-    'Maps',
-  ];
+  var buttonDescriptor = self.options.buttonDescriptors[label];
 
   var renderNode = new Famous.RenderNode();
   var surface = new Famous.ContainerSurface({
-    classes: ['menu-button', 'menu-' + section],
+    classes: ['menu-button', 'menu-' + label],
   });
   var buttonText = new Famous.Surface({
-    classes: ['menu-button-text', 'menu-' + section],
-    content: menuButtonTexts[section],
+    classes: ['menu-button-text', 'menu-' + label],
+    content: buttonDescriptor.title,
     size: [true, true],
   });
   var textModifier = new Famous.StateModifier({
@@ -56,42 +51,38 @@ MenuController.prototype.buildSectionButton = function(section) {
   node.add(surface);
   surface.add(textModifier).add(buttonText);
 
-  self.buttonModifiers[section] = modifier;
-  self.buttonShowModifiers[section] = showModifier;
-  modifier.section = section;
+  self.buttons.push({
+    modifier: modifier,
+    showModifier: showModifier,
+  });
+  modifier.label = label;
 
   surface.on('click', function (evt) {
-    self.navigateToSection(section);
+    self.navigateToLabel(label);
     evt.stopPropagation();
   });
 
   return renderNode;
 };
 
-MenuController.prototype.navigateToSection = function (section) {
+MenuController.prototype.navigateToLabel = function (label) {
   var self = this;
   if (self.viewController) { return; }
-  
-  var viewController = null;
-  switch (section) {
-    case 0:
-      viewController = new TemplateController({
-        template: templates.article,
-        title: 'Some Template',
-        backIcon: 'fa-home',
-      });
-      break;
-    case 6: 
-      viewController = new MapController({
-        backIcon: 'fa-home',
-      });
-      break;
+
+  var buttonDescriptor = self.options.buttonDescriptors[label];
+  var viewController = buttonDescriptor.viewController;
+  if (typeof(viewController) === 'function') {
+    viewController = viewController();
   }
+  if (!viewController) {
+    return;
+  }
+
   self.setNavigationItem(viewController);
 
   //Defer animation to next tick to prevent heavy load from ruining it
   Famous.Timer.after(function () {
-    self.presentOut(section);
+    self.presentOut(label);
   }, 2);
 };
 
@@ -105,14 +96,16 @@ MenuController.prototype.present = function (isIn, skip) {
   var end = isIn ? 1 : 0;
   var easing = isIn ? 'easeOut' : 'easeIn';
 
-  var buttons = _.shuffle(self.buttonModifiers);
-  _.each(buttons, function(modifier, i) {
+  var buttons = _.shuffle(self.buttons);
+  _.each(buttons, function(button, i) {
+    var modifier = button.modifier;
+    var showModifier = button.showModifier;
     var delay = i * delayOff;
-    if (modifier.section === skip) {
+    if (modifier.label === skip) {
       delay = 150;
     }
     Famous.Timer.setTimeout(function() {
-      self.buttonShowModifiers[modifier.section].show();
+      showModifier.show();
 
       var state = new Famous.Transitionable(start);
       state.set(end, {
@@ -120,12 +113,12 @@ MenuController.prototype.present = function (isIn, skip) {
         curve: easing,
       }, function () {
         if (!isIn) {
-          self.buttonShowModifiers[modifier.section].hide();
+          showModifier.hide();
         }
       });
 
       modifier.opacityFrom(state);
-      if (modifier.section !== skip) {
+      if (modifier.label !== skip) {
         modifier.transformFrom(function() {
           return Famous.Transform.translate(0, 0, (1 - state.get()) * distance);
         });
@@ -134,8 +127,8 @@ MenuController.prototype.present = function (isIn, skip) {
   });
 };
 
-MenuController.prototype.presentOut = function (section) {
-  this.present(false, section);
+MenuController.prototype.presentOut = function (label) {
+  this.present(false, label);
 };
 
 MenuController.prototype.presentIn = function () {
@@ -147,32 +140,64 @@ MenuController.prototype.buildGrid = function (parentNode) {
 
   var borderWidth = 15;
 
-  var verticalLayout = new Famous.GridLayout({
-    dimensions: [1, 4],
-    gutterSize: [0, borderWidth],
+  // Figuring out the layout
+  var buttonLayout = [];
+  _.each(self.options.displayedButtons, function (label) {
+    var bln = buttonLayout.length;
+    var currentRow;
+    if (!bln) {
+      currentRow = [];
+      buttonLayout.push(currentRow);
+    } else {
+      currentRow = buttonLayout[bln - 1];
+    }
+
+    var span = self.options.buttonDescriptors[label].span;
+    if (currentRow.length + span > self.options.columns) {
+      currentRow = [];
+      buttonLayout.push(currentRow);
+    }
+
+    currentRow.push(label);
   });
 
+  // Building the layout
+  var shouldScroll = buttonLayout.length > 4;
+
   var verticalViews = [];
-  var horizontalLayout, horizontalViews;
+  var verticalLayout;
+
+  if (shouldScroll) {
+    verticalLayout = new Famous.ScrollView({
+    });
+  } else {
+    verticalLayout = new Famous.GridLayout({
+      dimensions: [1, buttonLayout.length],
+      gutterSize: [0, borderWidth],
+    });
+  }
+
   verticalLayout.sequenceFrom(verticalViews);
-  for (var i = 0; i < 4; i++) {
-    horizontalViews = [];
-    horizontalLayout = new Famous.GridLayout({
-      dimensions: [((i === 3) ? 1 : 2), 1],
-      gutterSize: [borderWidth, 0]
+  _.each(buttonLayout, function (buttons) {
+    var horizontalViews = [];
+    var horizontalLayout = new Famous.GridLayout({
+      dimensions: [buttons.length, 1],
+      gutterSize: [borderWidth, 0],
+      size: [undefined, shouldScroll ? 200 : undefined],
     });
 
     verticalViews.push(horizontalLayout);
     horizontalLayout.sequenceFrom(horizontalViews);
-
-    if (i === 3) {
-      horizontalViews.push(self.buildSectionButton(i * 2));
-    } else {
-      horizontalViews.push(self.buildSectionButton(i * 2));
-      horizontalViews.push(self.buildSectionButton(i * 2 + 1));
+    if (shouldScroll) {
+      horizontalLayout.pipe(verticalLayout);
     }
-  }
 
+    _.each(buttons, function (label) {
+      horizontalViews.push(self.buildButtonForLabel(label));
+    });
+  });
+
+  // Set up the gutter
   var verticalGutter = new Famous.FlexibleLayout({
     ratios: [true, 1, true],
     direction: 1,

@@ -2,7 +2,7 @@ var util = require('util');
 var cordova = require('../shims/cordova');
 var Famous = require('../shims/famous');
 var ViewController = require('./view-controller');
-var MenuController = require('./menu-controller');
+var MainMenuController = require('./mainmenu-controller');
 var fastclick = require('fastclick');
 
 function RootController () {
@@ -13,7 +13,7 @@ function RootController () {
 
   self.context = Famous.Engine.createContext();
   self.context.setPerspective(100);
-  self.menuController = new MenuController();
+  self.menuController = new MainMenuController();
   self.buildRenderTree(self.context);
 }
 util.inherits(RootController, ViewController);
