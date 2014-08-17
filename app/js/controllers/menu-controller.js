@@ -9,8 +9,7 @@ var TemplateController = require('./template-controller');
 function MenuController(options) {
   options = options || {};
   options.buttonDescriptors = options.buttonDescriptors || {};
-  options.displayedButtons = options.displayedButtons || [];
-  options.columns = options.columns || 2;
+  options.buttonLayout = options.buttonLayout || [];
   NavigationController.call(this, options);
 
   var self = this;
@@ -140,28 +139,8 @@ MenuController.prototype.buildGrid = function (parentNode) {
 
   var borderWidth = 15;
 
-  // Figuring out the layout
-  var buttonLayout = [];
-  _.each(self.options.displayedButtons, function (label) {
-    var bln = buttonLayout.length;
-    var currentRow;
-    if (!bln) {
-      currentRow = [];
-      buttonLayout.push(currentRow);
-    } else {
-      currentRow = buttonLayout[bln - 1];
-    }
-
-    var span = self.options.buttonDescriptors[label].span;
-    if (currentRow.length + span > self.options.columns) {
-      currentRow = [];
-      buttonLayout.push(currentRow);
-    }
-
-    currentRow.push(label);
-  });
-
   // Building the layout
+  var buttonLayout = self.options.buttonLayout;
   var shouldScroll = buttonLayout.length > 4;
 
   var verticalViews = [];

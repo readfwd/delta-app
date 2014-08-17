@@ -54,7 +54,12 @@ function MainMenuController(options) {
     }
   };
 
-  options.displayedButtons = ['schedule', 'venues', 'open', 'people', 'tabs', 'guide', 'maps'];
+  options.buttonLayout = [
+    ['schedule', 'venues'],
+    ['open', 'people'],
+    ['tabs', 'guide'],
+    ['maps'],
+  ];
 
   MenuController.call(this, options);
 }
