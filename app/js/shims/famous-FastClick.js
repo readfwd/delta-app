@@ -5,6 +5,11 @@ function FastClick(element, callback) {
     var targeted = true;
 
     element.on('touchstart', function (event) {
+      console.log(event);
+      if (!(event instanceof window.TouchEvent) && 
+        (event.originalEvent instanceof window.TouchEvent)) {
+          event = event.originalEvent;
+      }
       targeted = event.touches.length === 1;
     });
     element.on('touchmove', function () {
