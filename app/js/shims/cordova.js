@@ -22,7 +22,6 @@ var cordova = {
     this.iOS7App = (cordova.present &&
                     window.device.platform === 'iOS' &&
                     parseInt(window.device.version) >= 7);
-    this.clickEvent = this.iOS ? 'touchend' : 'click';
   },
 
   onReady: function () {

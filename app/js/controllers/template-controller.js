@@ -54,7 +54,7 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
         evt.preventDefault();
       });
 
-      elements.on(cordova.clickEvent, function(evt) {
+      Famous.FastClick(elements, function(evt) {
         var href = $(evt.target).attr('href');
         var t = templates;
         _.each(href.split('/'), function (el) {

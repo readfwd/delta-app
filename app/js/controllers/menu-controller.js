@@ -57,7 +57,7 @@ MenuController.prototype.buildButtonForLabel = function(label) {
   });
   modifier.label = label;
 
-  surface.on(cordova.clickEvent, function (evt) {
+  Famous.FastClick(surface, function () {
     self.navigateToLabel(label);
   });
 
@@ -286,7 +286,7 @@ MenuController.prototype.buildGrid = function (parentNode) {
         size: [44, 44],
       });
 
-      settingsContainer.on(cordova.clickEvent, function () {
+      Famous.FastClick(settingsContainer, function () {
         self.navigateToLabel('settings');
       });
 

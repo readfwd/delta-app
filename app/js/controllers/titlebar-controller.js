@@ -24,7 +24,7 @@ TitleBarController.prototype.buildBarItem = function () {
     size: [44, 44],
   });
 
-  homeContainer.on(cordova.clickEvent, function(evt) { 
+  Famous.FastClick(homeContainer, function(evt) { 
     Famous.Timer.after(function () {
       self.emit('back'); 
     }, 1);
