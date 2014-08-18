@@ -11,7 +11,6 @@ function MainMenuController(options) {
   options.buttonDescriptors = {
     schedule: {
       title: 'Schedule',
-      span: 1,
       viewController: function () {
         return new TemplateController({
           template: templates.article,
@@ -22,27 +21,21 @@ function MainMenuController(options) {
     },
     venues: {
       title: 'Venues',
-      span: 1,
     },
     open: {
       title: 'Open',
-      span: 1,
     },
     people: {
       title: 'People',
-      span: 1,
     },
     tabs: {
       title: 'Tabs',
-      span: 1,
     },
     guide: {
       title: 'Guide',
-      span: 1,
     },
     maps: {
       title: 'Maps',
-      span: 2,
       viewController: function () {
         return new MapController({
           backIcon: 'fa-home',
@@ -62,6 +55,8 @@ function MainMenuController(options) {
     ['tabs', 'guide'],
     ['maps'],
   ];
+
+  options.title = 'ARGO Open';
 
   MenuController.call(this, options);
 }

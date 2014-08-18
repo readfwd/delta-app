@@ -100,35 +100,49 @@ MenuController.prototype.present = function (isIn, skip) {
   var end = isIn ? 1 : 0;
   var easing = isIn ? 'easeOut' : 'easeIn';
 
+  function presentSurface(modifier, showModifier, willTranslate, transition) {
+    showModifier.show();
+
+    transition = transition || {
+      duration: 200,
+      curve: easing,
+    };
+
+    var state = new Famous.Transitionable(start);
+    state.set(end, transition, function () {
+      if (!isIn) {
+        showModifier.hide();
+      }
+    });
+
+    modifier.opacityFrom(state);
+    if (willTranslate) {
+      modifier.transformFrom(function() {
+        return Famous.Transform.translate(0, 0, (1 - state.get()) * distance);
+      });
+    }
+  }
+
   var buttons = _.shuffle(self.buttons);
   _.each(buttons, function(button, i) {
-    var modifier = button.modifier;
-    var showModifier = button.showModifier;
     var delay = i * delayOff;
-    if (modifier.label === skip) {
+    var shouldSkip = button.modifier.label === skip;
+    if (shouldSkip) {
       delay = 150;
     }
     Famous.Timer.setTimeout(function() {
-      showModifier.show();
-
-      var state = new Famous.Transitionable(start);
-      state.set(end, {
-        duration: 200,
-        curve: easing,
-      }, function () {
-        if (!isIn) {
-          showModifier.hide();
-        }
-      });
-
-      modifier.opacityFrom(state);
-      if (modifier.label !== skip) {
-        modifier.transformFrom(function() {
-          return Famous.Transform.translate(0, 0, (1 - state.get()) * distance);
-        });
-      }
+      presentSurface(button.modifier, button.showModifier, !shouldSkip);
     }, delay);
   });
+
+  presentSurface(self.titleBarModifier, self.titleBarShowModifier, false);
+  if (isIn) {
+    Famous.Timer.setTimeout(function () {
+      presentSurface(self.captureSurfaceModifier, self.captureSurfaceShowModifier, false);
+    }, 300);
+  } else {
+      presentSurface(self.captureSurfaceModifier, self.captureSurfaceShowModifier, false);
+  }
 };
 
 MenuController.prototype.presentOut = function (label) {
@@ -144,29 +158,47 @@ MenuController.prototype.buildGrid = function (parentNode) {
 
   var borderWidth = 15;
   var buttonHeight = 100;
+  var hasTitleBar = !!(self.options.title || self.options.buttonDescriptors.settings);
 
+  // Set up the external layout
   var buttonLayout = self.options.buttonLayout;
   var verticalLayout = new Famous.GridLayout({
     dimensions: [1, buttonLayout.length],
     gutterSize: [0, borderWidth],
   });
 
+  var horizontalGutter = new Famous.FlexibleLayout({
+    ratios: [true, 1, true],
+    direction: 0,
+  });
+  horizontalGutter.sequenceFrom([new Famous.Surface({
+    size: [borderWidth, undefined],
+  }), verticalLayout, new Famous.Surface({
+    size: [borderWidth, undefined],
+  })]);
+
   // Set up the scrollView
   var scrollView;
   var modifier = new Famous.StateModifier();
   var renderNode = new Famous.RenderNode();
-  renderNode.add(modifier).add(verticalLayout);
+  var scrollContainer = renderNode.add(modifier);
+  scrollContainer.add(horizontalGutter);
 
   scrollView = new Famous.ScrollView();
   scrollView.sequenceFrom([renderNode]);
-  verticalLayout.pipe(scrollView);
 
   function configureHeight() {
     var layoutHeight = (buttonHeight + borderWidth) * buttonLayout.length - borderWidth;
-    var screenHeight = window.innerHeight - 2 * borderWidth;
+    var screenHeight = window.innerHeight - borderWidth;
     if (cordova.iOS7App) {
       screenHeight -= 20;
     }
+    if (hasTitleBar) {
+      screenHeight -= 44;
+    } else {
+      screenHeight -= borderWidth;
+    }
+
     if (screenHeight > layoutHeight) {
       layoutHeight = screenHeight;
     }
@@ -198,39 +230,81 @@ MenuController.prototype.buildGrid = function (parentNode) {
     });
   });
 
-
   // Set up the gutter
-  var verticalGutter = new Famous.FlexibleLayout({
-    ratios: [true, 1, true],
-    direction: 1,
+  var verticalGutter = new Famous.HeaderFooterLayout({
+    headerSize: hasTitleBar ? 44 : borderWidth,
+    footerSize: borderWidth,
   });
-  verticalGutter.sequenceFrom([new Famous.Surface({
-    size: [undefined, borderWidth],
-  }), scrollView, new Famous.Surface({
-    size: [undefined, borderWidth],
-  })]);
 
-  var horizontalGutter = new Famous.FlexibleLayout({
-    ratios: [true, 1, true],
-    direction: 0,
-  });
-  horizontalGutter.sequenceFrom([new Famous.Surface({
-    size: [borderWidth, undefined],
-  }), verticalGutter, new Famous.Surface({
-    size: [borderWidth, undefined],
-  })]);
-
-  parentNode.add(horizontalGutter);
+  verticalGutter.content.add(scrollView);
+  parentNode.add(verticalGutter);
 
   // Set up the background scroll capture view
-  var captureSurfaceModifier = new Famous.StateModifier({
-    transform: Famous.Transform.behind,
-  });
+  self.captureSurfaceModifier = new Famous.Modifier();
+  self.captureSurfaceModifier.transformFrom(Famous.Transform.behind);
+  self.captureSurfaceShowModifier = new Famous.ShowModifier({ visible: false });
+
   var captureSurface = new Famous.Surface({
+    classes: ['menu-bg'],
     size: [undefined, undefined],
+    properties: {
+      zIndex: -10000,
+    }
   });
-  parentNode.add(captureSurfaceModifier).add(captureSurface);
+  scrollContainer
+    .add(self.captureSurfaceShowModifier)
+    .add(self.captureSurfaceModifier)
+    .add(captureSurface);
   captureSurface.pipe(scrollView);
+
+  // Set up the title bar
+  if (hasTitleBar) {
+    self.titleBarShowModifier = new Famous.ShowModifier({ visible: false });
+    self.titleBarModifier = new Famous.Modifier();
+    self.titleBarModifier.transformFrom(
+      Famous.Transform.multiply(Famous.Transform.behind, Famous.Transform.behind)
+    );
+
+    var titleBarRoot = verticalGutter.header
+      .add(self.titleBarShowModifier)
+      .add(self.titleBarModifier);
+
+    if (self.options.title) {
+      titleBarRoot.add(new Famous.StateModifier({
+        align: [0.5, 0.5],
+        origin: [0.5, 0.5],
+      })).add(new Famous.Surface({
+        classes: ['menu-title'],
+        content: self.options.title,
+        size: [true, true],
+      }));
+    }
+
+    var settingsButton = self.options.buttonDescriptors.settings;
+    if (settingsButton) {
+      var settingsContainer = new Famous.ContainerSurface({
+        size: [44, 44],
+      });
+
+      settingsContainer.on(cordova.clickEvent, function () {
+        self.navigateToLabel('settings');
+      });
+
+      titleBarRoot.add(new Famous.StateModifier({
+        align: [1, 0.5],
+        origin: [1, 0.5],
+      })).add(settingsContainer);
+
+      settingsContainer.add(new Famous.StateModifier({
+        align: [0.5, 0.5],
+        origin: [0.5, 0.5],
+      })).add(new Famous.Surface({
+        classes: ['menu-settings-icon'],
+        content: '<i class="fa fa-lg fa-fw fa-gear"></i>',
+        size: [true, true],
+      }));
+    }
+  }
 };
 
 MenuController.prototype.createNavRenderController = function () {
