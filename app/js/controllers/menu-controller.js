@@ -1,11 +1,9 @@
 var util = require('util');
 var NavigationController = require('./navigation-controller');
-var MapController = require('./map-controller');
 var Famous = require('../shims/famous');
 var _ = require('lodash');
-var templates = require('../lib/templates');
-var TemplateController = require('./template-controller');
 var cordova = require('../shims/cordova.js');
+var W = require('when');
 
 function MenuController(options) {
   options = options || {};
@@ -17,9 +15,7 @@ function MenuController(options) {
 
   self.buttons = [];
   self.on('navigateBack', function() {
-    Famous.Timer.setTimeout(function() {
-      self.presentIn();
-    }, 200);
+    self.presentIn(200);
   });
 }
 util.inherits(MenuController, NavigationController);
@@ -90,30 +86,51 @@ MenuController.prototype.navigateToLabel = function (label) {
   }, 2);
 };
 
-MenuController.prototype.present = function (isIn, skip) {
+MenuController.prototype.present = function (isIn, skip, globalDelay) {
   var self = this;
 
+  globalDelay = globalDelay || 0;
+
   var distance = 30;
-  var delayOff = isIn ? 40 : 30;
+  var delayOff = 30;
 
   var start = isIn ? 0 : 1;
   var end = isIn ? 1 : 0;
   var easing = isIn ? 'easeOut' : 'easeIn';
 
-  function presentSurface(modifier, showModifier, willTranslate, transition) {
+  var promises = [];
+  var afterActions = [];
+
+  function presentSurface(modifier, showModifier, willTranslate, delay) {
     showModifier.show();
 
-    transition = transition || {
+    transition = {
       duration: 200,
       curve: easing,
     };
 
     var state = new Famous.Transitionable(start);
-    state.set(end, transition, function () {
-      if (!isIn) {
-        showModifier.hide();
-      }
+    var totalDelay = delay + globalDelay;
+
+    var promise = W.promise(function (resolve) {
+      Famous.Timer.after(function () {
+        if (totalDelay) {
+          Famous.Timer.setTimeout(function () {
+            state.set(end, transition, resolve);
+          }, totalDelay);
+        } else {
+          state.set(end, transition, resolve);
+        }
+      }, 1);
     });
+
+    if (!isIn) {
+      afterActions.push(function () {
+        showModifier.hide();
+      });
+    }
+
+    promises.push(promise);
 
     modifier.opacityFrom(state);
     if (willTranslate) {
@@ -125,32 +142,27 @@ MenuController.prototype.present = function (isIn, skip) {
 
   var buttons = _.shuffle(self.buttons);
   _.each(buttons, function(button, i) {
-    var delay = i * delayOff;
     var shouldSkip = button.modifier.label === skip;
-    if (shouldSkip) {
-      delay = 150;
-    }
-    Famous.Timer.setTimeout(function() {
-      presentSurface(button.modifier, button.showModifier, !shouldSkip);
-    }, delay);
+    var delay = shouldSkip ? 150 : i * delayOff;
+    presentSurface(button.modifier, button.showModifier, !shouldSkip, delay);
   });
 
-  presentSurface(self.titleBarModifier, self.titleBarShowModifier, false);
-  if (isIn) {
-    Famous.Timer.setTimeout(function () {
-      presentSurface(self.captureSurfaceModifier, self.captureSurfaceShowModifier, false);
-    }, 300);
-  } else {
-      presentSurface(self.captureSurfaceModifier, self.captureSurfaceShowModifier, false);
-  }
+  presentSurface(self.titleBarModifier, self.titleBarShowModifier, false, 0);
+  presentSurface(self.captureSurfaceModifier, self.captureSurfaceShowModifier, false, isIn ? 300 : 0);
+
+  W.all(promises).then(function () {
+    _.each(afterActions, function (cb) {
+      cb();
+    });
+  });
 };
 
-MenuController.prototype.presentOut = function (label) {
-  this.present(false, label);
+MenuController.prototype.presentOut = function (label, delay) {
+  this.present(false, label, delay);
 };
 
-MenuController.prototype.presentIn = function () {
-  this.present(true);
+MenuController.prototype.presentIn = function (delay) {
+  this.present(true, null, delay);
 };
 
 MenuController.prototype.buildGrid = function (parentNode) {
@@ -317,8 +329,8 @@ MenuController.prototype.createNavRenderController = function () {
       dampingRatio: 0.5,
     },
     outTransition: {
-      duration: 500,
-      curve: 'easeIn',
+      duration: 400,
+      curve: 'easeOut',
     }
   });
 
