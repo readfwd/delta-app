@@ -1,10 +1,55 @@
 .menu-button
-  background: #fff
+  background: #444
+  background-size: cover
+  background-position: 50% 50%
+  background-repeat: no-repeat
 
 .menu-button-text
-  color: #000
+  color: #fff
   font-family: 'Source Sans Pro', sans-serif
-  font-size: 40px
+  font-size: 17pt
+  text-align: center
+  text-shadow: 2px 2px 3px #000
 
-.menu-button-text.menu-0
-  content: '1'
+.menu-title
+  color: #fff
+  font-family: 'Source Sans Pro', sans-serif
+  font-size: 17pt
+
+.menu-settings-icon i
+  color: #fff
+
+.menu-bg
+  background-color: #000
+
+.menu-button.menu-routes
+  background-image: url('../assets/img/menu-routes.jpg')
+
+.menu-button.menu-trails
+  background-image: url('../assets/img/menu-trails.jpg')
+
+.menu-button.menu-about
+  background-image: url('../assets/img/menu-about.jpg')
+
+.menu-button.menu-restricted
+  background-image: url('../assets/img/menu-restricted.jpg')
+
+.menu-button.menu-landmarks
+  background-image: url('../assets/img/menu-landmarks.jpg')
+
+.menu-button.menu-planning
+  background-image: url('../assets/img/menu-planning.jpg')
+
+.menu-button.menu-maps
+  background-image: url('../assets/img/menu-maps.jpg')
+
+@keyframes kenburns {
+  0% { background-position: 50% 50% }
+  25% { background-position: 100% 50% }
+  75% { background-position: 0% 50% }
+  100% { background-position: 50% 50% }
+}
+
+.menu-button
+  //animation: kenburns 100s infinite
+  //animation-timing-function: ease-in-out

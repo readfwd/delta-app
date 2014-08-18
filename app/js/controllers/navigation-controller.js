@@ -13,12 +13,13 @@ util.inherits(NavigationController, ViewController);
 
 NavigationController.prototype.setNavigationItem = function (viewController) {
   var self = this;
-  if (self.viewController === viewController) {
+  var oldViewController = self.viewController;
+  if (oldViewController === viewController) {
     return;
   }
 
-  if (self.viewController) {
-    self.viewController.removeListener('back', self.backHandler);
+  if (oldViewController) {
+    oldViewController.removeListener('back', self.backHandler);
   }
   var view = null;
   if (viewController) {
@@ -27,12 +28,18 @@ NavigationController.prototype.setNavigationItem = function (viewController) {
   }
   self.viewController = viewController;
 
+  function onAnimationEnd() {
+    //only release the view controller after the animation 
+    //is finished so the GC won't destroy our FPS
+    oldViewController = null; 
+  }
+
   //Defer animation to next tick to prevent heavy load from ruining it
   Famous.Timer.after(function () {
     if (view) {
-      self.renderController.show(view);
+      self.renderController.show(view, null, onAnimationEnd);
     } else {
-      self.renderController.hide();
+      self.renderController.hide(null, onAnimationEnd);
     }
   }, 1);
 

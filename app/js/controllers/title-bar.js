@@ -16,7 +16,7 @@ function TitleBar(options) {
   self.contentParent = headerLayout.content;
 
   var header = headerLayout.header.add(new Famous.StateModifier({
-    transform: Famous.Transform.inFront,
+    transform: Famous.Transform.multiply(Famous.Transform.inFront, Famous.Transform.inFront), //This should be enough
   }));
   header.add(new Famous.Surface({
       classes: ['title-bar'],

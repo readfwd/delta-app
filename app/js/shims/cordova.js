@@ -6,14 +6,38 @@ var cordova = {
     } else {
       this.present = false;
     }
+
+    if (this.present) {
+      document.addEventListener('deviceready', this.onReady.bind(this));
+    } else {
+      window.addEventListener('load', this.onReady.bind(this));
+    }
+
+    this.isReady = false;
+    this.readyCallbacks = [];
+  },
+
+  _onReady: function () {
+    this.iOS = /iP(hone|ad|od)/.test(window.navigator.userAgent);
+    this.iOS7App = (cordova.present &&
+                    window.device.platform === 'iOS' &&
+                    parseInt(window.device.version) >= 7);
+  },
+
+  onReady: function () {
+    this.isReady = true;
+    this._onReady();
+    for (var i = 0, v = this.readyCallbacks, n = v.length; i < n; i++) {
+      v[i]();
+    }
+    v.length = [];
   },
 
   ready: function (cb) {
-    /* istanbul ignore if */
-    if (this.present) {
-      document.addEventListener('deviceready', cb);
+    if (this.isReady) {
+      cb();
     } else {
-      window.addEventListener('load', cb);
+      this.readyCallbacks.push(cb);
     }
   }
 };

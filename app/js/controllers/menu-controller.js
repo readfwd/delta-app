@@ -1,46 +1,37 @@
 var util = require('util');
 var NavigationController = require('./navigation-controller');
-var MapController = require('./map-controller');
 var Famous = require('../shims/famous');
 var _ = require('lodash');
-var templates = require('../lib/templates');
-var TemplateController = require('./template-controller');
+var cordova = require('../shims/cordova.js');
+var W = require('when');
 
-function MenuController() {
-  NavigationController.apply(this, arguments);
+function MenuController(options) {
+  options = options || {};
+  options.buttonDescriptors = options.buttonDescriptors || {};
+  options.buttonLayout = options.buttonLayout || [];
+  NavigationController.call(this, options);
 
   var self = this;
 
-  self.buttonModifiers = [];
-  self.buttonShowModifiers = [];
+  self.buttons = [];
   self.on('navigateBack', function() {
-    Famous.Timer.setTimeout(function() {
-      self.presentIn();
-    }, 200);
+    self.presentIn(200);
   });
 }
 util.inherits(MenuController, NavigationController);
 
-MenuController.prototype.buildSectionButton = function(section) {
+MenuController.prototype.buildButtonForLabel = function(label) {
   var self = this;
 
-  var menuButtonTexts = [
-    'Schedule',
-    'Venues',
-    'Open',
-    'People',
-    'Tabs',
-    'Guide',
-    'Maps',
-  ];
+  var buttonDescriptor = self.options.buttonDescriptors[label];
 
   var renderNode = new Famous.RenderNode();
   var surface = new Famous.ContainerSurface({
-    classes: ['menu-button', 'menu-' + section],
+    classes: ['menu-button', 'menu-' + label],
   });
   var buttonText = new Famous.Surface({
-    classes: ['menu-button-text', 'menu-' + section],
-    content: menuButtonTexts[section],
+    classes: ['menu-button-text', 'menu-' + label],
+    content: buttonDescriptor.title,
     size: [true, true],
   });
   var textModifier = new Famous.StateModifier({
@@ -56,132 +47,137 @@ MenuController.prototype.buildSectionButton = function(section) {
   node.add(surface);
   surface.add(textModifier).add(buttonText);
 
-  self.buttonModifiers[section] = modifier;
-  self.buttonShowModifiers[section] = showModifier;
-  modifier.section = section;
+  self.buttons.push({
+    modifier: modifier,
+    showModifier: showModifier,
+  });
+  modifier.label = label;
 
-  surface.on('click', function (evt) {
-    self.navigateToSection(section);
-    evt.stopPropagation();
+  Famous.FastClick(surface, function () {
+    self.navigateToLabel(label);
   });
 
-  return renderNode;
+  buttonText.pipe(surface);
+
+  return {
+    root: renderNode,
+    surface: surface,
+  };
 };
 
-MenuController.prototype.navigateToSection = function (section) {
+MenuController.prototype.navigateToLabel = function (label) {
   var self = this;
   if (self.viewController) { return; }
-  
-  var viewController = null;
-  switch (section) {
-    case 0:
-      viewController = new TemplateController({
-        template: templates.article,
-        title: 'Some Template',
-        backIcon: 'fa-home',
-      });
-      break;
-    case 6: 
-      viewController = new MapController({
-        backIcon: 'fa-home',
-      });
-      break;
+
+  var buttonDescriptor = self.options.buttonDescriptors[label];
+  var viewController = buttonDescriptor.viewController;
+  if (typeof(viewController) === 'function') {
+    viewController = viewController();
   }
+  if (!viewController) {
+    return;
+  }
+
   self.setNavigationItem(viewController);
 
   //Defer animation to next tick to prevent heavy load from ruining it
   Famous.Timer.after(function () {
-    self.presentOut(section);
+    self.presentOut(label);
   }, 2);
 };
 
-MenuController.prototype.present = function (isIn, skip) {
+MenuController.prototype.present = function (isIn, skip, globalDelay) {
   var self = this;
 
+  globalDelay = globalDelay || 0;
+
   var distance = 30;
-  var delayOff = isIn ? 40 : 30;
+  var delayOff = 30;
 
   var start = isIn ? 0 : 1;
   var end = isIn ? 1 : 0;
   var easing = isIn ? 'easeOut' : 'easeIn';
 
-  var buttons = _.shuffle(self.buttonModifiers);
-  _.each(buttons, function(modifier, i) {
-    var delay = i * delayOff;
-    if (modifier.section === skip) {
-      delay = 150;
-    }
-    Famous.Timer.setTimeout(function() {
-      self.buttonShowModifiers[modifier.section].show();
+  var promises = [];
+  var afterActions = [];
 
-      var state = new Famous.Transitionable(start);
-      state.set(end, {
-        duration: 200,
-        curve: easing,
-      }, function () {
-        if (!isIn) {
-          self.buttonShowModifiers[modifier.section].hide();
+  function presentSurface(modifier, showModifier, willTranslate, delay) {
+    showModifier.show();
+
+    transition = {
+      duration: 200,
+      curve: easing,
+    };
+
+    var state = new Famous.Transitionable(start);
+    var totalDelay = delay + globalDelay;
+
+    var promise = W.promise(function (resolve) {
+      Famous.Timer.after(function () {
+        if (totalDelay) {
+          Famous.Timer.setTimeout(function () {
+            state.set(end, transition, resolve);
+          }, totalDelay);
+        } else {
+          state.set(end, transition, resolve);
         }
-      });
+      }, 1);
+    });
 
-      modifier.opacityFrom(state);
-      if (modifier.section !== skip) {
-        modifier.transformFrom(function() {
-          return Famous.Transform.translate(0, 0, (1 - state.get()) * distance);
-        });
-      }
-    }, delay);
+    if (!isIn) {
+      afterActions.push(function () {
+        showModifier.hide();
+      });
+    }
+
+    promises.push(promise);
+
+    modifier.opacityFrom(state);
+    if (willTranslate) {
+      modifier.transformFrom(function() {
+        return Famous.Transform.translate(0, 0, (1 - state.get()) * distance);
+      });
+    }
+  }
+
+  var buttons = _.shuffle(self.buttons);
+  _.each(buttons, function(button, i) {
+    var shouldSkip = button.modifier.label === skip;
+    var delay = shouldSkip ? 150 : i * delayOff;
+    presentSurface(button.modifier, button.showModifier, !shouldSkip, delay);
+  });
+
+  presentSurface(self.titleBarModifier, self.titleBarShowModifier, false, 0);
+  presentSurface(self.captureSurfaceModifier, self.captureSurfaceShowModifier, false, isIn ? 300 : 0);
+
+  W.all(promises).then(function () {
+    _.each(afterActions, function (cb) {
+      cb();
+    });
   });
 };
 
-MenuController.prototype.presentOut = function (section) {
-  this.present(false, section);
+MenuController.prototype.presentOut = function (label, delay) {
+  this.present(false, label, delay);
 };
 
-MenuController.prototype.presentIn = function () {
-  this.present(true);
+MenuController.prototype.presentIn = function (delay) {
+  this.present(true, null, delay);
 };
 
 MenuController.prototype.buildGrid = function (parentNode) {
   var self = this;
 
   var borderWidth = 15;
+  var buttonHeight = 100;
+  var hasTitleBar = !!(self.options.title || self.options.buttonDescriptors.settings);
 
+  // Set up the external layout
+  var buttonLayout = self.options.buttonLayout;
   var verticalLayout = new Famous.GridLayout({
-    dimensions: [1, 4],
+    dimensions: [1, buttonLayout.length],
     gutterSize: [0, borderWidth],
   });
-
-  var verticalViews = [];
-  var horizontalLayout, horizontalViews;
-  verticalLayout.sequenceFrom(verticalViews);
-  for (var i = 0; i < 4; i++) {
-    horizontalViews = [];
-    horizontalLayout = new Famous.GridLayout({
-      dimensions: [((i === 3) ? 1 : 2), 1],
-      gutterSize: [borderWidth, 0]
-    });
-
-    verticalViews.push(horizontalLayout);
-    horizontalLayout.sequenceFrom(horizontalViews);
-
-    if (i === 3) {
-      horizontalViews.push(self.buildSectionButton(i * 2));
-    } else {
-      horizontalViews.push(self.buildSectionButton(i * 2));
-      horizontalViews.push(self.buildSectionButton(i * 2 + 1));
-    }
-  }
-
-  var verticalGutter = new Famous.FlexibleLayout({
-    ratios: [true, 1, true],
-    direction: 1,
-  });
-  verticalGutter.sequenceFrom([new Famous.Surface({
-    size: [undefined, borderWidth],
-  }), verticalLayout, new Famous.Surface({
-    size: [undefined, borderWidth],
-  })]);
 
   var horizontalGutter = new Famous.FlexibleLayout({
     ratios: [true, 1, true],
@@ -189,11 +185,138 @@ MenuController.prototype.buildGrid = function (parentNode) {
   });
   horizontalGutter.sequenceFrom([new Famous.Surface({
     size: [borderWidth, undefined],
-  }), verticalGutter, new Famous.Surface({
+  }), verticalLayout, new Famous.Surface({
     size: [borderWidth, undefined],
   })]);
 
-  parentNode.add(horizontalGutter);
+  // Set up the scrollView
+  var scrollView;
+  var modifier = new Famous.StateModifier();
+  var renderNode = new Famous.RenderNode();
+  var scrollContainer = renderNode.add(modifier);
+  scrollContainer.add(horizontalGutter);
+
+  scrollView = new Famous.ScrollView();
+  scrollView.sequenceFrom([renderNode]);
+
+  function configureHeight() {
+    var layoutHeight = (buttonHeight + borderWidth) * buttonLayout.length - borderWidth;
+    var screenHeight = window.innerHeight - borderWidth;
+    if (cordova.iOS7App) {
+      screenHeight -= 20;
+    }
+    if (hasTitleBar) {
+      screenHeight -= 44;
+    } else {
+      screenHeight -= borderWidth;
+    }
+
+    if (screenHeight > layoutHeight) {
+      layoutHeight = screenHeight;
+    }
+    modifier.setSize([undefined, layoutHeight]);
+  }
+
+  Famous.Engine.on('resize', configureHeight);
+  configureHeight();
+
+  // Building the layout
+  var verticalViews = [];
+
+  verticalLayout.sequenceFrom(verticalViews);
+  _.each(buttonLayout, function (buttons) {
+    var horizontalViews = [];
+    var horizontalLayout = new Famous.GridLayout({
+      dimensions: [buttons.length, 1],
+      gutterSize: [borderWidth, 0],
+    });
+
+    verticalViews.push(horizontalLayout);
+    horizontalLayout.sequenceFrom(horizontalViews);
+    horizontalLayout.pipe(scrollView);
+
+    _.each(buttons, function (label) {
+      var button = self.buildButtonForLabel(label);
+      horizontalViews.push(button.root);
+      button.surface.pipe(scrollView);
+    });
+  });
+
+  // Set up the gutter
+  var verticalGutter = new Famous.HeaderFooterLayout({
+    headerSize: hasTitleBar ? 44 : borderWidth,
+    footerSize: borderWidth,
+  });
+
+  verticalGutter.content.add(scrollView);
+  parentNode.add(verticalGutter);
+
+  // Set up the background scroll capture view
+  self.captureSurfaceModifier = new Famous.Modifier();
+  self.captureSurfaceModifier.transformFrom(Famous.Transform.behind);
+  self.captureSurfaceShowModifier = new Famous.ShowModifier({ visible: false });
+
+  var captureSurface = new Famous.Surface({
+    classes: ['menu-bg'],
+    size: [undefined, undefined],
+    properties: {
+      zIndex: -10000,
+    }
+  });
+  scrollContainer
+    .add(self.captureSurfaceShowModifier)
+    .add(self.captureSurfaceModifier)
+    .add(captureSurface);
+  captureSurface.pipe(scrollView);
+
+  // Set up the title bar
+  if (hasTitleBar) {
+    self.titleBarShowModifier = new Famous.ShowModifier({ visible: false });
+    self.titleBarModifier = new Famous.Modifier();
+    self.titleBarModifier.transformFrom(
+      Famous.Transform.multiply(Famous.Transform.behind, Famous.Transform.behind)
+    );
+
+    var titleBarRoot = verticalGutter.header
+      .add(self.titleBarShowModifier)
+      .add(self.titleBarModifier);
+
+    if (self.options.title) {
+      titleBarRoot.add(new Famous.StateModifier({
+        align: [0.5, 0.5],
+        origin: [0.5, 0.5],
+      })).add(new Famous.Surface({
+        classes: ['menu-title'],
+        content: self.options.title,
+        size: [true, true],
+      }));
+    }
+
+    var settingsButton = self.options.buttonDescriptors.settings;
+    if (settingsButton) {
+      var settingsContainer = new Famous.ContainerSurface({
+        size: [44, 44],
+      });
+
+      Famous.FastClick(settingsContainer, function () {
+        self.navigateToLabel('settings');
+      });
+
+      titleBarRoot.add(new Famous.StateModifier({
+        align: [1, 0.5],
+        origin: [1, 0.5],
+      })).add(settingsContainer);
+
+      settingsContainer.add(new Famous.StateModifier({
+        align: [0.5, 0.5],
+        origin: [0.5, 0.5],
+      })).add(new Famous.Surface({
+        classes: ['menu-settings-icon'],
+        content: '<i class="fa fa-lg fa-fw fa-gear"></i>',
+        size: [true, true],
+      }));
+    }
+  }
 };
 
 MenuController.prototype.createNavRenderController = function () {
@@ -206,8 +329,8 @@ MenuController.prototype.createNavRenderController = function () {
       dampingRatio: 0.5,
     },
     outTransition: {
-      duration: 500,
-      curve: 'easeIn',
+      duration: 400,
+      curve: 'easeOut',
     }
   });
 

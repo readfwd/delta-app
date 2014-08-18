@@ -2,6 +2,7 @@ var NavigationController = require('./navigation-controller');
 var util = require('util');
 var Famous = require('../shims/famous');
 var TitleBar = require('./title-bar');
+var cordova = require('../shims/cordova');
 
 function TitleBarController(options) {
   options = options || {};
@@ -23,7 +24,7 @@ TitleBarController.prototype.buildBarItem = function () {
     size: [44, 44],
   });
 
-  homeContainer.on('click', function(evt) { 
+  Famous.FastClick(homeContainer, function(evt) { 
     Famous.Timer.after(function () {
       self.emit('back'); 
     }, 1);
