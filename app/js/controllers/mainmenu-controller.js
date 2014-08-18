@@ -5,12 +5,16 @@ var Famous = require('../shims/famous');
 var _ = require('lodash');
 var templates = require('../lib/templates');
 var TemplateController = require('./template-controller');
+var T = require('../translate');
 
 function MainMenuController(options) {
   options = options || {};
   options.buttonDescriptors = {
-    schedule: {
-      title: 'Schedule',
+    about: {
+      title: T.span({
+        ro: 'Despre Deltă',
+        en: 'About the Delta',
+      }),
       viewController: function () {
         return new TemplateController({
           template: templates.article,
@@ -19,23 +23,41 @@ function MainMenuController(options) {
         });
       },
     },
-    venues: {
-      title: 'Venues',
+    restricted: {
+      title: T.span({
+        ro: 'Zone strict protejate',
+        en: 'Preserved areas',
+      }),
     },
-    open: {
-      title: 'Open',
+    landmarks: {
+      title: T.span({
+        ro: 'Atracții turistice',
+        en: 'Landmarks',
+      }),
     },
-    people: {
-      title: 'People',
+    planning: {
+      title: T.span({
+        ro: 'Planificare',
+        en: 'Planning',
+      }),
     },
-    tabs: {
-      title: 'Tabs',
+    routes: {
+      title: T.span({
+        ro: 'Trasee navale',
+        en: 'Boat routes',
+      }),
     },
-    guide: {
-      title: 'Guide',
+    trails: {
+      title: T.span({
+        ro: 'Trasee terestre',
+        en: 'Hiking trails',
+      }),
     },
     maps: {
-      title: 'Maps',
+      title: T.span({
+        ro: 'Harta Deltei',
+        en: 'Map of the Delta',
+      }),
       viewController: function () {
         return new MapController({
           backIcon: 'fa-home',
@@ -43,20 +65,20 @@ function MainMenuController(options) {
       },
     },
     settings: {
-      title: 'Settings',
     }
   };
 
-  options.scrollable = true;
-
   options.buttonLayout = [
-    ['schedule', 'venues'],
-    ['open', 'people'],
-    ['tabs', 'guide'],
+    ['routes', 'trails'],
+    ['landmarks', 'planning'],
+    ['about', 'restricted'],
     ['maps'],
   ];
 
-  options.title = 'ARGO Open';
+  options.title = T.span({
+    ro: 'Delta Dunării',
+    en: 'The Danube Delta',
+  });
 
   MenuController.call(this, options);
 }
