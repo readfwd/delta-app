@@ -22,10 +22,7 @@ RootController.prototype.buildRenderTree = function (parentNode) {
   var self = this;
   var contentView = parentNode;
 
-  var iOS7 = (cordova.present &&
-              window.device.platform === 'iOS' &&
-              parseInt(window.device.version) >= 7);
-  if (iOS7) {
+  if (cordova.iOS7) {
     var layout = new Famous.HeaderFooterLayout({
       headerSize: 20
     });

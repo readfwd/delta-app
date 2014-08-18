@@ -5,6 +5,7 @@ var Famous = require('../shims/famous');
 var _ = require('lodash');
 var templates = require('../lib/templates');
 var TemplateController = require('./template-controller');
+var cordova = require('../shims/cordova.js');
 
 function MenuController(options) {
   options = options || {};
@@ -58,10 +59,14 @@ MenuController.prototype.buildButtonForLabel = function(label) {
 
   surface.on('click', function (evt) {
     self.navigateToLabel(label);
-    evt.stopPropagation();
   });
 
-  return renderNode;
+  buttonText.pipe(surface);
+
+  return {
+    root: renderNode,
+    surface: surface,
+  };
 };
 
 MenuController.prototype.navigateToLabel = function (label) {
@@ -138,23 +143,41 @@ MenuController.prototype.buildGrid = function (parentNode) {
   var self = this;
 
   var borderWidth = 15;
+  var buttonHeight = 100;
+
+  var buttonLayout = self.options.buttonLayout;
+  var verticalLayout = new Famous.GridLayout({
+    dimensions: [1, buttonLayout.length],
+    gutterSize: [0, borderWidth],
+  });
+
+  // Set up the scrollView
+  var scrollView;
+  var modifier = new Famous.StateModifier();
+  var renderNode = new Famous.RenderNode();
+  renderNode.add(modifier).add(verticalLayout);
+
+  scrollView = new Famous.ScrollView();
+  scrollView.sequenceFrom([renderNode]);
+  verticalLayout.pipe(scrollView);
+
+  function configureHeight() {
+    var layoutHeight = (buttonHeight + borderWidth) * buttonLayout.length - borderWidth;
+    var screenHeight = window.innerHeight - 2 * borderWidth;
+    if (cordova.iOS7) {
+      screenHeight -= 20;
+    }
+    if (screenHeight > layoutHeight) {
+      layoutHeight = screenHeight;
+    }
+    modifier.setSize([undefined, layoutHeight]);
+  }
+
+  Famous.Engine.on('resize', configureHeight);
+  configureHeight();
 
   // Building the layout
-  var buttonLayout = self.options.buttonLayout;
-  var shouldScroll = buttonLayout.length > 4;
-
   var verticalViews = [];
-  var verticalLayout;
-
-  if (shouldScroll) {
-    verticalLayout = new Famous.ScrollView({
-    });
-  } else {
-    verticalLayout = new Famous.GridLayout({
-      dimensions: [1, buttonLayout.length],
-      gutterSize: [0, borderWidth],
-    });
-  }
 
   verticalLayout.sequenceFrom(verticalViews);
   _.each(buttonLayout, function (buttons) {
@@ -162,19 +185,19 @@ MenuController.prototype.buildGrid = function (parentNode) {
     var horizontalLayout = new Famous.GridLayout({
       dimensions: [buttons.length, 1],
       gutterSize: [borderWidth, 0],
-      size: [undefined, shouldScroll ? 200 : undefined],
     });
 
     verticalViews.push(horizontalLayout);
     horizontalLayout.sequenceFrom(horizontalViews);
-    if (shouldScroll) {
-      horizontalLayout.pipe(verticalLayout);
-    }
+    horizontalLayout.pipe(scrollView);
 
     _.each(buttons, function (label) {
-      horizontalViews.push(self.buildButtonForLabel(label));
+      var button = self.buildButtonForLabel(label);
+      horizontalViews.push(button.root);
+      button.surface.pipe(scrollView);
     });
   });
+
 
   // Set up the gutter
   var verticalGutter = new Famous.FlexibleLayout({
@@ -183,7 +206,7 @@ MenuController.prototype.buildGrid = function (parentNode) {
   });
   verticalGutter.sequenceFrom([new Famous.Surface({
     size: [undefined, borderWidth],
-  }), verticalLayout, new Famous.Surface({
+  }), scrollView, new Famous.Surface({
     size: [undefined, borderWidth],
   })]);
 
@@ -198,6 +221,16 @@ MenuController.prototype.buildGrid = function (parentNode) {
   })]);
 
   parentNode.add(horizontalGutter);
+
+  // Set up the background scroll capture view
+  var captureSurfaceModifier = new Famous.StateModifier({
+    transform: Famous.Transform.behind,
+  });
+  var captureSurface = new Famous.Surface({
+    size: [undefined, undefined],
+  });
+  parentNode.add(captureSurfaceModifier).add(captureSurface);
+  captureSurface.pipe(scrollView);
 };
 
 MenuController.prototype.createNavRenderController = function () {

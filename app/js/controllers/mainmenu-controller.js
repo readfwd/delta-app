@@ -54,6 +54,8 @@ function MainMenuController(options) {
     }
   };
 
+  options.scrollable = true;
+
   options.buttonLayout = [
     ['schedule', 'venues'],
     ['open', 'people'],
