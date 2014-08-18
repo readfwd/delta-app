@@ -4,6 +4,7 @@ var Famous = require('../shims/famous');
 var $ = require('jquery');
 var templates = require('../lib/templates');
 var _ = require('lodash');
+var cordova = require('../shims/cordova');
 
 function TemplateController(options) {
   options = options || {};
@@ -48,10 +49,12 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
   surface.on('deploy', function () {
     Famous.Engine.on('resize', resizeScrollView);
     Famous.Engine.once('postrender', function () {
-      $('#' + id + ' a').click(function(evt) {
+      var elements = $('#' + id + ' a');
+      elements.on('click', function (evt) {
         evt.preventDefault();
-        evt.stopPropagation();
+      });
 
+      elements.on(cordova.clickEvent, function(evt) {
         var href = $(evt.target).attr('href');
         var t = templates;
         _.each(href.split('/'), function (el) {

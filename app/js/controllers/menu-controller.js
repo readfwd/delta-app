@@ -57,7 +57,7 @@ MenuController.prototype.buildButtonForLabel = function(label) {
   });
   modifier.label = label;
 
-  surface.on('click', function (evt) {
+  surface.on(cordova.clickEvent, function (evt) {
     self.navigateToLabel(label);
   });
 
@@ -164,7 +164,7 @@ MenuController.prototype.buildGrid = function (parentNode) {
   function configureHeight() {
     var layoutHeight = (buttonHeight + borderWidth) * buttonLayout.length - borderWidth;
     var screenHeight = window.innerHeight - 2 * borderWidth;
-    if (cordova.iOS7) {
+    if (cordova.iOS7App) {
       screenHeight -= 20;
     }
     if (screenHeight > layoutHeight) {

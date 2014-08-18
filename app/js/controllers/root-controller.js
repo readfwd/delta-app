@@ -3,13 +3,11 @@ var cordova = require('../shims/cordova');
 var Famous = require('../shims/famous');
 var ViewController = require('./view-controller');
 var MainMenuController = require('./mainmenu-controller');
-var fastclick = require('fastclick');
 
 function RootController () {
   ViewController.apply(this, arguments);
 
   var self = this;
-  fastclick(document.body);
 
   self.context = Famous.Engine.createContext();
   self.context.setPerspective(100);
@@ -22,7 +20,7 @@ RootController.prototype.buildRenderTree = function (parentNode) {
   var self = this;
   var contentView = parentNode;
 
-  if (cordova.iOS7) {
+  if (cordova.iOS7App) {
     var layout = new Famous.HeaderFooterLayout({
       headerSize: 20
     });

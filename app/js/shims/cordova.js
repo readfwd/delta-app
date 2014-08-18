@@ -18,9 +18,11 @@ var cordova = {
   },
 
   _onReady: function () {
-    this.iOS7 = (cordova.present &&
-                 window.device.platform === 'iOS' &&
-                 parseInt(window.device.version) >= 7);
+    this.iOS = /iP(hone|ad|od)/.test(window.navigator.userAgent);
+    this.iOS7App = (cordova.present &&
+                    window.device.platform === 'iOS' &&
+                    parseInt(window.device.version) >= 7);
+    this.clickEvent = this.iOS ? 'touchend' : 'click';
   },
 
   onReady: function () {
