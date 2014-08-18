@@ -14,7 +14,7 @@ function MenuController(options) {
   var self = this;
 
   self.buttons = [];
-  self.on('navigateBack', function() {
+  self.on('navigateBack:before', function() {
     self.presentIn(200);
   });
 }
@@ -150,7 +150,7 @@ MenuController.prototype.present = function (isIn, skip, globalDelay) {
   presentSurface(self.titleBarModifier, self.titleBarShowModifier, false, 0);
   presentSurface(self.captureSurfaceModifier, self.captureSurfaceShowModifier, false, isIn ? 300 : 0);
 
-  W.all(promises).then(function () {
+  self.endOfTransitionPromise = W.all(promises).then(function () {
     _.each(afterActions, function (cb) {
       cb();
     });
@@ -320,6 +320,7 @@ MenuController.prototype.buildGrid = function (parentNode) {
 };
 
 MenuController.prototype.createNavRenderController = function () {
+  var self = this;
   var renderController = new Famous.RenderController({
     inTransition: {
       method: 'delay',
@@ -331,6 +332,12 @@ MenuController.prototype.createNavRenderController = function () {
     outTransition: {
       duration: 400,
       curve: 'easeOut',
+      method: 'promise',
+      promise: { 
+        then: function () {
+          self.endOfTransitionPromise.then.apply(self.endOfTransitionPromise, arguments);
+        }
+      }
     }
   });
 

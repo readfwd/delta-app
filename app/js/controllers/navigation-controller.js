@@ -53,6 +53,7 @@ NavigationController.prototype.navigateBack = function () {
   if ((this.viewController instanceof NavigationController) && this.viewController.viewController) {
     return;
   }
+  this.emit('navigateBack:before');
   this.setNavigationItem(null);
   this.emit('navigateBack');
 };
