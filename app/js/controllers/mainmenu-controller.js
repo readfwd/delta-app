@@ -15,18 +15,46 @@ function MainMenuController(options) {
         ro: 'Despre Deltă',
         en: 'About the Delta',
       }),
+      viewController: function () {
+        return new TemplateController({
+          template: templates.ghid.about.index,
+          title: T.span({
+            ro: 'Despre Deltă',
+            en: 'About the Delta',
+          }),
+          backIcon: 'fa-home',
+        });
+      },
     },
     restricted: {
       title: T.span({
         ro: 'Zone strict protejate',
         en: 'Preserved areas',
       }),
+      viewController: function () {
+        return new TemplateController({
+          template: templates.ghid.restricted.index,
+          title: T.span({
+            ro: 'Zone strict protejate',
+            en: 'Preserved areas',
+          }),
+        });
+      },
     },
     landmarks: {
       title: T.span({
         ro: 'Atracții turistice',
         en: 'Landmarks',
       }),
+      viewController: function () {
+        return new TemplateController({
+          template: templates.ghid.landmarks.index,
+          title: T.span({
+            ro: 'Atracții turistice',
+            en: 'Landmarks',
+          }),
+        });
+      },
     },
     planning: {
       title: T.span({
@@ -49,12 +77,30 @@ function MainMenuController(options) {
         ro: 'Trasee navale',
         en: 'Boat routes',
       }),
+      viewController: function () {
+        return new TemplateController({
+          template: templates.ghid.routes.index,
+          title: T.span({
+            ro: 'Trasee navale',
+            en: 'Boat routes',
+          }),
+        });
+      },
     },
     trails: {
       title: T.span({
         ro: 'Trasee terestre',
         en: 'Hiking trails',
       }),
+      viewController: function () {
+        return new TemplateController({
+          template: templates.ghid.trails.index,
+          title: T.span({
+            ro: 'Trasee terestre',
+            en: 'Hiking trails',
+          }),
+        });
+      },
     },
     maps: {
       title: T.span({
@@ -68,6 +114,15 @@ function MainMenuController(options) {
       },
     },
     settings: {
+      viewController: function () {
+        return new TemplateController({
+          template: templates.ghid.settings.index,
+          title: T.span({
+            ro: 'Setări',
+            en: 'Settings',
+          }),
+        });
+      },
     }
   };
 
