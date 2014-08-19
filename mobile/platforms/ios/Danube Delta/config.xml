@@ -22,6 +22,12 @@
     <feature name="Device">
         <param name="ios-package" value="CDVDevice" />
     </feature>
+    <feature name="Geolocation">
+        <param name="ios-package" value="CDVLocation" />
+    </feature>
+    <feature name="Compass">
+        <param name="ios-package" value="CDVCompass" />
+    </feature>
     <icon height="60" src="res/icons/ios/AppIcon60x60.png" width="60" />
     <icon height="120" src="res/icons/ios/AppIcon60x60@2x.png" width="120" />
     <icon height="76" src="res/icons/ios/AppIcon76x76.png" width="76" />
@@ -45,10 +51,4 @@
     </author>
     <content src="index.html" />
     <access origin="*" />
-    <feature name="Geolocation">
-        <param name="ios-package" value="CDVLocation" />
-    </feature>
-    <feature name="Compass">
-        <param name="ios-package" value="CDVCompass" />
-    </feature>
 </widget>

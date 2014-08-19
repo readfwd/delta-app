@@ -5,11 +5,12 @@ var $ = require('jquery');
 var templates = require('../lib/templates');
 var _ = require('lodash');
 var cordova = require('../shims/cordova');
+var T = require('../translate');
 
 function TemplateController(options) {
   options = options || {};
   options.template = options.template || (function () {});
-  options.templateOptions = options.templateOptions || {};
+  options.templateOptions = options.templateOptions || { T: T };
   TitleBarController.call(this, options);
 }
 util.inherits(TemplateController, TitleBarController);
@@ -55,7 +56,7 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
       });
 
       Famous.FastClick(elements, function(evt) {
-        var href = $(evt.target).attr('href');
+        var href = $(evt.currentTarget).attr('href');
         var t = templates;
         _.each(href.split('/'), function (el) {
           t = t[el];

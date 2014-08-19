@@ -42,7 +42,7 @@ gulp.task('index.html', function () {
 // Generate JS functions from Jade templates.
 // Run this before any JS task, because Browserify needs to bundle them in.
 gulp.task('templates', function () {
-  templatizer(paths.app + '/templates', paths.app + '/js/lib/templates.js');
+  return templatizer(paths.app + '/templates', paths.app + '/js/lib/templates.js');
 });
 
 // Common outputs between all of the JS tasks.
@@ -73,7 +73,7 @@ gulp.task('js:istanbul', ['templates'], function () {
 });
 
 // Bundles Browserify with sourcemaps.
-gulp.task('js:dev', function () {
+gulp.task('js:dev', ['templates'], function () {
   var bundleStream = browserify({
       entries: paths.app + '/js/main.js',
       debug: true
@@ -89,7 +89,7 @@ gulp.task('js:dev', function () {
 function spitCss() {
   return gulp.src(paths.app + '/css/main.styl')
     .pipe($.stylus())
-    .pipe($.autoprefixer(opts.autoprefixer))
+    .pipe($.autoprefixer(opts.autoprefixer));
 }
 
 // Copies over and minifies CSS.

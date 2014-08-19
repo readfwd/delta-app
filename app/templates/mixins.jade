@@ -1,3 +1,28 @@
 mixin do-stuff()
   p stuff!
 
+mixin article()
+  article
+    if block
+      block
+
+mixin section()
+  section
+    if block
+      block
+
+mixin lightbox(source)
+  .lightbox
+    .lightbox-container
+      img(src='assets/' + source)
+
+mixin submenu()
+  li
+    if block
+      block
+
+mixin submenu-item(linkTarget, T, en, ro)
+  ul
+    - var translated = T.span({ en: en, ro: ro });
+    a(href=linkTarget, data-title=translated)
+      != translated
