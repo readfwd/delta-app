@@ -12,4 +12,17 @@ mixin section()
       block
 
 mixin lightbox(source)
-  img(src='assets/' + source)
+  .lightbox
+    .lightbox-container
+      img(src='assets/' + source)
+
+mixin submenu()
+  li
+    if block
+      block
+
+mixin submenu-item(linkTarget, T, en, ro)
+  ul
+    - var translated = T.span({ en: en, ro: ro });
+    a(href=linkTarget, data-title=translated)
+      != translated

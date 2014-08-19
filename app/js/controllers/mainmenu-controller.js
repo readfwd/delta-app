@@ -15,13 +15,6 @@ function MainMenuController(options) {
         ro: 'Despre Deltă',
         en: 'About the Delta',
       }),
-      viewController: function () {
-        return new TemplateController({
-          template: templates.article,
-          title: 'Some Template',
-          backIcon: 'fa-home',
-        });
-      },
     },
     restricted: {
       title: T.span({
@@ -42,7 +35,7 @@ function MainMenuController(options) {
       }),
       viewController: function () {
         return new TemplateController({
-          template: templates.planning,
+          template: templates.ghid.planning.index,
           title: T.span({
             ro: 'Planificare',
             en: 'Planning',

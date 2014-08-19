@@ -56,7 +56,7 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
       });
 
       Famous.FastClick(elements, function(evt) {
-        var href = $(evt.target).attr('href');
+        var href = $(evt.currentTarget).attr('href');
         var t = templates;
         _.each(href.split('/'), function (el) {
           t = t[el];
