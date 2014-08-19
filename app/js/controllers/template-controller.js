@@ -5,11 +5,12 @@ var $ = require('jquery');
 var templates = require('../lib/templates');
 var _ = require('lodash');
 var cordova = require('../shims/cordova');
+var T = require('../translate');
 
 function TemplateController(options) {
   options = options || {};
   options.template = options.template || (function () {});
-  options.templateOptions = options.templateOptions || {};
+  options.templateOptions = options.templateOptions || { T: T };
   TitleBarController.call(this, options);
 }
 util.inherits(TemplateController, TitleBarController);

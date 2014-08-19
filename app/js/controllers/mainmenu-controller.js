@@ -40,6 +40,16 @@ function MainMenuController(options) {
         ro: 'Planificare',
         en: 'Planning',
       }),
+      viewController: function () {
+        return new TemplateController({
+          template: templates.planning,
+          title: T.span({
+            ro: 'Planificare',
+            en: 'Planning',
+          }),
+          backIcon: 'fa-home',
+        });
+      },
     },
     routes: {
       title: T.span({
