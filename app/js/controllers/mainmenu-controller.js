@@ -43,15 +43,15 @@ function MainMenuController(options) {
     },
     landmarks: {
       title: T.span({
-        ro: 'Atracții turistice',
-        en: 'Landmarks',
+        ro: 'Cultură și istorie',
+        en: 'Culture and history',
       }),
       viewController: function () {
         return new TemplateController({
           template: templates.ghid.landmarks.index,
           title: T.span({
-            ro: 'Atracții turistice',
-            en: 'Landmarks',
+            ro: 'Cultură și istorie',
+            en: 'Culture and history',
           }),
         });
       },

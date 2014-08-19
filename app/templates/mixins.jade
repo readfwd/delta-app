@@ -25,4 +25,11 @@ mixin submenu-item(linkTarget, T, en, ro)
   li
     - var translated = T.span({ en: en, ro: ro });
     a(href=linkTarget, data-title=translated)
-      != translated
+      .submenu-title
+        != translated
+      if block
+        block
+
+mixin submenu-caption(T, en, ro)
+  .submenu-caption
+    != T.span({ en: en, ro: ro })
