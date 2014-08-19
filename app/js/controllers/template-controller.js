@@ -64,7 +64,7 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
 
         var viewController = new TemplateController({
           titleBar: self.titleBar,
-          title: $(evt.target).data('title'),
+          title: $(evt.currentTarget).data('title'),
           template: t,
         });
         self.setNavigationItem(viewController);
