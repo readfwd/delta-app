@@ -15,7 +15,7 @@ function MenuController(options) {
 
   self.buttons = [];
   self.on('navigateBack:before', function() {
-    self.presentIn(200);
+    self.presentIn(300);
   });
 }
 util.inherits(MenuController, NavigationController);
@@ -332,7 +332,9 @@ MenuController.prototype.createNavRenderController = function () {
     outTransition: {
       duration: 400,
       curve: 'easeOut',
-      method: 'promise',
+      delay: 100,
+      method: 'delay',
+      delayMethod: Famous.PromiseTransition,
       promise: { 
         then: function () {
           self.endOfTransitionPromise.then.apply(self.endOfTransitionPromise, arguments);
