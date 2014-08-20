@@ -35,6 +35,7 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
     classes: ['template-bg'],
     size: [undefined, undefined],
   });
+  containerView.pipe(scrollView);
 
 
   function resizeScrollView() {
