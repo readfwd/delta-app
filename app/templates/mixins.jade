@@ -11,8 +11,9 @@ mixin section()
     if block
       block
 
-mixin img(source)
-  .img
+mixin img(source, fullHeight)
+  - var classes = fullHeight ? 'full-height' : '';
+  .img(class=classes)
     .img-container
       img(src='assets/' + source)
 
