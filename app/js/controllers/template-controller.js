@@ -31,15 +31,13 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
   scrollView.sequenceFrom([surface]);
   surface.pipe(scrollView);
 
-  parentNode.add(new Famous.Surface({
+  var containerView = new Famous.ContainerSurface({
     classes: ['template-bg'],
     size: [undefined, undefined],
-  }));
+  });
 
-  parentNode.add(new Famous.StateModifier({
-    transform: Famous.Transform.inFront,
-  })).add(scrollView);
-
+  parentNode.add(containerView);
+  containerView.add(scrollView);
 
   function resizeScrollView() {
     Famous.Engine.once('postrender', function () {
@@ -50,25 +48,7 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
   surface.on('deploy', function () {
     Famous.Engine.on('resize', resizeScrollView);
     Famous.Engine.once('postrender', function () {
-      var elements = $('#' + id + ' a');
-      elements.on('click', function (evt) {
-        evt.preventDefault();
-      });
-
-      Famous.FastClick(elements, function(evt) {
-        var href = $(evt.currentTarget).attr('href');
-        var t = templates;
-        _.each(href.split('/'), function (el) {
-          t = t[el];
-        });
-
-        var viewController = new TemplateController({
-          titleBar: self.titleBar,
-          title: $(evt.currentTarget).data('title'),
-          template: t,
-        });
-        self.setNavigationItem(viewController);
-      });
+      self.setUpPage($('#' + id + ' > .template-container-inner'));
     });
     resizeScrollView();
   });
@@ -76,6 +56,50 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
     Famous.Engine.removeListener('resize', resizeScrollView);
   });
 
+};
+
+TemplateController.prototype.setUpPage = function (page) {
+  var self = this;
+
+  var links = page.find('a');
+  links.on('click', function (evt) {
+    evt.preventDefault();
+  });
+
+  Famous.FastClick(links, function(evt) {
+    var href = $(evt.currentTarget).attr('href');
+    var t = templates;
+    _.each(href.split('/'), function (el) {
+      t = t[el];
+    });
+
+    var viewController = new TemplateController({
+      titleBar: self.titleBar,
+      title: $(evt.currentTarget).data('title'),
+      template: t,
+    });
+    self.setNavigationItem(viewController);
+  });
+
+  var settingsDesc = this.options.settings;
+  if (settingsDesc) {
+    var settings = page.find('input[data-setting]');
+    settings.each(function (idx, el) {
+      var $el = $(el);
+      var desc = settingsDesc[$el.data('setting')];
+      if (desc) {
+        $el.prop('checked', desc.get());
+      }
+    });
+
+    settings.on('change', function () {
+      var $el = $(this);
+      var desc = settingsDesc[$el.data('setting')];
+      if (desc) {
+        desc.set($el.prop('checked'));
+      }
+    });
+  }
 };
 
 module.exports = TemplateController;
