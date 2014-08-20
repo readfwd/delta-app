@@ -43,51 +43,69 @@ function TitleBar(options) {
 }
 util.inherits(TitleBar, Famous.View);
 
-TitleBar.prototype.animateTitleBar = function(newTitle, oldTitle, push) {
-  if (!newTitle || !oldTitle) {
-    return;
+TitleBar.prototype.animateTitleBar = function(newTitle, oldTitle, push, animated) {
+  if (animated && newTitle && oldTitle) {
+    var state = new Famous.Transitionable(0);
+    var transition = push ? {
+      method: 'spring',
+      period: 500,
+      dampingRatio: 0.5,
+    } : {
+      curve: 'easeOut',
+      duration: 500,
+    };
+    state.set(1, transition);
+
+    var mult = push ? -1 : 1;
+    var distance = window.innerWidth * 0.25;
+
+    newTitle.transformFrom(function () {
+      return Famous.Transform.translate(distance * mult * (state.get() - 1), 0, 0);
+    });
+
+    oldTitle.transformFrom(function () {
+      return Famous.Transform.translate(distance * mult * state.get(), 0, 0);
+    });
+  } else {
+    if (newTitle) {
+      newTitle.transformFrom(Famous.Transform.identity);
+    }
+    if (oldTitle) {
+      oldTitle.transformFrom(Famous.Transform.identity);
+    }
   }
-
-  var state = new Famous.Transitionable(0);
-  var transition = push ? {
-    method: 'spring',
-    period: 500,
-    dampingRatio: 0.5,
-  } : {
-    curve: 'easeOut',
-    duration: 500,
-  };
-  state.set(1, transition);
-
-  var mult = push ? -1 : 1;
-  var distance = window.innerWidth * 0.25;
-
-  newTitle.transformFrom(function () {
-    return Famous.Transform.translate(distance * mult * (state.get() - 1), 0, 0);
-  });
-
-  oldTitle.transformFrom(function () {
-    return Famous.Transform.translate(distance * mult * state.get(), 0, 0);
-  });
 };
 
-TitleBar.prototype.pushItem = function(barItem) {
+TitleBar.prototype.pushItem = function(barItem, animated) {
   var self = this;
 
+  if (animated === undefined) {
+    animated = true;
+  }
+  animated = animated && Famous.AnimationToggle.get();
   var n = self.barItems.length;
   if (!n) {
-    self.barItemRenderController.show(barItem.view, { duration: 0 });
-    barItem.titleModifier.transformFrom(Famous.Transform.identity);
-  } else {
-    var oldBarItem = self.barItems[n - 1];
-    self.barItemRenderController.show(barItem.view);
-    self.animateTitleBar(barItem.titleModifier, oldBarItem.titleModifier, true);
+    animated = false;
   }
+
+  var oldBarItem = n ? self.barItems[n - 1] : null;
+  if (oldBarItem && !animated) {
+    self.barItemRenderController.hide({ duration: 0 });
+  }
+  self.barItemRenderController.show(barItem.view, animated ? null : { duration: 0 });
+  self.animateTitleBar(barItem.titleModifier, 
+      oldBarItem ? oldBarItem.titleModifier : null, true, animated);
+
   self.barItems.push(barItem);
 };
 
-TitleBar.prototype.popItem = function() {
+TitleBar.prototype.popItem = function(animated) {
   var self = this;
+
+  if (animated === undefined) {
+    animated = true;
+  }
+  animated = animated && Famous.AnimationToggle.get();
 
   var n = self.barItems.length;
   if (n <= 1) {
@@ -96,8 +114,11 @@ TitleBar.prototype.popItem = function() {
 
   var oldBarItem = self.barItems.pop();
   var barItem = self.barItems[n - 2];
-  self.barItemRenderController.show(barItem.view);
-  self.animateTitleBar(barItem.titleModifier, oldBarItem.titleModifier, false);
+  if (oldBarItem && !animated) {
+    self.barItemRenderController.hide({ duration: 0 });
+  }
+  self.barItemRenderController.show(barItem.view, animated ? null : { duration: 0 });
+  self.animateTitleBar(barItem.titleModifier, oldBarItem.titleModifier, false, animated);
 };
 
 module.exports = TitleBar;

@@ -23,6 +23,10 @@ var Translate = {
     styleEl.html('.lang:not(.lang-' + lang + ') { display: none; }');
   },
 
+  getLanguage: function () {
+    return this.lang;
+  },
+
   span: function (spec) {
     var out = [];
     _.each(spec, function (content, lang) {

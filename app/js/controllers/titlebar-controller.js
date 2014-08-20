@@ -71,18 +71,23 @@ TitleBarController.prototype.navigateAnimation = function (isOut) {
   var from = isOut ? 1 : 0;
   var to = isOut ? 0 : 1;
 
-  var state = new Famous.Transitionable(from);
-  state.set(to, {
-    curve: 'easeIn',
-    duration: 500,
-  });
+  if (Famous.AnimationToggle.get()) {
+    var state = new Famous.Transitionable(from);
+    state.set(to, {
+      curve: 'easeIn',
+      duration: 500,
+    });
 
-  var distance = isOut ? 20 : 8;
+    var distance = isOut ? 20 : 8;
 
-  self.contentModifier.opacityFrom(state);
-  self.contentModifier.transformFrom(function () {
-    return Famous.Transform.translate(0, 0, (state.get() - 1) * distance);
-  });
+    self.contentModifier.opacityFrom(state);
+    self.contentModifier.transformFrom(function () {
+      return Famous.Transform.translate(0, 0, (state.get() - 1) * distance);
+    });
+  } else {
+    self.contentModifier.opacityFrom(to);
+    self.contentModifier.transformFrom(Famous.Transform.identity);
+  }
 };
 
 TitleBarController.prototype.createNavRenderController = function () {

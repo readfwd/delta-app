@@ -1,4 +1,35 @@
 include ../../mixins
 
-p Lorem ipsumhojhoio 
++section
+  .settings
+    .settings-row
+      .settings-label
+        != T.span({ en: 'Language', ro: 'Limba' })
+      .settings-switch
+        input(id='settings-lang-toggle', type='checkbox', data-setting='lang').cmn-toggle.cmn-toggle-yes-no.cmn-toggle-green
+        label(for='settings-lang-toggle')
+          div.on 
+            span English
+          div.off
+            span Română
 
+    .settings-row
+      .settings-label
+        != T.span({ en: 'Animations', ro: 'Animații' })
+      .settings-switch
+        input(id='settings-animations-toggle', type='checkbox', data-setting='animations').cmn-toggle.cmn-toggle-yes-no
+        label(for='settings-animations-toggle')
+          div.on
+            != T.span({ en: 'On', ro: 'Active' })
+          div.off
+            != T.span({ en: 'Off', ro: 'Inactive' })
+
+  .lang.lang-ro
+    h1 Despre
+
+    p Această aplicație a fost dezvoltată de ReadForward
+
+  .lang.lang-en
+    h1 About
+
+    p This app was developed by ReadForward

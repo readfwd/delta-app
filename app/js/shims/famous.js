@@ -29,6 +29,7 @@ Famous.FlexibleLayout = require('famous/views/FlexibleLayout');
 Famous.RenderController = require('famous/views/RenderController');
 Famous.HeaderFooterLayout = require('famous/views/HeaderFooterLayout');
 
+Famous.AnimationToggle = require('./famous-AnimationToggle');
 Famous.FastClick = require('./famous-FastClick');
 Famous.Timer = require('famous/utilities/Timer');
 
@@ -42,5 +43,6 @@ Famous.EventEmitter.once = function (type, f) {
 };
 
 Famous.Engine.once = Famous.EventEmitter.once;
+
 
 module.exports = Famous;
