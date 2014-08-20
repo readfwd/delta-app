@@ -72,21 +72,31 @@ TitleBarController.prototype.navigateAnimation = function (isOut) {
   var to = isOut ? 0 : 1;
 
   if (Famous.AnimationToggle.get()) {
-    var state = new Famous.Transitionable(from);
-    state.set(to, {
-      curve: 'easeIn',
-      duration: 500,
-    });
+    self.contentShowModifier.show();
 
-    var distance = isOut ? 20 : 8;
+    Famous.Timer.after(function () {
+      var state = new Famous.Transitionable(from);
+      state.set(to, {
+        curve: 'easeIn',
+        duration: 500,
+      }, isOut ? function () {
+        self.contentShowModifier.hide();
+      } : null);
 
-    self.contentModifier.opacityFrom(state);
-    self.contentModifier.transformFrom(function () {
-      return Famous.Transform.translate(0, 0, (state.get() - 1) * distance);
-    });
+      var distance = isOut ? 20 : 8;
+
+      self.contentModifier.opacityFrom(state);
+      self.contentModifier.transformFrom(function () {
+        return Famous.Transform.translate(0, 0, (state.get() - 1) * distance);
+      });
+    }, 1);
   } else {
-    self.contentModifier.opacityFrom(to);
-    self.contentModifier.transformFrom(Famous.Transform.identity);
+    if (isOut) {
+      self.contentShowModifier.hide();
+    } else {
+      self.contentShowModifier.show();
+    }
+    self.contentModifier.opacityFrom(1);
   }
 };
 
@@ -137,8 +147,10 @@ TitleBarController.prototype.buildRenderTree = function (parentNode) {
 
   var contentWrapper = new Famous.RenderNode();
   var contentModifier = new Famous.Modifier();
-  contentRoot.add(contentModifier).add(contentWrapper);
+  var contentShowModifier = new Famous.ShowModifier();
+  contentRoot.add(contentShowModifier).add(contentModifier).add(contentWrapper);
   self.contentModifier = contentModifier;
+  self.contentShowModifier = contentShowModifier;
 
   self.titleBar.pushItem(self.buildBarItem());
   self.buildContentTree(contentWrapper);

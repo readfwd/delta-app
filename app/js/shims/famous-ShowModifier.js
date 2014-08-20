@@ -1,6 +1,10 @@
 var Transform = require('famous/core/Transform');
  
 function ShowModifier(options) {
+  options = options || {};
+  if (options.visible === undefined) {
+    options.visible = true;
+  }
   this.visible = !!options.visible;
   this._output = {
     transform: Transform.identity,
