@@ -5,7 +5,9 @@ var toggle = {
 
   set: function (value) {
     toggle.state = value;
-    window.localStorage.animationsActive = value;
+    try {
+      window.localStorage.animationsActive = value;
+    } catch (ex) {}
   },
 
   initialize: function () {
