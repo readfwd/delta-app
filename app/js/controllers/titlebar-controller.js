@@ -145,10 +145,9 @@ TitleBarController.prototype.buildRenderTree = function (parentNode) {
     contentRoot = self.titleBar.contentParent;
   }
 
-  var contentWrapper = new Famous.RenderNode();
   var contentModifier = new Famous.Modifier();
   var contentShowModifier = new Famous.ShowModifier();
-  contentRoot.add(contentShowModifier).add(contentModifier).add(contentWrapper);
+  var contentWrapper = contentRoot.add(contentShowModifier).add(contentModifier);
   self.contentModifier = contentModifier;
   self.contentShowModifier = contentShowModifier;
 

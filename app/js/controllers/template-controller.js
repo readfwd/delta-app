@@ -4,7 +4,6 @@ var Famous = require('../shims/famous');
 var $ = require('jquery');
 var templates = require('../lib/templates');
 var _ = require('lodash');
-var cordova = require('../shims/cordova');
 var T = require('../translate');
 
 function TemplateController(options) {
@@ -20,7 +19,9 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
 
   var id = 'template-' + (Math.random().toString(36)+'00000000000000000').slice(2, 7);
   var content = self.options.template(self.options.templateOptions);
-  content = '<div id="' + id + '" class="template-container"><div class="template-container-inner">' + content + '</div></div>';
+  content = '<div id="' + id + 
+    '" class="template-container"><div class="template-container-inner">' + 
+    content + '</div></div>';
 
   var surface = new Famous.Surface({
     content: content,
@@ -35,8 +36,6 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
     size: [undefined, undefined],
   });
 
-  parentNode.add(containerView);
-  containerView.add(scrollView);
 
   function resizeScrollView() {
     Famous.Engine.once('postrender', function () {
@@ -44,18 +43,26 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
     });
   }
 
-  surface.on('deploy', function () {
+  containerView.on('deploy', function () {
     Famous.Engine.on('resize', resizeScrollView);
     Famous.Engine.once('postrender', function () {
-      self.setUpPage($('#' + id + ' > .template-container-inner'));
+      var element = $('#' + id + ' > .template-container-inner');
+      // Famous reuses the same DOM objects on subsequent deploys
+      // so we shouldn't bind event handlers on the content HTML twice
+      if (!element.data('deployed')) {
+        element.data('deployed', true);
+        self.setUpPage(element);
+      }
     });
     resizeScrollView();
   });
-  surface.on('recall', function () {
+  containerView.on('recall', function () {
     Famous.Engine.removeListener('resize', resizeScrollView);
   });
 
   scrollView.sequenceFrom([surface]);
+  containerView.add(scrollView);
+  parentNode.add(containerView);
 };
 
 TemplateController.prototype.setUpPage = function (page) {
