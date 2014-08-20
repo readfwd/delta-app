@@ -5,7 +5,16 @@ var Translate = {
   initialize: function () {
     var lang = window.localStorage.language;
     if (!lang) {
-      lang = 'en';
+      var sysLang = navigator.language || navigator.userLanguage;
+      sysLang = sysLang.replace(/-.*$/, '');
+      console.log(sysLang);
+      switch (sysLang) {
+        case 'ro':
+          lang = sysLang;
+          break;
+        default:
+          lang = 'en';
+      }
     }
 
     this.setLanguage(lang);
@@ -13,7 +22,9 @@ var Translate = {
 
   setLanguage: function (lang) {
     this.lang = lang;
-    window.localStorage.language = lang;
+    try {
+      window.localStorage.language = lang;
+    } catch (ex) {}
 
     var styleEl = $('#language-style');
     if (!styleEl.length) {
