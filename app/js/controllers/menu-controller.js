@@ -81,9 +81,13 @@ MenuController.prototype.navigateToLabel = function (label) {
   self.setNavigationItem(viewController);
 
   //Defer animation to next tick to prevent heavy load from ruining it
-  Famous.Timer.after(function () {
+  if (Famous.AnimationToggle.get()) {
+    Famous.Timer.after(function () {
+      self.presentOut(label);
+    }, 2);
+  } else {
     self.presentOut(label);
-  }, 2);
+  }
 };
 
 MenuController.prototype.present = function (isIn, skip, globalDelay) {
@@ -111,6 +115,10 @@ MenuController.prototype.present = function (isIn, skip, globalDelay) {
 
     var state = new Famous.Transitionable(start);
     var totalDelay = delay + globalDelay;
+    if (!Famous.AnimationToggle.get()) {
+      totalDelay = 0;
+      transition.duration = 0;
+    }
 
     var promise = W.promise(function (resolve) {
       Famous.Timer.after(function () {

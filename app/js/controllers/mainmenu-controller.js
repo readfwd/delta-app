@@ -117,6 +117,20 @@ function MainMenuController(options) {
       viewController: function () {
         return new TemplateController({
           template: templates.ghid.settings.index,
+          settings: {
+            lang: {
+              get: function () {
+                return T.getLanguage() === 'en';
+              },
+              set: function (value) {
+                T.setLanguage(value? 'en' : 'ro');
+              },
+            },
+            animations: {
+              get: Famous.AnimationToggle.get,
+              set: Famous.AnimationToggle.set,
+            },
+          },
           title: T.span({
             ro: 'Setări',
             en: 'Settings',

@@ -35,13 +35,22 @@ NavigationController.prototype.setNavigationItem = function (viewController) {
   }
 
   //Defer animation to next tick to prevent heavy load from ruining it
-  Famous.Timer.after(function () {
+  function commitAnimation() {
+    var transition = Famous.AnimationToggle.get() ? null : {
+      duration: 0
+    };
     if (view) {
-      self.renderController.show(view, null, onAnimationEnd);
+      self.renderController.show(view, transition, onAnimationEnd);
     } else {
-      self.renderController.hide(null, onAnimationEnd);
+      self.renderController.hide(transition, onAnimationEnd);
     }
-  }, 1);
+  }
+
+  if (Famous.AnimationToggle.get()) {
+    Famous.Timer.after(commitAnimation, 2);
+  } else {
+    commitAnimation();
+  }
 
   self.emit('navigate');
 };
