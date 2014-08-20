@@ -28,7 +28,6 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
   });
 
   var scrollView = new Famous.ScrollView();
-  scrollView.sequenceFrom([surface]);
   surface.pipe(scrollView);
 
   var containerView = new Famous.ContainerSurface({
@@ -56,6 +55,7 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
     Famous.Engine.removeListener('resize', resizeScrollView);
   });
 
+  scrollView.sequenceFrom([surface]);
 };
 
 TemplateController.prototype.setUpPage = function (page) {

@@ -127,12 +127,8 @@ function MainMenuController(options) {
               },
             },
             animations: {
-              get: function () {
-                return Famous.animationsActive;
-              },
-              set: function (value) {
-                Famous.animationsActive = value;
-              },
+              get: Famous.AnimationToggle.get,
+              set: Famous.AnimationToggle.set,
             },
           },
           title: T.span({
