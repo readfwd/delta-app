@@ -23,6 +23,10 @@ MasterController.prototype.prepareDetailController = function () {
     self.detailController.on('back', function () {
       self.emit('ascend');
     });
+
+    self.detailController.on('pageFlip', function (page) {
+      console.log('pageFlip', page.index);
+    });
   }
 };
 
@@ -36,7 +40,7 @@ MasterController.prototype.navigateToIndex = function (index) {
   } else {
     self.detailController.navigateToIndex(index, false);
     self.setNavigationItem(self.detailController);
-    self.emit('descend');
+    self.emit('descend', { index: index });
   }
 };
 

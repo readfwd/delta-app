@@ -52,12 +52,12 @@ DetailController.prototype.buildContentTree = function (parentNode) {
   var scrollViewModifier = new Famous.StateModifier({
     align: [0.5, 0.5],
     origin: [0.5, 0.5],
-    size: [undefined, undefined],
   });
 
   function resizeScrollView() {
     var width = window.innerWidth;
-    var isTabletOld = scrollViewModifier.getSize()[0] !== undefined;
+    var size = scrollViewModifier.getSize();
+    var isTabletOld = size ? (size[0] !== undefined) : 42;
     var isTablet = false;
 
     if (width > 600) {
@@ -78,8 +78,11 @@ DetailController.prototype.buildContentTree = function (parentNode) {
   resizeScrollView();
   self.indexNotSet = false;
 
+  var onRender = self.onRender.bind(self);
+
   containerView.on('deploy', function () {
     Famous.Engine.on('resize', resizeScrollView);
+    Famous.Timer.every(onRender);
   });
 
   containerView.on('recall', function () {
@@ -88,6 +91,7 @@ DetailController.prototype.buildContentTree = function (parentNode) {
 
   self.on('recall', function () {
     Famous.Engine.removeListener('resize', resizeScrollView);
+    Famous.Timer.clear(onRender);
   });
 
   parentNode.add(containerView);
@@ -120,7 +124,7 @@ DetailController.prototype.getCurrentIndex = function () {
     }
 
     while (position < -cw2) {
-      pocition += cw;
+      position += cw;
       index--;
     }
 
@@ -135,6 +139,18 @@ DetailController.prototype.getCurrentIndex = function () {
     return index;
   }
   return self.currentIndex;
+};
+
+DetailController.prototype.onRender = function () {
+  var self = this;
+
+
+
+  var currentIndex = self.getCurrentIndex();
+  if (currentIndex !== self.currentIndex) {
+    self.emit('pageFlip', { index: currentIndex });
+    self.currentIndex = currentIndex;
+  }
 };
 
 module.exports = DetailController;
