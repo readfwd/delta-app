@@ -4,3 +4,20 @@
 
 .detail-container.detail-tablet .template-container-inner section > .img
   padding: 0 16px
+
+
+.page-picker-nub:after
+  content: ''
+  position: absolute
+  opacity: 0.2
+  width: 20px
+  height: 20px
+  top: 0
+  left: 0
+  background-color: #000
+  border-radius: 10px
+  transform: scale(0.5)
+  transition: transform 0.2s ease
+
+.page-picker-nub.active:after
+  transform: scale(0.8)

@@ -26,8 +26,19 @@ Famous.Transitionable.registerMethod('promise', Famous.PromiseTransition);
 Famous.GridLayout = require('famous/views/GridLayout');
 Famous.ScrollView = require('./famous-ScrollViewPatch');
 Famous.FlexibleLayout = require('famous/views/FlexibleLayout');
+Famous.SequentialLayout = require('famous/views/SequentialLayout');
 Famous.RenderController = require('famous/views/RenderController');
 Famous.HeaderFooterLayout = require('famous/views/HeaderFooterLayout');
+
+Famous.MouseSync = require('famous/inputs/MouseSync');
+Famous.TouchSync = require('famous/inputs/TouchSync');
+Famous.ScrollSync = require('famous/inputs/ScrollSync');
+Famous.GenericSync = require('famous/inputs/GenericSync');
+Famous.GenericSync.register({
+    'mouse'  : Famous.MouseSync,
+    'touch'  : Famous.TouchSync,
+    'scroll' : Famous.ScrollSync
+});
 
 Famous.AnimationToggle = require('./famous-AnimationToggle');
 Famous.FastClick = require('./famous-FastClick');

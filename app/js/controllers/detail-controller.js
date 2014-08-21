@@ -3,6 +3,7 @@ var TemplateController = require('./template-controller');
 var util = require('util');
 var Famous = require('../shims/famous');
 var _ = require('lodash');
+var PagePicker = require('../views/page-picker');
 
 function DetailController(options) {
   options = options || {};
@@ -97,8 +98,31 @@ DetailController.prototype.buildContentTree = function (parentNode) {
     });
   });
 
+  var headerLayout = new Famous.HeaderFooterLayout({
+    headerSize: 25,
+  });
+
+  var pagePicker = new PagePicker({
+    count: self.templates.length,
+  });
+
+  var pagePickerModifier = new Famous.StateModifier({
+    align: [0.5, 1],
+    origin: [0.5, 1],
+  });
+
+  self.on('pageFlip', function (opt) {
+    pagePicker.setPage(opt.index);
+  });
+  pagePicker.on('navigate', function (opt) {
+    self.navigateToIndex(opt.index, Famous.AnimationToggle.get());
+  });
+
+  headerLayout.header.add(pagePickerModifier).add(pagePicker);
+  headerLayout.content.add(scrollViewModifier).add(scrollView);
+
   parentNode.add(containerView);
-  containerView.add(scrollViewModifier).add(scrollView);
+  containerView.add(headerLayout);
 };
 
 DetailController.prototype.navigateToIndex = function (index, animated) {
@@ -157,9 +181,9 @@ DetailController.prototype.onRender = function () {
 
   self.updateTitleBar(currentStatus);
 
-  if (currentStatus.index !== self.currentIndex) {
+  if (currentStatus.index !== self.pageIndex) {
     self.emit('pageFlip', { index: currentStatus.index });
-    self.currentIndex = currentStatus.index;
+    self.pageIndex = currentStatus.index;
   }
 };
 
