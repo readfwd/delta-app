@@ -24,7 +24,7 @@ Famous.Transitionable.registerMethod('delay', Famous.DelayTransition);
 Famous.Transitionable.registerMethod('promise', Famous.PromiseTransition);
 
 Famous.GridLayout = require('famous/views/GridLayout');
-Famous.ScrollView = require('famous/views/Scrollview');
+Famous.ScrollView = require('./famous-ScrollViewPatch');
 Famous.FlexibleLayout = require('famous/views/FlexibleLayout');
 Famous.RenderController = require('famous/views/RenderController');
 Famous.HeaderFooterLayout = require('famous/views/HeaderFooterLayout');

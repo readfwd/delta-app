@@ -68,7 +68,12 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
     });
     resizeScrollView();
   });
+
   containerView.on('recall', function () {
+    self.emit('recall');
+  });
+
+  self.on('recall', function () {
     Famous.Engine.removeListener('resize', resizeScrollView);
   });
 
