@@ -109,12 +109,13 @@ DetailController.prototype.navigateToIndex = function (index, animated) {
   }
 };
 
-DetailController.prototype.getCurrentIndex = function () {
+DetailController.prototype.getCurrentIndex = function (returnOffset) {
   var self = this;
+  var index, position;
 
   if (!self.indexNotSet && self.scrollView && self.scrollView._node) {
-    var index = self.scrollView._node.index;
-    var position = self.scrollView.getPosition();
+    index = self.scrollView._node.index;
+    position = self.scrollView.getPosition();
     var cw = self.contentWidth;
     var cw2 = cw * 0.5;
 
@@ -135,22 +136,127 @@ DetailController.prototype.getCurrentIndex = function () {
     if (index >= self.templates.length) {
       index = self.templates.length - 1;
     }
-
-    return index;
+  } else {
+    index = self.currentIndex;
+    position = 0;
   }
-  return self.currentIndex;
+
+  if (returnOffset) {
+    return { offset: position, index: index };
+  }
+  return index;
 };
 
 DetailController.prototype.onRender = function () {
   var self = this;
 
+  var currentStatus = self.getCurrentIndex(true);
 
+  self.updateTitleBar(currentStatus);
 
-  var currentIndex = self.getCurrentIndex();
-  if (currentIndex !== self.currentIndex) {
-    self.emit('pageFlip', { index: currentIndex });
-    self.currentIndex = currentIndex;
+  if (currentStatus.index !== self.currentIndex) {
+    self.emit('pageFlip', { index: currentStatus.index });
+    self.currentIndex = currentStatus.index;
   }
+};
+
+DetailController.prototype.buildBarItem = function () {
+  var self = this;
+  var root = new Famous.RenderNode();
+
+  var homeContainer = new Famous.ContainerSurface({
+    size: [44, 44],
+  });
+
+  Famous.FastClick(homeContainer, function(evt) { 
+    Famous.Timer.after(function () {
+      self.emit('back'); 
+    }, 1);
+    evt.stopPropagation();
+  });
+
+  var homeIcon = new Famous.Surface({
+    classes: ['title-button', 'title-button-back'],
+    content: '<i class="fa fa-lg fa-fw ' + self.options.backIcon + '"></i>',
+    size: [true, true],
+  });
+
+  var titleText1 = new Famous.Surface({
+    classes: ['title-bar-text'],
+    size: [true, true],
+  });
+
+  var titleModifier1 = new Famous.StateModifier();
+
+  var titleText2 = new Famous.Surface({
+    classes: ['title-bar-text'],
+    size: [true, true],
+  });
+
+  var titleModifier2 = new Famous.StateModifier();
+
+  var titleModifier = new Famous.Modifier();
+
+  var titleRoot = root.add(new Famous.StateModifier({
+    align: [0.5, 0.5],
+    origin: [0.5, 0.5],
+  })).add(titleModifier);
+
+  titleRoot.add(titleModifier1).add(titleText1);
+  titleRoot.add(titleModifier2).add(titleText2);
+  self.titleModifier1 = titleModifier1;
+  self.titleText1 = titleText1;
+  self.titleModifier2 = titleModifier2;
+  self.titleText2 = titleText2;
+
+  root.add(new Famous.StateModifier({
+    align: [0, 0.5],
+    origin: [0, 0.5],
+  })).add(homeContainer);
+
+  homeContainer.add(new Famous.StateModifier({
+    align: [0.5, 0.5],
+    origin: [0.5, 0.5],
+  })).add(homeIcon);
+
+  return {
+    view: root,
+    titleModifier: titleModifier,
+  };
+};
+
+
+DetailController.prototype.updateTitleBar = function (status) {
+  var self = this;
+
+  var index1 = status.index;
+  var direction = status.offset >= 0;
+  var index2 = direction ? index1 + 1 : index1 - 1;
+  if ((index2 < 0) || (index2 >= self.titles.length)) {
+    index2 = null;
+  }
+
+  if (index1 !== self.titleIndex1) {
+    self.titleIndex1 = index1;
+    self.titleText1.setContent(self.titles[index1]);
+  }
+
+  if (index2 !== self.titleIndex2) {
+    self.titleIndex2 = index2;
+    self.titleText2.setContent(index2 === null ? '' : self.titles[index2]);
+  }
+
+  var width = window.innerWidth * 0.25;
+  var pos1 = status.offset / self.contentWidth;
+  var pos2 = direction ? pos1 - 1 : pos1 + 1;
+  function getOpacity(x) {
+    x = 1 - Math.abs(x);
+    return x * x;
+  }
+  self.titleModifier1.setTransform(Famous.Transform.translate(-pos1 * width, 0, 0));
+  self.titleModifier1.setOpacity(getOpacity(pos1));
+  self.titleModifier2.setTransform(Famous.Transform.translate(-pos2 * width, 0, 0));
+  self.titleModifier2.setOpacity(getOpacity(pos2));
 };
 
 module.exports = DetailController;
