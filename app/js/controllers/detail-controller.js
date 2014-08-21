@@ -92,6 +92,9 @@ DetailController.prototype.buildContentTree = function (parentNode) {
   self.on('recall', function () {
     Famous.Engine.removeListener('resize', resizeScrollView);
     Famous.Timer.clear(onRender);
+    _.each(viewControllers, function (vc) {
+      vc.emit('recall');
+    });
   });
 
   parentNode.add(containerView);
