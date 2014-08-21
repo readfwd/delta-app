@@ -26,6 +26,12 @@
     max-height: 400px
     overflow: hidden
 
+    &.full-height
+      max-height: none
+
+      .img-container
+        max-height: none
+
     .img-container
       transform: translate(0, 50%)
       width: 100%
@@ -36,3 +42,7 @@
         width: 100%
         height: auto
         transform: translate(0, -50%)
+
+  .lang.lang-ro p.text-indent,
+  p.lang.lang-ro.text-indent
+    text-indent: 1em

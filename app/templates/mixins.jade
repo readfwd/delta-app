@@ -11,8 +11,9 @@ mixin section()
     if block
       block
 
-mixin img(source)
-  .img
+mixin img(source, fullHeight)
+  - var classes = fullHeight ? 'full-height' : '';
+  .img(class=classes)
     .img-container
       img(src='assets/' + source)
 
@@ -25,4 +26,11 @@ mixin submenu-item(linkTarget, T, en, ro)
   li
     - var translated = T.span({ en: en, ro: ro });
     a(href=linkTarget, data-title=translated)
-      != translated
+      .submenu-title
+        != translated
+      if block
+        block
+
+mixin submenu-caption(T, en, ro)
+  .submenu-caption
+    != T.span({ en: en, ro: ro })
