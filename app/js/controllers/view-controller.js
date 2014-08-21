@@ -11,6 +11,12 @@ util.inherits(ViewController, Famous.EventEmitter);
 ViewController.prototype.buildRenderTree = function (/*parentNode*/) {
 };
 
+ViewController.prototype.viewPresented = function () {
+};
+
+ViewController.prototype.viewDismissed = function () {
+};
+
 ViewController.prototype.getView = function() {
   if (!this.view) {
     this.view = new Famous.RenderNode();

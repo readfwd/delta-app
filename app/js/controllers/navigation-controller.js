@@ -46,6 +46,13 @@ NavigationController.prototype.setNavigationItem = function (viewController) {
     }
   }
 
+  if (oldViewController) {
+    oldViewController.viewDismissed();
+  }
+  if (viewController) {
+    viewController.viewPresented();
+  }
+
   if (Famous.AnimationToggle.get()) {
     Famous.Timer.after(commitAnimation, 2);
   } else {

@@ -154,9 +154,6 @@ TitleBarController.prototype.buildRenderTree = function (parentNode) {
   self.contentModifier = contentModifier;
   self.contentShowModifier = contentShowModifier;
 
-  if (self.options.pushTitleBar) {
-    self.titleBar.pushItem(self.buildBarItem());
-  }
   self.buildContentTree(contentWrapper);
   self.buildNavRenderController(contentRoot);
 
@@ -164,8 +161,21 @@ TitleBarController.prototype.buildRenderTree = function (parentNode) {
 
   self.on('navigateBack', function () {
     self.navigateAnimation(false);
-    self.titleBar.popItem();
   });
+};
+
+TitleBarController.prototype.viewPresented = function () {
+  var self = this;
+  if (self.options.pushTitleBar) {
+    self.titleBar.pushItem(self.buildBarItem());
+  }
+};
+
+TitleBarController.prototype.viewDismissed = function () {
+  var self = this;
+  if (self.options.pushTitleBar) {
+    self.titleBar.popItem();
+  }
 };
 
 module.exports = TitleBarController;
