@@ -38,6 +38,7 @@ function MainMenuController(options) {
             ro: 'Zone strict protejate',
             en: 'Preserved areas',
           }),
+          backIcon: 'fa-home',
         });
       },
     },
@@ -53,6 +54,7 @@ function MainMenuController(options) {
             ro: 'Cultură și istorie',
             en: 'Culture and history',
           }),
+          backIcon: 'fa-home',
         });
       },
     },
@@ -84,6 +86,7 @@ function MainMenuController(options) {
             ro: 'Trasee navale',
             en: 'Boat routes',
           }),
+          backIcon: 'fa-home',
         });
       },
     },
@@ -99,6 +102,7 @@ function MainMenuController(options) {
             ro: 'Trasee terestre',
             en: 'Hiking trails',
           }),
+          backIcon: 'fa-home',
         });
       },
     },
@@ -135,6 +139,7 @@ function MainMenuController(options) {
             ro: 'Setări',
             en: 'Settings',
           }),
+          backIcon: 'fa-home',
         });
       },
     }
