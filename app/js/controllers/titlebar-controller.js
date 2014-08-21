@@ -8,6 +8,9 @@ function TitleBarController(options) {
   options = options || {};
   options.title = options.title || '';
   options.backIcon = options.backIcon || 'fa-chevron-left';
+  if (options.pushTitleBar === undefined) {
+    options.pushTitleBar = true;
+  }
   this.titleBar = options.titleBar;
   NavigationController.call(this, options);
 }
@@ -151,7 +154,6 @@ TitleBarController.prototype.buildRenderTree = function (parentNode) {
   self.contentModifier = contentModifier;
   self.contentShowModifier = contentShowModifier;
 
-  self.titleBar.pushItem(self.buildBarItem());
   self.buildContentTree(contentWrapper);
   self.buildNavRenderController(contentRoot);
 
@@ -159,8 +161,21 @@ TitleBarController.prototype.buildRenderTree = function (parentNode) {
 
   self.on('navigateBack', function () {
     self.navigateAnimation(false);
-    self.titleBar.popItem();
   });
+};
+
+TitleBarController.prototype.viewPresented = function () {
+  var self = this;
+  if (self.options.pushTitleBar) {
+    self.titleBar.pushItem(self.buildBarItem());
+  }
+};
+
+TitleBarController.prototype.viewDismissed = function () {
+  var self = this;
+  if (self.options.pushTitleBar) {
+    self.titleBar.popItem();
+  }
 };
 
 module.exports = TitleBarController;

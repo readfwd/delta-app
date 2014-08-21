@@ -2,9 +2,9 @@ var util = require('util');
 var MenuController = require('./menu-controller');
 var MapController = require('./map-controller');
 var Famous = require('../shims/famous');
-var _ = require('lodash');
 var templates = require('../lib/templates');
 var TemplateController = require('./template-controller');
+var MasterController = require('./master-controller');
 var T = require('../translate');
 
 function MainMenuController(options) {
@@ -78,7 +78,7 @@ function MainMenuController(options) {
         en: 'Boat routes',
       }),
       viewController: function () {
-        return new TemplateController({
+        return new MasterController({
           template: templates.ghid.routes.index,
           title: T.span({
             ro: 'Trasee navale',
@@ -93,7 +93,7 @@ function MainMenuController(options) {
         en: 'Hiking trails',
       }),
       viewController: function () {
-        return new TemplateController({
+        return new MasterController({
           template: templates.ghid.trails.index,
           title: T.span({
             ro: 'Trasee terestre',

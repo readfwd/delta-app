@@ -14,6 +14,17 @@ function TemplateController(options) {
 }
 util.inherits(TemplateController, TitleBarController);
 
+TemplateController.prototype.pipeToScrollView = function (renderable) {
+  var sv1 = this.options.scrollView;
+  var sv2 = this.scrollView;
+  if (sv1) {
+    renderable.pipe(sv1);
+  }
+  if (sv2) {
+    renderable.pipe(sv2);
+  }
+};
+
 TemplateController.prototype.buildContentTree = function (parentNode) {
   var self = this;
 
@@ -29,13 +40,14 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
   });
 
   var scrollView = new Famous.ScrollView();
-  surface.pipe(scrollView);
+  self.scrollView = scrollView;
+  self.pipeToScrollView(surface);
 
   var containerView = new Famous.ContainerSurface({
     classes: ['template-bg'],
     size: [undefined, undefined],
   });
-
+  self.pipeToScrollView(containerView);
 
   function resizeScrollView() {
     Famous.Engine.once('postrender', function () {
@@ -65,7 +77,7 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
   parentNode.add(containerView);
 };
 
-TemplateController.prototype.setUpPage = function (page) {
+TemplateController.prototype.setUpLinks = function (page) {
   var self = this;
 
   var links = page.find('a');
@@ -88,7 +100,12 @@ TemplateController.prototype.setUpPage = function (page) {
     self.setNavigationItem(viewController);
   });
 
-  var settingsDesc = this.options.settings;
+};
+
+TemplateController.prototype.setUpSettings = function (page) {
+  var self = this;
+
+  var settingsDesc = self.options.settings;
   if (settingsDesc) {
     var settings = page.find('input[data-setting]');
     settings.each(function (idx, el) {
@@ -107,6 +124,11 @@ TemplateController.prototype.setUpPage = function (page) {
       }
     });
   }
+};
+
+TemplateController.prototype.setUpPage = function (page) {
+  this.setUpLinks(page);
+  this.setUpSettings(page);
 };
 
 module.exports = TemplateController;
