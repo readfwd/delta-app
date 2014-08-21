@@ -7,7 +7,6 @@ var Translate = {
     if (!lang) {
       var sysLang = navigator.language || navigator.userLanguage;
       sysLang = sysLang.replace(/-.*$/, '');
-      console.log(sysLang);
       switch (sysLang) {
         case 'ro':
           lang = sysLang;
