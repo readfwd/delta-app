@@ -136,6 +136,7 @@ DetailController.prototype.navigateToIndex = function (index, animated) {
   if (self.scrollView) {
     if (self.indexNotSet || !self.scrollView.goToPageIndex(index, animated)) {
       self.scrollView.setPosition(index * self.contentWidth);
+      self.scrollView.setPageSpring(index * self.contentWidth);
     }
   }
 };

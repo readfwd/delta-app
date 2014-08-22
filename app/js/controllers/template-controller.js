@@ -49,9 +49,17 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
   });
   self.pipeToScrollView(containerView);
 
+  function resizeNow(element) {
+    var size = surface.size;
+    var height;
+    if (!size || size[1] !== (height = element.outerHeight())) {
+      surface.setSize([undefined, height]);
+    }
+  }
+
   function resizeScrollView() {
     Famous.Engine.once('postrender', function () {
-      surface.setSize([undefined, $('#' + id + ' > .template-container-inner').outerHeight()]);
+      resizeNow($('#' + id + ' > .template-container-inner'));
     });
   }
 
@@ -67,10 +75,15 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
     Famous.Engine.on('resize', resizeScrollView);
     Famous.Engine.once('postrender', function () {
       var element = $('#' + id + ' > .template-container-inner');
+      resizeNow(element);
       // Famous reuses the same DOM objects on subsequent deploys
       // so we shouldn't bind event handlers on the content HTML twice
       if (!element.data('deployed')) {
         element.data('deployed', true);
+        element[0].addEventListener('DOMSubtreeModified', resizeNow.bind(null, element));
+        element.find('img').on('load', function() {
+          Famous.Timer.setTimeout(resizeScrollView, 100);
+        });
         self.setUpPage(element);
       }
     });
