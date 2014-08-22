@@ -83,7 +83,7 @@ DetailController.prototype.buildContentTree = function (parentNode) {
 
   containerView.on('deploy', function () {
     Famous.Engine.on('resize', resizeScrollView);
-    Famous.Timer.every(onRender);
+    Famous.Engine.on('prerender', onRender);
   });
 
   containerView.on('recall', function () {
@@ -92,7 +92,7 @@ DetailController.prototype.buildContentTree = function (parentNode) {
 
   self.on('recall', function () {
     Famous.Engine.removeListener('resize', resizeScrollView);
-    Famous.Timer.clear(onRender);
+    Famous.Engine.removeListener('prerender', onRender);
     _.each(viewControllers, function (vc) {
       vc.emit('recall');
     });

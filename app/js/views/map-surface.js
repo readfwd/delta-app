@@ -19,12 +19,14 @@ function MapSurface(options) {
     }
     resizeScheduled = true;
     Famous.Engine.once('postrender', _.throttle(function () {
+      resizeScheduled = false;
+      if (!self.map) { return; }
       self.map.updateSize();
       self.updateNavDotHeading();
-      resizeScheduled = false;
     }, 300));
   }
 
+  self.on('resize', onResize);
 
   self.on('deploy', function () {
     Famous.Engine.once('postrender', function () {

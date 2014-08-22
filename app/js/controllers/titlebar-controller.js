@@ -11,6 +11,9 @@ function TitleBarController(options) {
   if (options.pushTitleBar === undefined) {
     options.pushTitleBar = true;
   }
+  if (options.createTitleBar === undefined) {
+    options.createTitleBar = true;
+  }
   this.titleBar = options.titleBar;
   NavigationController.call(this, options);
 }
@@ -140,7 +143,7 @@ TitleBarController.prototype.buildRenderTree = function (parentNode) {
   var self = this;
 
   var contentRoot;
-  if (self.titleBar) {
+  if (self.titleBar || !self.options.createTitleBar) {
     contentRoot = parentNode;
   } else {
     self.titleBar = new TitleBar();
@@ -166,14 +169,14 @@ TitleBarController.prototype.buildRenderTree = function (parentNode) {
 
 TitleBarController.prototype.viewPresented = function () {
   var self = this;
-  if (self.options.pushTitleBar) {
+  if (self.options.pushTitleBar && self.titleBar) {
     self.titleBar.pushItem(self.buildBarItem());
   }
 };
 
 TitleBarController.prototype.viewDismissed = function () {
   var self = this;
-  if (self.options.pushTitleBar) {
+  if (self.options.pushTitleBar && self.titleBar) {
     self.titleBar.popItem();
   }
 };

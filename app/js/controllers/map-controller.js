@@ -19,6 +19,10 @@ MapController.prototype.buildContentTree = function (parentNode) {
     extent: [28.5, 44.33, 29.83, 45.6],
   });
 
+  this.on('resize', function () {
+    map.emit('resize');
+  });
+
   parentNode.add(modifier).add(map);
 };
 
