@@ -34,3 +34,11 @@ mixin submenu-item(linkTarget, T, en, ro)
 mixin submenu-caption(T, en, ro)
   .submenu-caption
     != T.span({ en: en, ro: ro })
+
+mixin maplink(posX, posY)
+  a(href='map://' + posX + '/' + posY)
+    if block
+      block
+
+mixin mapicon
+  i.fa.fa-map-marker
