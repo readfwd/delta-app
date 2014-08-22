@@ -82,19 +82,23 @@ DetailController.prototype.buildContentTree = function (parentNode) {
   var onRender = self.onRender.bind(self);
 
   containerView.on('deploy', function () {
-    Famous.Engine.on('resize', resizeScrollView);
-    Famous.Engine.on('prerender', onRender);
+    self.deploy();
   });
 
   containerView.on('recall', function () {
-    self.emit('recall');
+    self.recall();
+  });
+
+  self.on('deploy', function () {
+    Famous.Engine.on('resize', resizeScrollView);
+    Famous.Engine.on('prerender', onRender);
   });
 
   self.on('recall', function () {
     Famous.Engine.removeListener('resize', resizeScrollView);
     Famous.Engine.removeListener('prerender', onRender);
     _.each(viewControllers, function (vc) {
-      vc.emit('recall');
+      vc.recall();
     });
   });
 

@@ -17,6 +17,24 @@ ViewController.prototype.viewPresented = function () {
 ViewController.prototype.viewDismissed = function () {
 };
 
+ViewController.prototype.deploy = function () {
+  if (this._deployed) {
+    return;
+  } else {
+    this._deployed = true;
+  }
+  this.emit('deploy');
+};
+
+ViewController.prototype.recall = function () {
+  if (!this._deployed) {
+    return;
+  } else {
+    this._deployed = false;
+  }
+  this.emit('recall');
+};
+
 ViewController.prototype.getView = function() {
   if (!this.view) {
     this.view = new Famous.RenderNode();

@@ -55,7 +55,15 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
     });
   }
 
+  containerView.on('recall', function () {
+    self.recall();
+  });
+
   containerView.on('deploy', function () {
+    self.deploy();
+  });
+
+  self.on('deploy', function () {
     Famous.Engine.on('resize', resizeScrollView);
     Famous.Engine.once('postrender', function () {
       var element = $('#' + id + ' > .template-container-inner');
@@ -67,10 +75,6 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
       }
     });
     resizeScrollView();
-  });
-
-  containerView.on('recall', function () {
-    self.emit('recall');
   });
 
   self.on('recall', function () {
