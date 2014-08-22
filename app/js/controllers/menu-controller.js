@@ -185,6 +185,7 @@ MenuController.prototype.buildGrid = function (parentNode) {
   var verticalLayout = new Famous.GridLayout({
     dimensions: [1, buttonLayout.length],
     gutterSize: [0, borderWidth],
+    size: [undefined, undefined],
   });
 
   var horizontalGutter = new Famous.FlexibleLayout({
