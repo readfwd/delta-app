@@ -84,7 +84,7 @@ MapSplitController.prototype.setFullScreenState = function (state) {
       self.layouts[idx].setRatios([split, 1 - split]);
       self.viewControllers[idx].emit('resize');
       var height = window.innerHeight;
-      if (cordova.iOS7) {
+      if (cordova.iOS7App) {
         height -= 20;
       }
       var delta = (split - self.options.splitRatio) * height;

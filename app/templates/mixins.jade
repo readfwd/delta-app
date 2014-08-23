@@ -22,10 +22,15 @@ mixin submenu()
     if block
       block
 
+mixin template-link(linkTarget, linkTitle)
+  a(href=linkTarget, data-title=linkTitle).template-link
+    if block
+      block
+
 mixin submenu-item(linkTarget, T, en, ro)
   li
     - var translated = T.span({ en: en, ro: ro });
-    a(href=linkTarget, data-title=translated)
+    a(href=linkTarget, data-title=translated).template-link
       .submenu-title
         != translated
       if block
