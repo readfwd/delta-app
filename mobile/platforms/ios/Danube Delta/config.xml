@@ -28,6 +28,15 @@
     <feature name="Compass">
         <param name="ios-package" value="CDVCompass" />
     </feature>
+    <feature name="InAppBrowser">
+        <param name="ios-package" value="CDVInAppBrowser" />
+    </feature>
+    <feature name="Notification">
+        <param name="ios-package" value="CDVNotification" />
+    </feature>
+    <feature name="EmailComposer">
+        <param name="ios-package" value="APPEmailComposer" />
+    </feature>
     <icon height="60" src="res/icons/ios/AppIcon60x60.png" width="60" />
     <icon height="120" src="res/icons/ios/AppIcon60x60@2x.png" width="120" />
     <icon height="76" src="res/icons/ios/AppIcon76x76.png" width="76" />
