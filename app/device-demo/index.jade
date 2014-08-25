@@ -1,0 +1,19 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="utf-8")
+    meta(name="fragment", content="!")
+    meta(name="viewport", content="width=device-width, minimum-scale=1, maximum-scale=1, user-scalable=no, minimal-ui")
+    title Danube Delta iPhone demo
+    // build:css({.tmp,dist}/device-demo) bundle.css
+    link(rel="stylesheet", href="main.css")
+    // endbuild
+  body
+    .device-demo-iphone
+      iframe(src='../index.html')
+
+    //- .device-demo-iphone.landscape
+    //-   iframe(src='../index.html')
+
+    .device-demo-ipad-landscape
+      iframe(src='../index.html')
