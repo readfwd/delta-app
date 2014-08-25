@@ -2,7 +2,7 @@ var util = require('util');
 var cordova = require('../shims/cordova');
 var Famous = require('../shims/famous');
 var ViewController = require('./view-controller');
-var MainMenuController = require('./mainmenu-controller');
+var MainMenuController = require('../content/mainmenu-controller');
 
 function RootController () {
   ViewController.apply(this, arguments);
