@@ -40,7 +40,7 @@ gulp.task('index.html', function () {
 });
 
 // Device demos
-gulp.task('device-demos', ['build'], function () {
+gulp.task('device-demo', function () {
   gulp.src(paths.app + '/device-demo/index.jade')
     .pipe($.jade({
       pretty: true
@@ -143,7 +143,7 @@ gulp.task('assets:dist', function () {
 });
 
 // Minimal development build.
-gulp.task('build', ['index.html', 'js:dev', 'css:dev', 'assets']);
+gulp.task('build', ['index.html', 'js:dev', 'css:dev', 'assets', 'device-demo']);
 
 // CI testing build, with coverage maps.
 gulp.task('build:test', ['index.html', 'js:istanbul', 'css:dev', 'assets']);
