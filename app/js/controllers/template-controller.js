@@ -188,7 +188,7 @@ TemplateController.prototype.setUpMapLinks = function (page) {
     ]);
     var zoom = parseInt(params[2]);
     var $el = $(link);
-    var name = $el.data('name') || 'map-link-' + idx;
+    var name = $el.data('name') || ('map-link-' + idx);
 
     Famous.FastClick($el, function () {
       var vc = new MapController({
@@ -199,7 +199,7 @@ TemplateController.prototype.setUpMapLinks = function (page) {
         titleBar: self.titleBar,
       });
       self.setNavigationItem(vc);
-      vc.navigateToFeature('map-link-' + idx);
+      vc.navigateToFeature(name);
     });
 
     if (!takenNames[name]) {
@@ -208,7 +208,7 @@ TemplateController.prototype.setUpMapLinks = function (page) {
         pin: true,
         coords: coords,
         zoomLevel: isNaN(zoom) ? null : zoom,
-        name: 'map-link-' + idx,
+        name: name,
       });
       takenNames[name] = name;
     }

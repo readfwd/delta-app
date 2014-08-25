@@ -4,10 +4,11 @@ var util = require('util');
 var Famous = require('../shims/famous');
 var MapPresets = require('../content/map-presets');
 var _ = require('lodash');
+var T = require('../translate');
 
 function MapController(options) {
   options = options || {};
-  options.title = options.title || 'Maps';
+  options.title = options.title || T.span({ en:'Map', ro: 'Hartă' });
   options.preset = options.preset || 'default';
   TitleBarController.call(this, options);
 }

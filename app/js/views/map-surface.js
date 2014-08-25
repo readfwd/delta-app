@@ -177,7 +177,7 @@ MapSurface.prototype.startLocationUpdates = function () {
       enableHighAccuracy: true,
       maximumAge: 15 * 60 * 1000,
     });
-  }
+  } 
 };
 
 MapSurface.prototype.stopHeadingUpdates = function () {
