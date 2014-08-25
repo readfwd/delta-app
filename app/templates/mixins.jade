@@ -46,8 +46,8 @@ mixin submenu-caption(T, en, ro)
   .submenu-caption
     != T.span({ en: en, ro: ro })
 
-mixin maplink(posX, posY)
-  a(href='map://' + posX + '/' + posY).link.map-link
+mixin maplink(posY, posX, name)
+  a(href='map://' + posY + '/' + posX, data-name=name).link.map-link
     if block
       block
 
