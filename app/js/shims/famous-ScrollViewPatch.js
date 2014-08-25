@@ -20,6 +20,9 @@ var SpringStates = {
     PAGE: 2
 };
 
+/** @const */
+var TOLERANCE = 0.5;
+
 // Copied over private methods
 
 function _attachAgents() {
@@ -79,6 +82,89 @@ function _nodeSizeForDirection(node) {
     return nodeSize;
 }
 
+
+function _normalizeState() {
+    var position = this.getPosition();
+    var nodeSize = _nodeSizeForDirection.call(this, this._node);
+    var nextNode = this._node.getNext();
+
+    while (position > nodeSize + TOLERANCE && nextNode) {
+        _shiftOrigin.call(this, -nodeSize);
+        position -= nodeSize;
+        this._scroller.sequenceFrom(nextNode);
+        this._node = nextNode;
+        nextNode = this._node.getNext();
+        nodeSize = _nodeSizeForDirection.call(this, this._node);
+    }
+
+    var previousNode = this._node.getPrevious();
+    var previousNodeSize;
+
+    while (position < -TOLERANCE && previousNode) {
+        previousNodeSize = _nodeSizeForDirection.call(this, previousNode);
+        this._scroller.sequenceFrom(previousNode);
+        this._node = previousNode;
+        _shiftOrigin.call(this, previousNodeSize);
+        position += previousNodeSize;
+        previousNode = this._node.getPrevious();
+    }
+}
+
+function _handleEdge(edgeDetected) {
+    if (!this._onEdge && edgeDetected) {
+        this.sync.setOptions({scale: this.options.edgeGrip});
+        if (!this._touchCount && this._springState !== SpringStates.EDGE) {
+            _setSpring.call(this, this._edgeSpringPosition, SpringStates.EDGE);
+        }
+    }
+    else if (this._onEdge && !edgeDetected) {
+        this.sync.setOptions({scale: 1});
+        if (this._springState && Math.abs(this.getVelocity()) < 0.001) {
+            // reset agents, detaching the spring
+            _detachAgents.call(this);
+            _attachAgents.call(this);
+        }
+    }
+    this._onEdge = edgeDetected;
+}
+
+Scrollview.prototype.render = function render() {
+    if (!this._node) return null;
+
+    _normalizeState.call(this);
+    _handleEdge.call(this, this._scroller.onEdge());
+    if (this.options.paginated) _handlePagination.call(this);
+
+    return this._scroller.render();
+};
+
+// Edited methods
+
+function _handlePagination() {
+    if (!this._needsPaginationCheck) return;
+
+    if (this._touchCount) return;
+    if (this._springState === SpringStates.EDGE) return;
+
+    var velocity = this.getVelocity();
+    if (Math.abs(velocity) >= this.options.pageStopSpeed) return;
+
+    var position = this.getPosition();
+    var velocitySwitch = Math.abs(velocity) > this.options.pageSwitchSpeed;
+
+    // parameters to determine when to switch
+    var nodeSize = _nodeSizeForDirection.call(this, this._node);
+    var positionNext = position - this._pageSpringPosition > 0.5 * nodeSize;
+    var positionPrev = position - this._pageSpringPosition < -0.5 * nodeSize;
+    var velocityNext = velocity > 0;
+
+    if ((positionNext && !velocitySwitch) || (velocitySwitch && velocityNext)) this.goToNextPage();
+    else if ((positionPrev && !velocitySwitch) || (velocitySwitch && !velocityNext)) this.goToPreviousPage();
+    else _setSpring.call(this, this._pageSpringPosition, SpringStates.PAGE);
+
+    this._needsPaginationCheck = false;
+}
+
 // End of private methods
 
 Scrollview.prototype.goToPageIndex = function (index, animated) {
@@ -107,6 +193,10 @@ Scrollview.prototype.goToPageIndex = function (index, animated) {
   }
 
   return node;
+};
+
+Scrollview.prototype.setPageSpring = function (position) {
+  _setSpring.call(this, position, SpringStates.PAGE);
 };
 
 module.exports = Scrollview;
