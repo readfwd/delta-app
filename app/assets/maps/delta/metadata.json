@@ -1,8 +1,8 @@
 {
     "attribution": "", 
     "description": "A faithful reimplementation of the standard OpenStreetMap style", 
-    "center": "29.0945,44.9745,9", 
-    "bounds": "28.5,44.33,29.83,45.6", 
+    "center": "28.9741,44.9841,9", 
+    "bounds": "28.1,44.3296,29.8324,45.6004", 
     "minzoom": "8", 
     "version": "1.0.0", 
     "template": "", 
