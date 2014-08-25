@@ -39,6 +39,21 @@ gulp.task('index.html', function () {
     .pipe(browserSync.reload({stream: true}));
 });
 
+// Device demos
+gulp.task('device-demos', ['build'], function () {
+  gulp.src(paths.app + '/device-demo/index.jade')
+    .pipe($.jade({
+      pretty: true
+    }))
+    .pipe(gulp.dest(paths.tmp + '/device-demo/'))
+    .pipe(browserSync.reload({stream: true}));
+  gulp.src(paths.app + '/css/device-demo/device-demo.styl')
+    .pipe($.stylus())
+    .pipe($.autoprefixer(opts.autoprefixer))
+    .pipe($.minifyCss())
+    .pipe(gulp.dest(paths.tmp + '/css/device-demo'));;
+});
+
 // Generate JS functions from Jade templates.
 // Run this before any JS task, because Browserify needs to bundle them in.
 gulp.task('templates', function () {
