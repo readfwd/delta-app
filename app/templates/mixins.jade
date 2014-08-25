@@ -22,16 +22,21 @@ mixin submenu()
     if block
       block
 
-mixin submenu-item(linkTarget, T, en, ro)
+mixin submenu-item(linkTarget, T, en, ro, titleEn, titleRo)
+  - ro = ro || en;
+  - titleEn = titleEn || en;
+  - titleRo = titleRo || ro;
   li
+    - var translatedTitle = T.span({ en: titleEn, ro: titleRo });
     - var translated = T.span({ en: en, ro: ro });
-    a(href=linkTarget, data-title=translated)
+    a(href=linkTarget, data-title=translatedTitle)
       .submenu-title
         != translated
       if block
         block
 
 mixin submenu-caption(T, en, ro)
+  - ro = ro || en;
   .submenu-caption
     != T.span({ en: en, ro: ro })
 
