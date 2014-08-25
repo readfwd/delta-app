@@ -1,4 +1,5 @@
 var TitleBarController = require('./titlebar-controller');
+var MapController = require('./map-controller');
 var util = require('util');
 var Famous = require('../shims/famous');
 var $ = require('jquery');
@@ -126,7 +127,7 @@ TemplateController.prototype.setUpTemplateLinks = function (page) {
 };
 
 TemplateController.prototype.setUpLinks = function (page) {
-  var links = page.find('a:not(.template-link)');
+  var links = page.find('a:not(.link)');
   links.on('click', function (evt) {
     evt.preventDefault();
   });
@@ -162,9 +163,50 @@ TemplateController.prototype.setUpLinks = function (page) {
       }
       return;
     }
+
     window.open(href, cordova.present ? '_system' : '_blank');
   });
 
+};
+
+TemplateController.prototype.setUpMapLinks = function (page) {
+  var self = this;
+
+  var links = page.find('a.map-link');
+  links.on('click', function (evt) {
+    evt.preventDefault();
+  });
+  
+  var features = _.map($.makeArray(links), function (link, idx) {
+    var href = link.href;
+    var params = href.replace(/^map:(\/\/)?/, '').split('/');
+    var coords = MapController.GPSToMercador([
+      parseFloat(params[1]), 
+      parseFloat(params[0]),
+    ]);
+    var zoom = parseInt(params[2]);
+    var $el = $(link);
+
+    Famous.FastClick($el, function () {
+      var vc = new MapController({
+        preset: {
+          extend: 'default',
+          features: features,
+        },
+        titleBar: self.titleBar,
+      });
+      self.setNavigationItem(vc);
+      vc.navigateToFeature('map-link-' + idx);
+    });
+
+    return {
+      type: 'point',
+      pin: true,
+      coords: coords,
+      zoomLevel: isNaN(zoom) ? null : zoom,
+      name: 'map-link-' + idx,
+    };
+  });
 };
 
 TemplateController.prototype.setUpSettings = function (page) {
@@ -195,6 +237,7 @@ TemplateController.prototype.setUpPage = function (page) {
   this.setUpLinks(page);
   this.setUpTemplateLinks(page);
   this.setUpSettings(page);
+  this.setUpMapLinks(page);
 };
 
 module.exports = TemplateController;
