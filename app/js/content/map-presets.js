@@ -26,6 +26,7 @@ MapPresets.registerPreset('default', {
   views: [ {
     minZoom: 8,
     maxZoom: 13,
+    zoom: 10,
     extent: deltaExtent,
   } ],
 });

@@ -264,8 +264,11 @@ MapSurface.prototype.setView = function (index) {
   this.currentViewIndex = index;
   if (view.initialOptions.extent) {
     view.fitExtent(view.initialOptions.extent, this.map.getSize());
-    view.setZoom(view.getZoom() + 1);
-    view.constrainResolution();
+    if (view.initialOptions.zoom) {
+      view.setZoom(view.initialOptions.zoom);
+    } else {
+      view.setZoom(view.getZoom() + 1);
+    }
   }
 };
 
