@@ -1,6 +1,6 @@
 #1/bin/bash
 
-SRC='../delta-book/img/'
+SRC="$1"
 DST='./app/assets/img/'
 
 find "$SRC" -type f | while read file; do

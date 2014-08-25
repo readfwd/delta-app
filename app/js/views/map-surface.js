@@ -7,6 +7,13 @@ var $ = require('jquery');
 function MapSurface(options) {
   var self = this;
 
+  console.log(options);
+
+  options = options || {};
+  options.layers = options.layers || [];
+  options.views = options.views || [];
+  options.features = options.features || [];
+
   var id = 'map-' + (Math.random().toString(36)+'00000000000000000').slice(2, 7);
   options.content = '<div id="' + id + '" class="map" style="width: 100%; height: 100%"></div>';
 
@@ -129,13 +136,25 @@ MapSurface.prototype.stopLocationUpdates = function () {
 MapSurface.prototype.updateMapDotLocation = function () {
   var self = this;
   if (self.navDot && self.lastLocation) {
-    coords = ol.proj.transform(self.lastLocation, 'EPSG:4326', 'EPSG:3857');
-    self.navDot.setPosition(coords);
+    self.navDot.setPosition(self.lastLocation);
   }
   if (self.jumpControl) {
     self.jumpControl.toggleClass('hidden', 
-      !ol.extent.containsCoordinate(self.boundingExtent, self.lastLocation));
+      !self.boundingExtentsContaining(self.lastLocation).length);
   }
+};
+
+MapSurface.prototype.boundingExtentsContaining = function (coord) {
+  var r = [];
+  if (coord) {
+    for (var i = 0, v = this.views, n = v.length; i < n; i++) {
+      var extent = v[i].initialOptions.extent;
+      if (extent && ol.extent.containsCoordinate(extent, coord)) {
+        r.push(i);
+      }
+    }
+  }
+  return r;
 };
 
 MapSurface.prototype.startLocationUpdates = function () {
@@ -149,7 +168,7 @@ MapSurface.prototype.startLocationUpdates = function () {
       //Mock coords
       //coords = [28.787548, 45.172372]; //Fabrica de șnițele
       //coords = [26.030969, 44.930918]; //Service de MacBook-uri
-      self.lastLocation = coords;
+      self.lastLocation = ol.proj.transform(coords, 'EPSG:4326', 'EPSG:3857');
       self.updateMapDotLocation();
     }, function (err) {
       console.log('Could not get location: ' + err.message);
@@ -227,11 +246,18 @@ MapSurface.prototype.createJumpHomeControl = function () {
                  '</button>');
   control.append(button);
   button.on('click', function() {
-    if (!self.map ||
-        !self.lastLocation ||
-        !ol.extent.containsCoordinate(self.boundingExtent, self.lastLocation)) {
+    if (!self.map || !self.lastLocation) {
       return;
     }
+    var viewIndices = self.boundingExtentsContaining(self.lastLocation);
+    if (!viewIndices.length) {
+      return;
+    }
+
+    if (!_.contains(viewIndices, self.currentViewIndex)) {
+      self.setView(viewIndices[0]);
+    }
+
     var view = self.map.getView();
     var pan = ol.animation.pan({
       duration: 700,
@@ -243,7 +269,7 @@ MapSurface.prototype.createJumpHomeControl = function () {
     });
     self.map.beforeRender(pan);
     self.map.beforeRender(zoom);
-    view.setCenter(ol.proj.transform(self.lastLocation, 'EPSG:4326', 'EPSG:3857'));
+    view.setCenter(self.lastLocation);
     view.setZoom(12);
   });
   self.jumpControl = control;
@@ -253,38 +279,86 @@ MapSurface.prototype.createJumpHomeControl = function () {
   }));
 };
 
+MapSurface.prototype.setView = function (index) {
+  var view = this.views[index];
+  this.map.setView(view);
+  self.currentViewIndex = index;
+  if (view.initialOptions.extent) {
+    view.fitExtent(view.initialOptions.extent, this.map.getSize());
+    view.setZoom(view.getZoom() + 1);
+    view.constrainResolution();
+  }
+};
+
+MapSurface.defaultVectorStyle = new ol.style.Style({
+  fill: new ol.style.Fill({
+    color: 'rgba(255, 255, 255, 0.6)'
+  }),
+  stroke: new ol.style.Stroke({
+    color: '#319FD3',
+    width: 1
+  }),
+});
+
 MapSurface.prototype.createMap = function (opts) {
+  var self = this;
+
   var map = new ol.Map({
     target: opts.target
   });
-  this.map = map;
+  self.map = map;
 
-  this.boundingExtent = opts.extent;
-  var extent = ol.proj.transformExtent(opts.extent, 'EPSG:4326', 'EPSG:3857');
+  _.each(opts.layers, function (opt) {
+    var layer;
+    var layerOptions = {
+      extent: opt.extent,
+    };
 
-  var mapLayer = new ol.layer.Tile({
-    source: new ol.source.XYZ({
-      attributions: [
-        ol.source.OSM.DATA_ATTRIBUTION
-      ],
-      url: opts.url + '/{z}/{x}/{y}.png'
-    }),
-    extent: extent
+    var vectorStyle = opt.style || MapSurface.defaultVectorStyle;
+
+    if (opt.type === 'tile') {
+      if (opt.url) {
+        layerOptions.source = new ol.source.XYZ({
+          attributions: [
+            ol.source.OSM.DATA_ATTRIBUTION
+          ],
+          url: opt.url + '/{z}/{x}/{y}.png'
+        });
+      }
+
+      layer = new ol.layer.Tile(layerOptions);
+    }
+
+    if (opt.type === 'geojson') {
+      if (opt.url) {
+        layerOptions.source = new ol.source.GeoJSON({
+          url: opt.url,
+          projection: 'EPSG:3857',
+        });
+      }
+
+      //layerOptions.style = vectorStyle;
+
+      layer = new ol.layer.Vector(layerOptions);
+    }
+
+    if (opt.trim && opt.extent) {
+      self.trimLayer(layer, opt.extent);
+    }
+
+    map.addLayer(layer);
   });
-  this.trimLayer(mapLayer, extent);
-  map.addLayer(mapLayer);
 
-  var view = new ol.View({
-    extent: extent,
-    minZoom: 8,
-    maxZoom: 13,
+  self.views = _.map(opts.views, function (opt) {
+    var viewOpts = _.extend({}, opt);
+    var view = new ol.View(viewOpts);
+    view.initialOptions = viewOpts;
+    return view;
   });
-  map.setView(view);
-  view.fitExtent(extent, map.getSize());
-  view.setZoom(view.getZoom() + 1);
 
-  this.createNavDot();
-  this.createJumpHomeControl();
+  self.setView(0);
+  self.createNavDot();
+  self.createJumpHomeControl();
 };
 
 module.exports = MapSurface;

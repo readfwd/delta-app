@@ -5,6 +5,7 @@ var $ = require('jquery');
 var templates = require('../lib/templates');
 var _ = require('lodash');
 var T = require('../translate');
+var cordova = require('../shims/cordova');
 
 function TemplateController(options) {
   options = options || {};
@@ -99,10 +100,10 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
   parentNode.add(containerView);
 };
 
-TemplateController.prototype.setUpLinks = function (page) {
+TemplateController.prototype.setUpTemplateLinks = function (page) {
   var self = this;
 
-  var links = page.find('a');
+  var links = page.find('a.template-link');
   links.on('click', function (evt) {
     evt.preventDefault();
   });
@@ -120,6 +121,48 @@ TemplateController.prototype.setUpLinks = function (page) {
       template: t,
     });
     self.setNavigationItem(viewController);
+  });
+
+};
+
+TemplateController.prototype.setUpLinks = function (page) {
+  var links = page.find('a:not(.template-link)');
+  links.on('click', function (evt) {
+    evt.preventDefault();
+  });
+
+  Famous.FastClick(links, function(evt) {
+    var href = $(evt.currentTarget).attr('href');
+    if (/^tel:/.test(href)) {
+      if (cordova.present) {
+        buttons = {
+          en: ['Cancel', 'Call'],
+          ro: ['Anulați', 'Apelați'],
+        };
+        title = {
+          en: 'Phone number',
+          ro: 'Număr de telefon',
+        };
+        var lang = T.getLanguage();
+        navigator.notification.confirm(href.replace(/^tel:/, ''), function (index) {
+          if (index === 2) {
+            window.open(href, '_system');
+          }
+        }, title[lang], buttons[lang]);
+      } else {
+        window.open(href, '_self');
+      }
+      return;
+    }
+    if (/^mailto:/.test(href)) {
+      if (window.plugin && window.plugin.email) {
+        window.plugin.email.open({ to: [ href.replace(/^mailto:/, '') ] });
+      } else {
+        window.open(href, '_self');
+      }
+      return;
+    }
+    window.open(href, cordova.present ? '_system' : '_blank');
   });
 
 };
@@ -150,6 +193,7 @@ TemplateController.prototype.setUpSettings = function (page) {
 
 TemplateController.prototype.setUpPage = function (page) {
   this.setUpLinks(page);
+  this.setUpTemplateLinks(page);
   this.setUpSettings(page);
 };
 

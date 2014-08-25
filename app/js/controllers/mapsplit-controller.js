@@ -7,6 +7,7 @@ var cordova = require('../shims/cordova');
 
 function MapSplitController(options) {
   options = options || {};
+  options.mapOptions = options.mapOptions || {};
   options.splitRatio = options.splitRatio || 0.4;
   ViewController.call(this, options);
 }
@@ -39,10 +40,8 @@ MapSplitController.prototype.buildRenderTree = function (parentNode) {
     direction: 1,
     ratios: [split, 1 - split],
   });
-  var mapOptions = {
-    createTitleBar: false,
-  };
-  var mapVC = new MapController(mapOptions);
+  self.options.mapOptions.createTitleBar = false;
+  var mapVC = new MapController(self.options.mapOptions);
   var mapView = mapVC.getView();
   layoutMap.sequenceFrom([mapView, new Famous.RenderNode()]);
   parentNode.add(mapShowModifier).add(mapModifier).add(layoutMap);
@@ -84,7 +83,7 @@ MapSplitController.prototype.setFullScreenState = function (state) {
       self.layouts[idx].setRatios([split, 1 - split]);
       self.viewControllers[idx].emit('resize');
       var height = window.innerHeight;
-      if (cordova.iOS7) {
+      if (cordova.iOS7App) {
         height -= 20;
       }
       var delta = (split - self.options.splitRatio) * height;

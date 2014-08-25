@@ -47,7 +47,7 @@ MasterController.prototype.navigateToIndex = function (index) {
 MasterController.prototype.setUpPage = function (page) {
   var self = this;
 
-  var links = page.find('a');
+  var links = page.find('a.template-link');
   links.on('click', function (evt) {
     evt.preventDefault();
   });
