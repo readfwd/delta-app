@@ -18,7 +18,7 @@ mixin img(source, fullHeight)
       img(src='assets/' + source)
 
 mixin submenu()
-  ul
+  ul.submenu
     if block
       block
 
@@ -35,10 +35,11 @@ mixin submenu-item(linkTarget, T, en, ro, titleEn, titleRo)
     - var translatedTitle = T.span({ en: titleEn, ro: titleRo });
     - var translated = T.span({ en: en, ro: ro });
     a(href=linkTarget, data-title=translatedTitle).template-link
-      .submenu-title
-        != translated
-      if block
-        block
+      .submenu-container
+        .submenu-title
+          != translated
+        if block
+          block
 
 mixin submenu-caption(T, en, ro)
   - ro = ro || en;
