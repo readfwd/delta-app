@@ -39,6 +39,21 @@ gulp.task('index.html', function () {
     .pipe(browserSync.reload({stream: true}));
 });
 
+// Device demos
+gulp.task('device-demo', function () {
+  gulp.src(paths.app + '/device-demo/index.jade')
+    .pipe($.jade({
+      pretty: true
+    }))
+    .pipe(gulp.dest(paths.tmp + '/device-demo/'))
+    .pipe(browserSync.reload({stream: true}));
+  gulp.src(paths.app + '/css/device-demo/device-demo.styl')
+    .pipe($.stylus())
+    .pipe($.autoprefixer(opts.autoprefixer))
+    .pipe($.minifyCss())
+    .pipe(gulp.dest(paths.tmp + '/css/device-demo'));;
+});
+
 // Generate JS functions from Jade templates.
 // Run this before any JS task, because Browserify needs to bundle them in.
 gulp.task('templates', function () {
@@ -128,7 +143,7 @@ gulp.task('assets:dist', function () {
 });
 
 // Minimal development build.
-gulp.task('build', ['index.html', 'js:dev', 'css:dev', 'assets']);
+gulp.task('build', ['index.html', 'js:dev', 'css:dev', 'assets', 'device-demo']);
 
 // CI testing build, with coverage maps.
 gulp.task('build:test', ['index.html', 'js:istanbul', 'css:dev', 'assets']);
