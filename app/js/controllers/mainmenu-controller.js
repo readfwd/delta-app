@@ -5,6 +5,7 @@ var Famous = require('../shims/famous');
 var templates = require('../lib/templates');
 var TemplateController = require('./template-controller');
 var MasterController = require('./master-controller');
+var MapSplitController = require('./mapsplit-controller');
 var T = require('../translate');
 
 function MainMenuController(options) {
@@ -38,6 +39,7 @@ function MainMenuController(options) {
             ro: 'Zone strict protejate',
             en: 'Preserved areas',
           }),
+          backIcon: 'fa-home',
         });
       },
     },
@@ -53,6 +55,7 @@ function MainMenuController(options) {
             ro: 'Cultură și istorie',
             en: 'Culture and history',
           }),
+          backIcon: 'fa-home',
         });
       },
     },
@@ -78,12 +81,13 @@ function MainMenuController(options) {
         en: 'Boat routes',
       }),
       viewController: function () {
-        return new MasterController({
+        return new MapSplitController({
           template: templates.ghid.routes.index,
           title: T.span({
             ro: 'Trasee navale',
             en: 'Boat routes',
           }),
+          backIcon: 'fa-home',
         });
       },
     },
@@ -93,12 +97,13 @@ function MainMenuController(options) {
         en: 'Hiking trails',
       }),
       viewController: function () {
-        return new MasterController({
+        return new MapSplitController({
           template: templates.ghid.trails.index,
           title: T.span({
             ro: 'Trasee terestre',
             en: 'Hiking trails',
           }),
+          backIcon: 'fa-home',
         });
       },
     },
@@ -135,6 +140,7 @@ function MainMenuController(options) {
             ro: 'Setări',
             en: 'Settings',
           }),
+          backIcon: 'fa-home',
         });
       },
     }

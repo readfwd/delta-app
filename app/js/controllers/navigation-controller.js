@@ -31,7 +31,9 @@ NavigationController.prototype.setNavigationItem = function (viewController) {
   function onAnimationEnd() {
     //only release the view controller after the animation 
     //is finished so the GC won't destroy our FPS
-    oldViewController = null; 
+    if (oldViewController) {
+      oldViewController = null; 
+    }
   }
 
   //Defer animation to next tick to prevent heavy load from ruining it
