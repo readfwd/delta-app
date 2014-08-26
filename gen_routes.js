@@ -11,7 +11,7 @@ var offset = [0, 0];
 var trailOffsets = {
 };
 
-var filter = /.*/;
+var filter = /^.*$/;
 
 //End of configurable vars
 
@@ -28,22 +28,37 @@ _.each(geo.features, function (feature) {
   off[1] += offset[1];
   var extent = extents[traseu] || [Infinity, Infinity, -Infinity, -Infinity];
   extents[traseu] = extent;
-  _.each(feature.geometry.coordinates, function (coord) {
-    coord[0] += off[0];
-    coord[1] += off[1];
-    if (coord[0] < extent[0]) {
-      extent[0] = coord[0];
-    }
-    if (coord[0] > extent[2]) {
-      extent[2] = coord[0];
-    }
-    if (coord[1] < extent[1]) {
-      extent[1] = coord[1];
-    }
-    if (coord[1] > extent[3]) {
-      extent[3] = coord[1];
-    }
-  });
+
+  function fixCoords(v) {
+    _.each(v, function (coord, i) {
+      if (typeof(coord) === 'string') {
+        coord = coord.split(',');
+        coord[0] = parseFloat(coord[0]);
+        coord[1] = parseFloat(coord[1]);
+        v[i] = coord;
+      }
+      coord[0] += off[0];
+      coord[1] += off[1];
+      if (coord[0] < extent[0]) {
+        extent[0] = coord[0];
+      }
+      if (coord[0] > extent[2]) {
+        extent[2] = coord[0];
+      }
+      if (coord[1] < extent[1]) {
+        extent[1] = coord[1];
+      }
+      if (coord[1] > extent[3]) {
+        extent[3] = coord[1];
+      }
+    });
+  }
+
+  if (/^Multi/.test(feature.geometry.type)) {
+   _.each(feature.geometry.coordinates, fixCoords);
+  } else {
+    fixCoords(feature.geometry.coordinates);
+  }
 });
 
 geo.features = _.filter(geo.features, function(feature) {
@@ -51,7 +66,7 @@ geo.features = _.filter(geo.features, function(feature) {
 });
 
 fs.writeFile('./app/js/content/route-extents.json', JSON.stringify(extents));
-fs.writeFile('./app/assets/routes.geojson', JSON.stringify(geo));
+fs.writeFile('./app/assets/routes.geojson', JSON.stringify(geo, null, 2));
 
 function commitAndPush() {
   fs.writeFileSync('/tmp/routes-gist/routes.geojson', JSON.stringify(geo));
