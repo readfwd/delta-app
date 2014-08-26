@@ -5,6 +5,9 @@ var Famous = require('../shims/famous');
 function NavigationController() {
   ViewController.apply(this, arguments);
   var self = this;
+  self.propagateBackButton(function () {
+    return self.viewController;
+  });
   self.backHandler = function () {
     self.navigateBack();
   };

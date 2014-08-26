@@ -40,4 +40,6 @@
         <icon src="res/icons/android/hdpi.png" density="hdpi" />
         <icon src="res/icons/android/xhdpi.png" density="xhdpi" />
     </platform>
+    <preference name="StatusBarOverlaysWebView" value="true" />
+    <preference name="StatusBarStyle" value="lightcontent" />
 </widget>

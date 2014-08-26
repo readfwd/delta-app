@@ -13,6 +13,18 @@ function RootController () {
   self.context.setPerspective(100);
   self.menuController = new MainMenuController();
   self.buildRenderTree(self.context);
+
+  if (cordova.present) {
+    document.addEventListener('backbutton', function () {
+      self.menuController.emit('backbutton');
+    }, false);
+  }
+
+  self.menuController.on('back', function () {
+    if (navigator.app && navigator.app.exitApp) {
+      navigator.app.exitApp();
+    }
+  });
 }
 util.inherits(RootController, ViewController);
 

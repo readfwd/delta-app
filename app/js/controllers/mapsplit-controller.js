@@ -4,12 +4,18 @@ var ViewController = require('./view-controller');
 var util = require('util');
 var Famous = require('../shims/famous');
 var cordova = require('../shims/cordova');
+var _ = require('lodash');
 
 function MapSplitController(options) {
   options = options || {};
   options.mapOptions = options.mapOptions || {};
   options.splitRatio = options.splitRatio || 0.4;
   ViewController.call(this, options);
+
+  var self = this;
+  self.propagateBackButton(function () {
+    return self.infoVC;
+  });
 }
 util.inherits(MapSplitController, ViewController);
 
@@ -29,6 +35,16 @@ MapSplitController.prototype.buildRenderTree = function (parentNode) {
   var infoView = infoVC.getView();
   infoVC.on('back', function () {
     self.emit('back');
+  });
+  self.infoVC = infoVC;
+  var navToId = _.debounce(function (id) {
+    mapVC.navigateToFeature(id);
+  }, 500);
+  infoVC.on('pageFlip', function (page) {
+    navToId(page.id);
+  });
+  infoVC.on('ascend', function () {
+    mapVC.navigateToFeature(null);
   });
   layoutInfo.sequenceFrom([new Famous.RenderNode(), infoView]);
   parentNode.add(infoShowModifier).add(infoModifier).add(layoutInfo);

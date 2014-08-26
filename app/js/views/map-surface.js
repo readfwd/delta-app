@@ -325,8 +325,10 @@ MapSurface.prototype.navigateToExtent = function(extent, animated) {
     return;
   }
 
-  var center = ol.extent.getCenter();
-  var resolution = self.map.getView().getResolutionForExtent(extent, self.map.getSize());
+  var view = self.map.getView();
+  var center = ol.extent.getCenter(extent);
+  var resolution = view.getResolutionForExtent(extent, self.map.getSize());
+  resolution = view.constrainResolution(resolution, 0, 1);
 
   self.navigateToPoint(center, resolution, animated, true);
 };
@@ -334,12 +336,12 @@ MapSurface.prototype.navigateToExtent = function(extent, animated) {
 MapSurface.prototype.navigateToFeature = function(featureName, animated) {
   var self = this;
 
+  self.lastFeatureName = featureName;
+  self.lastFeatureAnimated = animated;
+
   if (!featureName) {
     return;
   }
-
-  self.lastFeatureName = featureName;
-  self.lastFeatureAnimated = animated;
 
   if (!self.map) {
     return;
@@ -362,6 +364,13 @@ MapSurface.prototype.navigateToFeature = function(featureName, animated) {
       self.navigateToExtent(feature.coords, animated);
       break;
   }
+
+  // Refresh styles
+  _.each(self.map.getLayers().getArray(), function (layer) {
+    if (layer instanceof ol.layer.Vector) {
+      layer.setStyle(layer.getStyle());
+    }
+  });
 };
 
 MapSurface.prototype.createMap = function (opts) {
@@ -399,7 +408,11 @@ MapSurface.prototype.createMap = function (opts) {
         });
       }
 
-      layerOptions.style = opt.style;
+      if (opt.styleConstructor) {
+        layerOptions.style = opt.styleConstructor(self);
+      } else {
+        layerOptions.style = opt.style;
+      }
 
       layer = new ol.layer.Vector(layerOptions);
     }

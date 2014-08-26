@@ -1,4 +1,6 @@
 var ol = require('../lib/ol');
+var routeExtents = require('./route-extents');
+var _ = require('lodash');
 
 var MapPresets = {};
 
@@ -31,13 +33,84 @@ MapPresets.registerPreset('default', {
   } ],
 });
 
+var flatUIColors = [ 
+    '#1abc9c', '#2ecc71', '#3498db', '#9b59b6', '#34495e', 
+    '#16a085', '#27ae60', '#2980b9', '#8e44ad', '#2c3e50', 
+    '#16a085', '#27ae60', '#2980b9', '#8e44ad', '#2c3e50', 
+    '#16a085', '#27ae60', '#2980b9', '#2c3e50' ];
+
+var styleCache = [{}, {}];
+
+function styleConstructor(mapSurface) {
+  return function (feature) {
+    var route = feature.getProperties().NumarTrase;
+    var routeIndex = parseInt(route.replace(/^D/, ''));
+    route = /^D/.test(route) ? 'trail' + route : 'route' + route;
+    var active = mapSurface.lastFeatureName === route ? 1 : 0;
+    var styles = styleCache[active][route];
+    if (!styles) {
+      var fill = new ol.style.Fill({
+        color: 'rgba(255,255,255,0.4)'
+      });
+      var stroke = new ol.style.Stroke({
+        color: active ? '#f6463b' : flatUIColors[routeIndex],
+        width: active ? 2.5 : 1.25,
+      });
+      styles = [
+        new ol.style.Style({
+          image: new ol.style.Circle({
+            fill: fill,
+            stroke: stroke,
+            radius: 5
+          }),
+          fill: fill,
+          stroke: stroke,
+          zIndex: active ? 30 : undefined,
+        })
+      ];
+
+      styleCache[active][route] = styles;
+    }
+    return styles;
+  };
+}
+
 MapPresets.registerPreset('routes', {
   extend: 'default',
   layers: [ {
     type: 'geojson',
     url: 'assets/routes.geojson',
     extent: deltaExtent,
+    styleConstructor: styleConstructor,
   } ],
+  features: _.map(_.filter(_.keys(routeExtents), 
+                RegExp.prototype.test.bind(/^[0-9]+/)), 
+              function(route) {
+    return {
+      type: 'extent',
+      coords: gps2mp(routeExtents[route]),
+      name: 'route' + route,
+    };
+  }),
+});
+
+MapPresets.registerPreset('trails', {
+  extend: 'default',
+  layers: [ {
+    type: 'geojson',
+    url: 'assets/trails.geojson',
+    extent: deltaExtent,
+    styleConstructor: styleConstructor,
+  } ],
+  features: _.map(_.filter(_.keys(routeExtents), 
+                RegExp.prototype.test.bind(/^D[0-9]+/)), 
+              function(route) {
+    return {
+      type: 'extent',
+      coords: gps2mp(routeExtents[route]),
+      name: 'trail' + route,
+    };
+  }),
 });
 
 module.exports = MapPresets;

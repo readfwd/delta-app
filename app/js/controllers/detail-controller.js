@@ -9,6 +9,7 @@ function DetailController(options) {
   options = options || {};
   this.templates = options.templates || [];
   this.titles = options.titles || [];
+  this.pageIds = options.pageIds || [];
   TitleBarController.call(this, options);
 }
 util.inherits(DetailController, TitleBarController);
@@ -187,7 +188,10 @@ DetailController.prototype.onRender = function () {
   self.updateTitleBar(currentStatus);
 
   if (currentStatus.index !== self.pageIndex) {
-    self.emit('pageFlip', { index: currentStatus.index });
+    self.emit('pageFlip', { 
+      index: currentStatus.index,
+      id: self.pageIds[currentStatus.index],
+    });
     self.pageIndex = currentStatus.index;
   }
 };

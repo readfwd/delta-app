@@ -65,8 +65,21 @@ geo.features = _.filter(geo.features, function(feature) {
   return filter.test(feature.properties.NumarTrase);
 });
 
+var allFeatures = geo.features;
+var routeFeatures = _.filter(allFeatures, function(feature) {
+  return /^[0-9]+$/.test(feature.properties.NumarTrase);
+});
+var trailFeatures = _.filter(allFeatures, function(feature) {
+  return /^D[0-9]+$/.test(feature.properties.NumarTrase);
+});
+
+
 fs.writeFile('./app/js/content/route-extents.json', JSON.stringify(extents));
-fs.writeFile('./app/assets/routes.geojson', JSON.stringify(geo, null, 2));
+geo.features = routeFeatures;
+fs.writeFile('./app/assets/routes.geojson', JSON.stringify(geo));
+geo.features = trailFeatures;
+fs.writeFile('./app/assets/trails.geojson', JSON.stringify(geo));
+geo.features = allFeatures;
 
 function commitAndPush() {
   fs.writeFileSync('/tmp/routes-gist/routes.geojson', JSON.stringify(geo));
