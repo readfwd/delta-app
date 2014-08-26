@@ -37,6 +37,9 @@ MapSplitController.prototype.buildRenderTree = function (parentNode) {
   infoVC.on('pageFlip', function (page) {
     navToId(page.id);
   });
+  infoVC.on('ascend', function () {
+    mapVC.navigateToFeature(null);
+  });
   layoutInfo.sequenceFrom([new Famous.RenderNode(), infoView]);
   parentNode.add(infoShowModifier).add(infoModifier).add(layoutInfo);
 

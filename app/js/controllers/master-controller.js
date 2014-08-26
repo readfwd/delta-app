@@ -26,7 +26,6 @@ MasterController.prototype.prepareDetailController = function () {
     });
 
     self.detailController.on('pageFlip', function (page) {
-      console.log(page);
       self.emit('pageFlip', page);
     });
   }

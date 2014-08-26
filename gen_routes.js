@@ -67,10 +67,10 @@ geo.features = _.filter(geo.features, function(feature) {
 
 var allFeatures = geo.features;
 var routeFeatures = _.filter(allFeatures, function(feature) {
-  return /^[1-9]+$/.test(feature.properties.NumarTrase);
+  return /^[0-9]+$/.test(feature.properties.NumarTrase);
 });
 var trailFeatures = _.filter(allFeatures, function(feature) {
-  return /^D[1-9]+$/.test(feature.properties.NumarTrase);
+  return /^D[0-9]+$/.test(feature.properties.NumarTrase);
 });
 
 
