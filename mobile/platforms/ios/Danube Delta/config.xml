@@ -37,6 +37,10 @@
     <feature name="EmailComposer">
         <param name="ios-package" value="APPEmailComposer" />
     </feature>
+    <feature name="StatusBar">
+        <param name="ios-package" onload="true" value="CDVStatusBar" />
+    </feature>
+    <preference name="StatusBarBackgroundColor" value="#000000" />
     <icon height="60" src="res/icons/ios/AppIcon60x60.png" width="60" />
     <icon height="120" src="res/icons/ios/AppIcon60x60@2x.png" width="120" />
     <icon height="76" src="res/icons/ios/AppIcon76x76.png" width="76" />
@@ -60,4 +64,6 @@
     </author>
     <content src="index.html" />
     <access origin="*" />
+    <preference name="StatusBarOverlaysWebView" value="true" />
+    <preference name="StatusBarStyle" value="lightcontent" />
 </widget>
