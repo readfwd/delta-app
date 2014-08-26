@@ -418,6 +418,49 @@ MapSurface.prototype.createMap = function (opts) {
     return view;
   });
 
+  _.each(opts.features, function(f) {
+    if (f.type === 'point' && f.overlay) {
+      var overlay = f.overlay;
+      if (typeof(overlay) !== 'object') {
+        overlay = {};
+      }
+
+      overlay.color = overlay.color || '#f9645c';
+      overlay.positioning = overlay.positioning || 'bottom-center';
+
+      var content = [];
+      content.push('<div class="map-overlay-pin">');
+      if (overlay.popover) {
+        content.push('<div class="map-overlay-popover">');
+        content.push(overlay.popover);
+        content.push('</div>');
+      }
+      content.push('<i class="fa fa-map-marker"></i>');
+      content.push('</div>');
+      var $el = $(content.join(''));
+      $el[0].style.color = overlay.color;
+
+      if (overlay.popover) {
+        $el.on('mousedown touchstart', function() {
+          $el.toggleClass('overlay', true);
+        });
+
+        $el.on('mouseup mouseout touchend touchcancel', function() {
+          $el.toggleClass('overlay', false);
+        });
+      }
+
+      var mapOverlay = new ol.Overlay({
+        element: $el[0],
+        position: f.coords,
+        positioning: overlay.positioning,
+        stopEvent: !!(overlay.popover || overlay.click),
+      });
+
+      map.addOverlay(mapOverlay);
+    }
+  });
+
   self.setView(0);
   if (self.lastFeatureName) {
     self.navigateToFeature(self.lastFeatureName, self.lastFeatureAnimated);
