@@ -14,7 +14,7 @@ function gps2mp(ext) {
   }
 }
 
-var deltaExtent = gps2mp([28.5, 44.33, 29.83, 45.6]);
+var deltaExtent = gps2mp([28.1,44.3296,29.8324,45.6004]);
 
 MapPresets.registerPreset('default', {
   layers: [ {
@@ -26,6 +26,7 @@ MapPresets.registerPreset('default', {
   views: [ {
     minZoom: 8,
     maxZoom: 13,
+    zoom: 10,
     extent: deltaExtent,
   } ],
 });

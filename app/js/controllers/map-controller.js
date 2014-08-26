@@ -4,10 +4,11 @@ var util = require('util');
 var Famous = require('../shims/famous');
 var MapPresets = require('../content/map-presets');
 var _ = require('lodash');
+var T = require('../translate');
 
 function MapController(options) {
   options = options || {};
-  options.title = options.title || 'Maps';
+  options.title = options.title || T.span({ en:'Map', ro: 'Hartă' });
   options.preset = options.preset || 'default';
   TitleBarController.call(this, options);
 }
@@ -18,13 +19,13 @@ MapController.prototype.buildContentTree = function (parentNode) {
     size: [undefined, undefined],
   });
 
-  var map = new MapSurface(this.solvePreset(this.options.preset));
+  this.map = new MapSurface(this.solvePreset(this.options.preset));
 
   this.on('resize', function () {
     map.emit('resize');
   });
 
-  parentNode.add(modifier).add(map);
+  parentNode.add(modifier).add(this.map);
 };
 
 MapController.prototype.solvePreset = function (preset) {
@@ -51,6 +52,18 @@ MapController.prototype.solvePreset = function (preset) {
   delete solved.extend;
 
   return solved;
+};
+
+MapController.GPSToMercador = function (ext) {
+  if (ext.length === 4) {
+    return ol.proj.transformExtent(ext, 'EPSG:4326', 'EPSG:3857');
+  } else {
+    return ol.proj.transform(ext, 'EPSG:4326', 'EPSG:3857');
+  }
+};
+
+MapController.prototype.navigateToFeature = function(featureName, animated) {
+  this.map.navigateToFeature(featureName, animated);
 };
 
 module.exports = MapController;
