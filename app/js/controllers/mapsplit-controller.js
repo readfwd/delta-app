@@ -11,6 +11,11 @@ function MapSplitController(options) {
   options.mapOptions = options.mapOptions || {};
   options.splitRatio = options.splitRatio || 0.4;
   ViewController.call(this, options);
+
+  var self = this;
+  self.propagateBackButton(function () {
+    return self.infoVC;
+  });
 }
 util.inherits(MapSplitController, ViewController);
 
@@ -31,6 +36,7 @@ MapSplitController.prototype.buildRenderTree = function (parentNode) {
   infoVC.on('back', function () {
     self.emit('back');
   });
+  self.infoVC = infoVC;
   var navToId = _.debounce(function (id) {
     mapVC.navigateToFeature(id);
   }, 500);
