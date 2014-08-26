@@ -53,3 +53,12 @@ mixin maplink(posY, posX, name)
 
 mixin mapicon
   i.fa.fa-map-marker
+
+mixin maplabel(visible)
+  - var style = '';
+  - if (visible === false) {
+  -   style = 'display: none';
+  - }
+  span(style=style).map-label
+    if block
+      block

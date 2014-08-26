@@ -189,6 +189,7 @@ TemplateController.prototype.setUpMapLinks = function (page) {
     var zoom = parseInt(params[2]);
     var $el = $(link);
     var name = $el.data('name') || ('map-link-' + idx);
+    var $label = $el.find('.map-label');
 
     Famous.FastClick($el, function () {
       var vc = new MapController({
@@ -205,7 +206,9 @@ TemplateController.prototype.setUpMapLinks = function (page) {
     if (!takenNames[name]) {
       features.push({
         type: 'point',
-        pin: true,
+        overlay: {
+          popover: $label.length ? $label.html() : undefined,
+        },
         coords: coords,
         zoomLevel: isNaN(zoom) ? null : zoom,
         name: name,
