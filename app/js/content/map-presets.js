@@ -33,20 +33,27 @@ MapPresets.registerPreset('default', {
   } ],
 });
 
+var flatUIColors = [ 
+    '#1abc9c', '#2ecc71', '#3498db', '#9b59b6', '#34495e', 
+    '#16a085', '#27ae60', '#2980b9', '#8e44ad', '#2c3e50', 
+    '#16a085', '#27ae60', '#2980b9', '#8e44ad', '#2c3e50', 
+    '#16a085', '#27ae60', '#2980b9', '#2c3e50' ];
+
 var styleCache = [{}, {}];
 
 function styleConstructor(mapSurface) {
   return function (feature) {
-    var traseu = feature.getProperties().NumarTrase;
-    traseu = /^D/.test(traseu) ? 'trail' + traseu : 'route' + traseu;
-    var active = mapSurface.lastFeatureName === traseu ? 1 : 0;
-    var styles = styleCache[active][traseu];
+    var route = feature.getProperties().NumarTrase;
+    var routeIndex = parseInt(route.replace(/^D/, ''));
+    route = /^D/.test(route) ? 'trail' + route : 'route' + route;
+    var active = mapSurface.lastFeatureName === route ? 1 : 0;
+    var styles = styleCache[active][route];
     if (!styles) {
       var fill = new ol.style.Fill({
         color: 'rgba(255,255,255,0.4)'
       });
       var stroke = new ol.style.Stroke({
-        color: active ? '#f6463b' : '#3399cc',
+        color: active ? '#f6463b' : flatUIColors[routeIndex],
         width: active ? 2.5 : 1.25,
       });
       styles = [
@@ -62,7 +69,7 @@ function styleConstructor(mapSurface) {
         })
       ];
 
-      styleCache[active][traseu] = styles;
+      styleCache[active][route] = styles;
     }
     return styles;
   };
