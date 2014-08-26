@@ -1,4 +1,6 @@
 var ol = require('../lib/ol');
+var routeExtents = require('./route-extents');
+var _ = require('lodash');
 
 var MapPresets = {};
 
@@ -38,6 +40,33 @@ MapPresets.registerPreset('routes', {
     url: 'assets/routes.geojson',
     extent: deltaExtent,
   } ],
+  features: _.map(_.filter(_.keys(routeExtents), 
+                RegExp.prototype.test.bind(/^[0-9]+/)), 
+              function(route) {
+    return {
+      type: 'extent',
+      coords: gps2mp(routeExtents[route]),
+      name: 'route' + route,
+    };
+  }),
+});
+
+MapPresets.registerPreset('trails', {
+  extend: 'default',
+  layers: [ {
+    type: 'geojson',
+    url: 'assets/trails.geojson',
+    extent: deltaExtent,
+  } ],
+  features: _.map(_.filter(_.keys(routeExtents), 
+                RegExp.prototype.test.bind(/^D[0-9]+/)), 
+              function(route) {
+    return {
+      type: 'extent',
+      coords: gps2mp(routeExtents[route]),
+      name: 'trail' + route,
+    };
+  }),
 });
 
 module.exports = MapPresets;

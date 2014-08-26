@@ -325,8 +325,10 @@ MapSurface.prototype.navigateToExtent = function(extent, animated) {
     return;
   }
 
-  var center = ol.extent.getCenter();
-  var resolution = self.map.getView().getResolutionForExtent(extent, self.map.getSize());
+  var view = self.map.getView();
+  var center = ol.extent.getCenter(extent);
+  var resolution = view.getResolutionForExtent(extent, self.map.getSize());
+  resolution = view.constrainResolution(resolution, 0, 1);
 
   self.navigateToPoint(center, resolution, animated, true);
 };

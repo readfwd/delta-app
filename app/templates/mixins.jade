@@ -41,6 +41,9 @@ mixin submenu-item(linkTarget, T, en, ro, titleEn, titleRo)
         if block
           block
 
+mixin submenu-page-id(id)
+  span(style='display: none', data-id=id).submenu-pageid
+
 mixin submenu-caption(T, en, ro)
   - ro = ro || en;
   .submenu-caption

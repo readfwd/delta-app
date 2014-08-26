@@ -102,7 +102,7 @@ function MainMenuController(options) {
         return new MapSplitController({
           template: templates.ghid.trails.index,
           mapOptions: {
-            preset: 'routes',
+            preset: 'trails',
           },
           title: T.span({
             ro: 'Trasee terestre',
