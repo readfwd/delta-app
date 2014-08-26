@@ -64,7 +64,9 @@ NavigationController.prototype.setNavigationItem = function (viewController) {
     commitAnimation();
   }
 
-  self.emit('navigate');
+  if (viewController) {
+    self.emit('navigate');
+  }
 };
 
 NavigationController.prototype.navigateBack = function () {
