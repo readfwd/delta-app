@@ -75,6 +75,15 @@ function styleConstructor(mapSurface) {
   };
 }
 
+var restrictedStyleCache;
+function restrictedStyle() {
+  if (!restrictedStyleCache) {
+    var styles = [];
+    restrictedStyleCache = styles;
+  }
+  return restrictedStyleCache;
+}
+
 MapPresets.registerPreset('routes', {
   extend: 'default',
   layers: [ {
@@ -111,6 +120,16 @@ MapPresets.registerPreset('trails', {
       name: 'trail' + route,
     };
   }),
+});
+
+MapPresets.registerPreset('restricted', {
+  extend: 'default',
+  //layers: [ {
+    //type: 'geojson',
+    //url: 'assets/restricted.geojson',
+    //extent: deltaExtent,
+    //style: restrictedStyleCache,
+  //} ],
 });
 
 module.exports = MapPresets;
