@@ -2,7 +2,6 @@
 
 var fs = require('fs');
 var _ = require('lodash');
-var geo = JSON.parse(fs.readFileSync('./raw_routes.geojson'));
 var exec = require('child_process').exec;
 
 //Configurable vars
@@ -15,27 +14,23 @@ var filter = /^.*$/;
 
 //End of configurable vars
 
-geo.features = _.sortBy(geo.features, function (feature) {
-  return feature.properties.NumarTrase;
-});
+function processGeo(geo) {
+  var extents = {};
 
-var extents = {};
+  _.each(geo.features, function (feature) {
+    var traseu = feature.properties.NumarTrase || feature.properties.name;
+    feature.properties = { name: traseu };
+    var off = trailOffsets[traseu] || [0, 0];
+    off[0] += offset[0];
+    off[1] += offset[1];
+    var extent = extents[traseu] || [Infinity, Infinity, -Infinity, -Infinity];
+    extents[traseu] = extent;
 
-_.each(geo.features, function (feature) {
-  var traseu = feature.properties.NumarTrase;
-  var off = trailOffsets[traseu] || [0, 0];
-  off[0] += offset[0];
-  off[1] += offset[1];
-  var extent = extents[traseu] || [Infinity, Infinity, -Infinity, -Infinity];
-  extents[traseu] = extent;
-
-  function fixCoords(v) {
-    _.each(v, function (coord, i) {
+    function fixCoords(coord) {
       if (typeof(coord) === 'string') {
         coord = coord.split(',');
         coord[0] = parseFloat(coord[0]);
         coord[1] = parseFloat(coord[1]);
-        v[i] = coord;
       }
       coord[0] += off[0];
       coord[1] += off[1];
@@ -51,28 +46,47 @@ _.each(geo.features, function (feature) {
       if (coord[1] > extent[3]) {
         extent[3] = coord[1];
       }
-    });
-  }
 
-  if (/^Multi/.test(feature.geometry.type)) {
-   _.each(feature.geometry.coordinates, fixCoords);
-  } else {
-    fixCoords(feature.geometry.coordinates);
-  }
-});
+      return coord;
+    }
+
+    function processVector(v) {
+      if (typeof(v[0]) === 'object') {
+       _.each(v, function(coord, idx) {
+         var r = processVector(coord);
+         if (r) {
+           v[idx] = r;
+         }
+       });
+       return null;
+      } else {
+        return fixCoords(v);
+      }
+    }
+    processVector(feature.geometry.coordinates);
+  });
+
+  geo.features = _.sortBy(geo.features, function (feature) {
+    return feature.properties.name;
+  });
+
+  return extents;
+}
+
+var geo = JSON.parse(fs.readFileSync('./raw_routes.geojson'));
+var extents =processGeo(geo);
 
 geo.features = _.filter(geo.features, function(feature) {
-  return filter.test(feature.properties.NumarTrase);
+  return filter.test(feature.properties.name);
 });
 
 var allFeatures = geo.features;
 var routeFeatures = _.filter(allFeatures, function(feature) {
-  return /^[0-9]+$/.test(feature.properties.NumarTrase);
+  return /^[0-9]+$/.test(feature.properties.name);
 });
 var trailFeatures = _.filter(allFeatures, function(feature) {
-  return /^D[0-9]+$/.test(feature.properties.NumarTrase);
+  return /^D[0-9]+$/.test(feature.properties.name);
 });
-
 
 fs.writeFile('./app/js/content/route-extents.json', JSON.stringify(extents));
 geo.features = routeFeatures;
@@ -92,3 +106,9 @@ if (process.env.MAP_GIST) {
     commitAndPush();
   }
 }
+
+var res = JSON.parse(fs.readFileSync('./raw_restricted.geojson'));
+var resExtents = processGeo(res);
+console.log(resExtents);
+fs.writeFile('./app/js/content/restricted-extents.json', JSON.stringify(resExtents));
+fs.writeFile('./app/assets/restricted.geojson', JSON.stringify(res));
