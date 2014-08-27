@@ -91,7 +91,7 @@ MapSplitController.prototype.createInfoFullScreenControl = function () {
   var self = this;
 
   var infoIcon = new Famous.Surface({
-    classes: ['title-button', 'title-button-back'],
+    classes: ['title-button', 'title-button-full-screen'],
     content: '<i class="fa fa-lg fa-fw ' + self.options.backIcon + '"></i>',
     size: [true, true],
   });
