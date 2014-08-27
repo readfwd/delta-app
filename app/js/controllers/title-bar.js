@@ -47,9 +47,11 @@ TitleBar.prototype.animateTitleBar = function(newTitle, oldTitle, push, animated
   if (animated && newTitle && oldTitle) {
     var state = new Famous.Transitionable(0);
     var transition = push ? {
-      method: 'spring',
-      period: 500,
-      dampingRatio: 0.5,
+      //method: 'spring',
+      //period: 500,
+      //dampingRatio: 0.5,
+      curve: 'easeOut',
+      duration: 500,
     } : {
       curve: 'easeOut',
       duration: 500,
