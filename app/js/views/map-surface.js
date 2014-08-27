@@ -434,6 +434,13 @@ MapSurface.prototype.createMap = function (opts) {
     return view;
   });
 
+  var $mapel = $('#' + opts.target);
+  var dismissOverlays = function() {
+    $mapel.find('.map-overlay-pin').removeClass('overlay');
+  };
+  $mapel[0].addEventListener('touchstart', dismissOverlays, true);
+  $mapel[0].addEventListener('mousedown', dismissOverlays, true);
+
   _.each(opts.features, function(f) {
     if (f.type === 'point' && f.overlay) {
       var overlay = f.overlay;
@@ -458,12 +465,12 @@ MapSurface.prototype.createMap = function (opts) {
 
       if (overlay.popover) {
         $el.on('mousedown touchstart', function() {
-          $el.toggleClass('overlay', true);
+          $el.addClass('overlay');
         });
+      }
 
-        $el.on('mouseup mouseout touchend touchcancel', function() {
-          $el.toggleClass('overlay', false);
-        });
+      if (overlay.click) {
+        Famous.FastClick($el, overlay.click.bind(self));
       }
 
       var mapOverlay = new ol.Overlay({
