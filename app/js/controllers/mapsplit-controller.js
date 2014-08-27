@@ -7,6 +7,7 @@ var cordova = require('../shims/cordova');
 var _ = require('lodash');
 var ol = require('../lib/ol');
 var $ = require('jquery');
+var TitleBarController = require('./titlebar-controller');
 
 function MapSplitController(options) {
   options = options || {};
@@ -88,15 +89,13 @@ MapSplitController.prototype.buildRenderTree = function (parentNode) {
 MapSplitController.prototype.createInfoFullScreenControl = function () {
   var self = this;
 
-  var infoContainer = new Famous.ContainerSurface({
-    size: [44, 44],
-  });
-
   var infoIcon = new Famous.Surface({
     classes: ['title-button', 'title-button-back'],
     content: '<i class="fa fa-lg fa-fw ' + self.options.backIcon + '"></i>',
     size: [true, true],
   });
+
+  var infoContainer = TitleBarController.createTitleBarButton(1, infoIcon);
 
   function setState() {
     var icon = self.infoIconState ? 'fa-chevron-down' : 'fa-arrows-alt';
@@ -114,11 +113,6 @@ MapSplitController.prototype.createInfoFullScreenControl = function () {
     }
     evt.stopPropagation();
   });
-
-  infoContainer.add(new Famous.StateModifier({
-    align: [0.5, 0.5],
-    origin: [0.5, 0.5],
-  })).add(infoIcon);
 
   return infoContainer;
 };
