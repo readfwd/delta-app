@@ -4,6 +4,8 @@ platforms/**/ant-gen
 platforms/**/ant-bin
 platforms/**/bin
 platforms/**/gen
+platforms/**/local.properties
+platforms/**/console.log
 
 # Cordova doesn't use package.jsons
 !platforms/**/node_modules
