@@ -20,6 +20,7 @@ MasterController.prototype.prepareDetailController = function () {
       titles: self.titles,
       pageIds: self.pageIds,
       titleBar: self.titleBar,
+      rightBarButton: self.options.rightBarButton,
     });
     self.detailController.on('back', function () {
       self.emit('ascend');

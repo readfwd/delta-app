@@ -255,6 +255,13 @@ DetailController.prototype.buildBarItem = function () {
     origin: [0.5, 0.5],
   })).add(homeIcon);
 
+  if (self.options.rightBarButton) {
+    root.add(new Famous.StateModifier({
+      align: [1, 0.5],
+      origin: [1, 0.5],
+    })).add(self.options.rightBarButton.call(self));
+  }
+
   return {
     view: root,
     titleModifier: titleModifier,

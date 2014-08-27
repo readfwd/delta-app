@@ -11,6 +11,7 @@ function MapSurface(options) {
   options.layers = options.layers || [];
   options.views = options.views || [];
   options.features = options.features || [];
+  options.constructors = options.constructors || [];
   self.mapOptions = options;
 
   var id = 'map-' + (Math.random().toString(36)+'00000000000000000').slice(2, 7);
@@ -480,6 +481,10 @@ MapSurface.prototype.createMap = function (opts) {
   }
   self.createNavDot();
   self.createJumpHomeControl();
+
+  _.each(opts.constructors, function(cb) {
+    cb(self);
+  });
 };
 
 module.exports = MapSurface;

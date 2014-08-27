@@ -5,6 +5,8 @@ var util = require('util');
 var Famous = require('../shims/famous');
 var cordova = require('../shims/cordova');
 var _ = require('lodash');
+var ol = require('../lib/ol');
+var $ = require('jquery');
 
 function MapSplitController(options) {
   options = options || {};
@@ -31,7 +33,9 @@ MapSplitController.prototype.buildRenderTree = function (parentNode) {
     direction: 1,
     ratios: [split, 1 - split],
   });
-  var infoVC = new MasterController(self.options);
+  var infoOptions = _.clone(self.options);
+  infoOptions.rightBarButton = self.createInfoFullScreenControl.bind(self);
+  var infoVC = new MasterController(infoOptions);
   var infoView = infoVC.getView();
   infoVC.on('back', function () {
     self.emit('back');
@@ -56,8 +60,15 @@ MapSplitController.prototype.buildRenderTree = function (parentNode) {
     direction: 1,
     ratios: [split, 1 - split],
   });
-  self.options.mapOptions.createTitleBar = false;
-  var mapVC = new MapController(self.options.mapOptions);
+  var mapOptions = self.options.mapOptions;
+  mapOptions.createTitleBar = false;
+  mapOptions.preset = {
+    extend: mapOptions.preset,
+    constructors: [ function (mapSurface) {
+      self.createMapFullScreenControl(mapSurface);
+    } ],
+  };
+  var mapVC = new MapController(mapOptions);
   var mapView = mapVC.getView();
   layoutMap.sequenceFrom([mapView, new Famous.RenderNode()]);
   parentNode.add(mapShowModifier).add(mapModifier).add(layoutMap);
@@ -72,6 +83,72 @@ MapSplitController.prototype.buildRenderTree = function (parentNode) {
   self.viewControllers = [mapVC, infoVC];
   self.modifiers = [mapModifier, infoModifier];
   self.showModifiers = [mapShowModifier, infoShowModifier];
+};
+
+MapSplitController.prototype.createInfoFullScreenControl = function () {
+  var self = this;
+
+  var infoContainer = new Famous.ContainerSurface({
+    size: [44, 44],
+  });
+
+  var infoIcon = new Famous.Surface({
+    classes: ['title-button', 'title-button-back'],
+    content: '<i class="fa fa-lg fa-fw ' + self.options.backIcon + '"></i>',
+    size: [true, true],
+  });
+
+  function setState() {
+    var icon = self.infoIconState ? 'fa-chevron-down' : 'fa-arrows-alt';
+    infoIcon.setContent('<i class="fa fa-lg fa-fw ' + icon  + '"></i>');
+  }
+  setState();
+
+  Famous.FastClick(infoContainer, function(evt) { 
+    self.infoIconState = !self.infoIconState;
+    setState();
+    if (self.infoIconState) {
+      self.emit('fullscreenInfo');
+    } else {
+      self.emit('fullscreenNone');
+    }
+    evt.stopPropagation();
+  });
+
+  infoContainer.add(new Famous.StateModifier({
+    align: [0.5, 0.5],
+    origin: [0.5, 0.5],
+  })).add(infoIcon);
+
+  return infoContainer;
+};
+
+MapSplitController.prototype.createMapFullScreenControl = function (mapSurface) {
+  var self = this;
+
+  var $el = $('<div class="ol-full-screen ol-unselectable ol-control"></div>');
+  var $button = $('<button class="ol-has-tooltip"><span role="tooltip">Toggle full-screen</span></button>');
+  var state = false;
+  function setState() {
+    $button.toggleClass('ol-full-screen-true', state);
+    $button.toggleClass('ol-full-screen-false', !state);
+  }
+  setState();
+  $el.append($button);
+  $button.on('click', function () {
+    $button.blur();
+    state = !state;
+    setState();
+    if (state) {
+      self.emit('fullscreenMap');
+    } else {
+      self.emit('fullscreenNone');
+    }
+  });
+  var control = new ol.control.Control({
+    element: $el[0],
+  });
+  mapSurface.map.addControl(control);
 };
 
 MapSplitController.prototype.viewPresented = function () {

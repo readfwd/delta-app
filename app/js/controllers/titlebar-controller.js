@@ -61,6 +61,13 @@ TitleBarController.prototype.buildBarItem = function () {
     origin: [0, 0.5],
   })).add(homeContainer);
 
+  if (self.options.rightBarButton) {
+    root.add(new Famous.StateModifier({
+      align: [1, 0.5],
+      origin: [1, 0.5],
+    })).add(self.options.rightBarButton.call(self));
+  }
+
   homeContainer.add(new Famous.StateModifier({
     align: [0.5, 0.5],
     origin: [0.5, 0.5],
