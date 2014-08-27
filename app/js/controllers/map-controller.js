@@ -5,6 +5,7 @@ var Famous = require('../shims/famous');
 var MapPresets = require('../content/map-presets');
 var _ = require('lodash');
 var T = require('../translate');
+var TemplateController = require('./template-controller');
 
 function MapController(options) {
   options = options || {};
@@ -19,17 +20,30 @@ MapController.prototype.buildContentTree = function (parentNode) {
     size: [undefined, undefined],
   });
 
-  var map = new MapSurface(this.solvePreset(this.options.preset));
-  this.map = map;
+  var self = this;
 
-  this.on('resize', function () {
+  var map = new MapSurface(self.solvePreset(self.options.preset));
+  self.map = map;
+
+  self.on('resize', function () {
     map.emit('resize');
+  });
+
+  map.on('navigateToTemplate', function (t) {
+    var vc = new TemplateController({
+      template: t.template,
+      title: t.title,
+      titleBar: self.titleBar,
+    });
+
+    self.setNavigationItem(vc);
   });
 
   parentNode.add(modifier).add(map);
 };
 
-MapController.prototype.solvePreset = function (preset) {
+MapController.prototype.solvePreset = function (preset, skip) {
+  var self = this;
 
   if (typeof(preset) === 'string') {
     preset = MapPresets[preset];
@@ -39,27 +53,38 @@ MapController.prototype.solvePreset = function (preset) {
     return null;
   }
 
-  var extend = this.solvePreset(preset.extend);
-  var solved = _.extend({}, extend, preset);
-  var arrays = ['layers', 'views', 'features', 'constructors'];
-  if (preset && extend) {
-    for (var i = 0, n = arrays.length; i < n; i++) {
-      var name = arrays[i];
-      if (preset[name] && extend[name]) {
-        solved[name] = extend[name].concat(preset[name]);
-      }
-    }
+  skip = skip || [];
+
+  if (preset instanceof Array) {
+    return mergePresets(_.map(preset, function(p) {
+      return self.solvePreset(p, skip);
+    }));
   }
-  delete solved.extend;
 
-  return solved;
-};
+  if (_.contains(skip, preset)) {
+    return null;
+  }
+  skip.push(preset);
 
-MapController.GPSToMercador = function (ext) {
-  if (ext.length === 4) {
-    return ol.proj.transformExtent(ext, 'EPSG:4326', 'EPSG:3857');
-  } else {
-    return ol.proj.transform(ext, 'EPSG:4326', 'EPSG:3857');
+  var extend = this.solvePreset(preset.extend, skip);
+  return mergePresets([ extend, preset ]);
+
+  function mergePresets(presets) {
+    presets = _.filter(presets, function(p) { return p && (typeof(p) === 'object'); });
+    var solved = _.extend.bind(_, {}).apply(null, presets);
+    delete solved.extend;
+    var arrays = ['layers', 'views', 'features', 'constructors'];
+    _.each(arrays, function(key) {
+      var arr = [];
+      var concatArr = [];
+      _.each(presets, function(preset) {
+        if (preset[key]) {
+          concatArr.push(preset[key]);
+        }
+      });
+      solved[key] = arr.concat.apply(arr, concatArr);
+    });
+    return solved;
   }
 };
 
