@@ -367,11 +367,13 @@ MapSurface.prototype.navigateToFeature = function(featureName, animated) {
   }
 
   // Refresh styles
-  _.each(self.map.getLayers().getArray(), function (layer) {
-    if (layer instanceof ol.layer.Vector) {
-      layer.setStyle(layer.getStyle());
-    }
-  });
+  if (self.options.resetStyleOnHighlight) {
+    _.each(self.map.getLayers().getArray(), function (layer) {
+      if (layer instanceof ol.layer.Vector) {
+        layer.setStyle(layer.getStyle());
+      }
+    });
+  }
 };
 
 MapSurface.prototype.createMap = function (opts) {

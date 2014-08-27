@@ -1,5 +1,6 @@
 var ol = require('../lib/ol');
 var routeExtents = require('./route-extents');
+var restrictedExtents = require('./restricted-extents');
 var _ = require('lodash');
 
 var MapPresets = {};
@@ -43,7 +44,7 @@ var styleCache = [{}, {}];
 
 function styleConstructor(mapSurface) {
   return function (feature) {
-    var route = feature.getProperties().NumarTrase;
+    var route = feature.getProperties().name;
     var routeIndex = parseInt(route.replace(/^D/, ''));
     route = /^D/.test(route) ? 'trail' + route : 'route' + route;
     var active = mapSurface.lastFeatureName === route ? 1 : 0;
@@ -78,7 +79,13 @@ function styleConstructor(mapSurface) {
 var restrictedStyleCache;
 function restrictedStyle() {
   if (!restrictedStyleCache) {
-    var styles = [];
+    var styles = [
+      new ol.style.Style({
+        fill: new ol.style.Fill({
+          color: 'rgba(231, 76, 60, 0.4)',
+        }),
+      }),
+    ];
     restrictedStyleCache = styles;
   }
   return restrictedStyleCache;
@@ -86,6 +93,7 @@ function restrictedStyle() {
 
 MapPresets.registerPreset('routes', {
   extend: 'default',
+  resetStyleOnHighlight: true,
   layers: [ {
     type: 'geojson',
     url: 'assets/routes.geojson',
@@ -105,6 +113,7 @@ MapPresets.registerPreset('routes', {
 
 MapPresets.registerPreset('trails', {
   extend: 'default',
+  resetStyleOnHighlight: true,
   layers: [ {
     type: 'geojson',
     url: 'assets/trails.geojson',
@@ -124,12 +133,19 @@ MapPresets.registerPreset('trails', {
 
 MapPresets.registerPreset('restricted', {
   extend: 'default',
-  //layers: [ {
-    //type: 'geojson',
-    //url: 'assets/restricted.geojson',
-    //extent: deltaExtent,
-    //style: restrictedStyleCache,
-  //} ],
+  layers: [ {
+    type: 'geojson',
+    url: 'assets/restricted.geojson',
+    extent: deltaExtent,
+    style: restrictedStyle,
+  } ],
+  features: _.map(_.keys(restrictedExtents), function(route) {
+    return {
+      type: 'extent',
+      coords: gps2mp(restrictedExtents[route]),
+      name: 'restricted' + route,
+    };
+  }),
 });
 
 module.exports = MapPresets;
