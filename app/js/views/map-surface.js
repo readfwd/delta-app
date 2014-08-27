@@ -18,6 +18,7 @@ function MapSurface(options) {
 
   var id = 'map-' + (Math.random().toString(36)+'00000000000000000').slice(2, 7);
   var content = '<div id="' + id + '" class="' + options.mapClasses.join(' ') + '" style="width: 100%; height: 100%"></div>';
+  self.mapId = id;
 
   Famous.Surface.call(this, {
     content: content
@@ -362,6 +363,12 @@ MapSurface.prototype.navigateToFeature = function(featureName, animated) {
   switch (feature.type) {
     case 'point':
       self.navigateToPoint(feature.coords, feature.zoomLevel, animated);
+      if (feature.overlay.popover) {
+        var $mapel = $('#' + self.mapId);
+        var pins = $mapel.find('.map-overlay-pin');
+        pins.removeClass('overlay');
+        pins.filter('.map-feature-' + feature.name).addClass('overlay');
+      }
       break;
     case 'extent':
       self.navigateToExtent(feature.coords, animated);
@@ -454,7 +461,9 @@ MapSurface.prototype.createMap = function (opts) {
       overlay.positioning = overlay.positioning || 'bottom-center';
 
       var content = [];
-      content.push('<div class="map-overlay-pin">');
+      content.push('<div class="map-overlay-pin ');
+      content.push('map-feature-' + f.name);
+      content.push('">');
       if (overlay.popover) {
         content.push('<div class="map-overlay-popover">');
         content.push(overlay.popover);
