@@ -23,7 +23,7 @@ mixin submenu()
       block
 
 mixin template-link(linkTarget, linkTitle)
-  a(href=linkTarget, data-title=linkTitle).template-link
+  a(href=linkTarget, data-title=linkTitle).link.template-link
     if block
       block
 
@@ -34,22 +34,34 @@ mixin submenu-item(linkTarget, T, en, ro, titleEn, titleRo)
   li
     - var translatedTitle = T.span({ en: titleEn, ro: titleRo });
     - var translated = T.span({ en: en, ro: ro });
-    a(href=linkTarget, data-title=translatedTitle).template-link
+    a(href=linkTarget, data-title=translatedTitle).link.template-link
       .submenu-container
         .submenu-title
           != translated
         if block
           block
 
+mixin submenu-page-id(id)
+  span(style='display: none', data-id=id).submenu-pageid
+
 mixin submenu-caption(T, en, ro)
   - ro = ro || en;
   .submenu-caption
     != T.span({ en: en, ro: ro })
 
-mixin maplink(posX, posY)
-  a(href='map://' + posX + '/' + posY)
+mixin maplink(posY, posX, name)
+  a(href='map://' + posY + '/' + posX, data-name=name).link.map-link
     if block
       block
 
 mixin mapicon
   i.fa.fa-map-marker
+
+mixin maplabel(visible)
+  - var style = '';
+  - if (visible === false) {
+  -   style = 'display: none';
+  - }
+  span(style=style).map-label
+    if block
+      block

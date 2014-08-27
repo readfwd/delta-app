@@ -47,6 +47,8 @@
 		C8DEB74A6E6D49CFAF9ED460 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1629085A0CD47B8A9199C29 /* AudioToolbox.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		A7DD8EFA87914263AFF88C4E /* APPEmailComposer.m in Sources */ = {isa = PBXBuildFile; fileRef = 45211B34EDD5482193BF8327 /* APPEmailComposer.m */; };
 		6AB3111664444BD1B71B20EC /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76E0F6AED3754A8481CE3DD7 /* MessageUI.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		8B83EF76737D4A71BF253A10 /* CDVStatusBar.m in Sources */ = {isa = PBXBuildFile; fileRef = FDA5C0B44E4D41879853EF8F /* CDVStatusBar.m */; };
+		2E60E35E71B24524913B9E71 /* CDVSplashScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DC3BC0DD294BE6AC02BD16 /* CDVSplashScreen.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -126,6 +128,10 @@
 		45211B34EDD5482193BF8327 /* APPEmailComposer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "APPEmailComposer.m"; path = "de.appplant.cordova.plugin.email-composer/APPEmailComposer.m"; sourceTree = "<group>"; fileEncoding = 4; };
 		22C24BD96DE649DDB856FD54 /* APPEmailComposer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "APPEmailComposer.h"; path = "de.appplant.cordova.plugin.email-composer/APPEmailComposer.h"; sourceTree = "<group>"; fileEncoding = 4; };
 		76E0F6AED3754A8481CE3DD7 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "MessageUI.framework"; path = "System/Library/Frameworks/MessageUI.framework"; sourceTree = SDKROOT; fileEncoding = 4; };
+		FDA5C0B44E4D41879853EF8F /* CDVStatusBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "CDVStatusBar.m"; path = "org.apache.cordova.statusbar/CDVStatusBar.m"; sourceTree = "<group>"; fileEncoding = 4; };
+		E1C7976E3CB34DE490D5ECED /* CDVStatusBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVStatusBar.h"; path = "org.apache.cordova.statusbar/CDVStatusBar.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		66DC3BC0DD294BE6AC02BD16 /* CDVSplashScreen.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "CDVSplashScreen.m"; path = "org.apache.cordova.splashscreen/CDVSplashScreen.m"; sourceTree = "<group>"; fileEncoding = 4; };
+		888B5B32C9044C71B4BB6D87 /* CDVSplashScreen.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVSplashScreen.h"; path = "org.apache.cordova.splashscreen/CDVSplashScreen.h"; sourceTree = "<group>"; fileEncoding = 4; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -263,6 +269,10 @@
 				8C4A9C687AC743DDA74D9228 /* CDVNotification.h */,
 				45211B34EDD5482193BF8327 /* APPEmailComposer.m */,
 				22C24BD96DE649DDB856FD54 /* APPEmailComposer.h */,
+				FDA5C0B44E4D41879853EF8F /* CDVStatusBar.m */,
+				E1C7976E3CB34DE490D5ECED /* CDVStatusBar.h */,
+				66DC3BC0DD294BE6AC02BD16 /* CDVSplashScreen.m */,
+				888B5B32C9044C71B4BB6D87 /* CDVSplashScreen.h */,
 			);
 			name = Plugins;
 			path = "Danube Delta/Plugins";
@@ -469,6 +479,8 @@
 				F58C19ABFF9948A0977D66C0 /* CDVInAppBrowser.m in Sources */,
 				A1B13DFC655A4CA0883E3F74 /* CDVNotification.m in Sources */,
 				A7DD8EFA87914263AFF88C4E /* APPEmailComposer.m in Sources */,
+				8B83EF76737D4A71BF253A10 /* CDVStatusBar.m in Sources */,
+				2E60E35E71B24524913B9E71 /* CDVSplashScreen.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -35,12 +35,24 @@ ViewController.prototype.recall = function () {
   this.emit('recall');
 };
 
-ViewController.prototype.getView = function() {
+ViewController.prototype.getView = function () {
   if (!this.view) {
     this.view = new Famous.RenderNode();
     this.buildRenderTree(this.view);
   }
   return this.view;
+};
+
+ViewController.prototype.propagateBackButton = function (getViewController) {
+  var self = this;
+  self.on('backbutton', function () {
+    var vc = getViewController();
+    if (vc) {
+      vc.emit('backbutton');
+    } else {
+      self.emit('back');
+    }
+  });
 };
 
 module.exports = ViewController;

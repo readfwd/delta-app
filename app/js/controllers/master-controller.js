@@ -18,14 +18,16 @@ MasterController.prototype.prepareDetailController = function () {
     self.detailController = new DetailController({
       templates: self.templates,
       titles: self.titles,
+      pageIds: self.pageIds,
       titleBar: self.titleBar,
+      rightBarButton: self.options.rightBarButton,
     });
     self.detailController.on('back', function () {
       self.emit('ascend');
     });
 
     self.detailController.on('pageFlip', function (page) {
-      console.log('pageFlip', page.index);
+      self.emit('pageFlip', page);
     });
   }
 };
@@ -54,6 +56,7 @@ MasterController.prototype.setUpPage = function (page) {
 
   var templates = [];
   var titles = [];
+  var pageIds = [];
 
   links.each(function (idx, el) {
     var $el = $(el);
@@ -67,6 +70,10 @@ MasterController.prototype.setUpPage = function (page) {
 
     titles.push($el.data('title'));
 
+    var pageid = $el.find('.submenu-pageid');
+    pageid = pageid ? pageid.data('id') : idx;
+    pageIds.push(pageid);
+
     $el.on('click', function (evt) {
       evt.preventDefault();
     });
@@ -79,6 +86,7 @@ MasterController.prototype.setUpPage = function (page) {
   if (!self.templates) {
     self.templates = templates;
     self.titles = titles;
+    self.pageIds = pageIds;
   }
 };
 

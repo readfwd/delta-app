@@ -1,3 +1,6 @@
+.map
+  background-color: #ccc
+
 .map-navdot
   width: 30px
   height: 30px
@@ -18,3 +21,30 @@
 
   &.hidden
     display: none
+
+.map-overlay-pin
+  position: relative
+
+  i
+    font-size: 3em
+    text-shadow: 0px 2px 2px rgba(#000, 50%)
+
+  .map-overlay-popover
+    position: absolute
+    bottom: 2.7em
+    left: 50%
+    width: 10em
+    background: rgba(#000, 70%)
+    color: #fff
+    padding: 0.5em
+    border-radius: 0.25em
+    text-align: center
+    transform: translate(-50%, 0)
+    font-family: 'Source Sans Pro', sans-serif
+
+  .map-overlay-popover
+    display: none
+
+  &.overlay .map-overlay-popover
+    display: block
+

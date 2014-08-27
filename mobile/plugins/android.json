@@ -27,6 +27,14 @@
                         {
                             "xml": "<feature name=\"EmailComposer\"><param name=\"android-package\" value=\"de.appplant.cordova.plugin.emailcomposer.EmailComposer\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"StatusBar\"><param name=\"android-package\" onload=\"true\" value=\"org.apache.cordova.statusbar.StatusBar\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"SplashScreen\"><param name=\"android-package\" value=\"org.apache.cordova.splashscreen.SplashScreen\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -70,6 +78,12 @@
             "PACKAGE_NAME": "com.readfwd.deltaapp"
         },
         "de.appplant.cordova.plugin.email-composer": {
+            "PACKAGE_NAME": "com.readfwd.deltaapp"
+        },
+        "org.apache.cordova.statusbar": {
+            "PACKAGE_NAME": "com.readfwd.deltaapp"
+        },
+        "org.apache.cordova.splashscreen": {
             "PACKAGE_NAME": "com.readfwd.deltaapp"
         }
     },

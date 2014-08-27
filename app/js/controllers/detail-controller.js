@@ -9,6 +9,7 @@ function DetailController(options) {
   options = options || {};
   this.templates = options.templates || [];
   this.titles = options.titles || [];
+  this.pageIds = options.pageIds || [];
   TitleBarController.call(this, options);
 }
 util.inherits(DetailController, TitleBarController);
@@ -187,31 +188,16 @@ DetailController.prototype.onRender = function () {
   self.updateTitleBar(currentStatus);
 
   if (currentStatus.index !== self.pageIndex) {
-    self.emit('pageFlip', { index: currentStatus.index });
+    self.emit('pageFlip', { 
+      index: currentStatus.index,
+      id: self.pageIds[currentStatus.index],
+    });
     self.pageIndex = currentStatus.index;
   }
 };
 
-DetailController.prototype.buildBarItem = function () {
+DetailController.prototype.buildTitleText = function (titleRoot) {
   var self = this;
-  var root = new Famous.RenderNode();
-
-  var homeContainer = new Famous.ContainerSurface({
-    size: [44, 44],
-  });
-
-  Famous.FastClick(homeContainer, function(evt) { 
-    Famous.Timer.after(function () {
-      self.emit('back'); 
-    }, 1);
-    evt.stopPropagation();
-  });
-
-  var homeIcon = new Famous.Surface({
-    classes: ['title-button', 'title-button-back'],
-    content: '<i class="fa fa-lg fa-fw ' + self.options.backIcon + '"></i>',
-    size: [true, true],
-  });
 
   var titleText1 = new Famous.Surface({
     classes: ['title-bar-text'],
@@ -227,34 +213,12 @@ DetailController.prototype.buildBarItem = function () {
 
   var titleModifier2 = new Famous.StateModifier();
 
-  var titleModifier = new Famous.Modifier();
-
-  var titleRoot = root.add(new Famous.StateModifier({
-    align: [0.5, 0.5],
-    origin: [0.5, 0.5],
-  })).add(titleModifier);
-
   titleRoot.add(titleModifier1).add(titleText1);
   titleRoot.add(titleModifier2).add(titleText2);
   self.titleModifier1 = titleModifier1;
   self.titleText1 = titleText1;
   self.titleModifier2 = titleModifier2;
   self.titleText2 = titleText2;
-
-  root.add(new Famous.StateModifier({
-    align: [0, 0.5],
-    origin: [0, 0.5],
-  })).add(homeContainer);
-
-  homeContainer.add(new Famous.StateModifier({
-    align: [0.5, 0.5],
-    origin: [0.5, 0.5],
-  })).add(homeIcon);
-
-  return {
-    view: root,
-    titleModifier: titleModifier,
-  };
 };
 
 

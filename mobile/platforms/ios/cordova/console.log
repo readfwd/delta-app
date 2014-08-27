@@ -13,3 +13,97 @@ You could find it at the following address https://developer.apple.com/icloud/do
 
 2014-08-23 19:07:26.349 Danube Delta[4707:70b] Resetting plugins due to page load.
 2014-08-23 19:07:26.460 Danube Delta[4707:70b] Finished load of: file:///Users/da_petcu21/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/C923AE63-3C76-47B7-9ABA-33D47A9FF3B6/Danube%20Delta.app/www/index.html
+objc[61103]: Class AXEmojiUtilities is implemented in both /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/PrivateFrameworks/AccessibilityUtilities.framework/AccessibilityUtilities and /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/libAXSpeechManager.dylib. One of the two will be used. Which one is undefined.
+2014-08-26 18:25:04.547 Danube Delta[61103:70b] Cannot find executable for CFBundle 0xbdd7500 </Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/AccessibilityBundles/CertUIFramework.axbundle> (not loaded)
+2014-08-26 18:25:04.553 Danube Delta[61103:70b] Cannot find executable for CFBundle 0xcacaad0 </Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/AccessibilityBundles/MusicLibrary.axbundle> (not loaded)
+2014-08-26 18:25:04.556 Danube Delta[61103:70b] Cannot find executable for CFBundle 0xcae16e0 </Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/AccessibilityBundles/GeoServices.axbundle> (not loaded)
+2014-08-26 18:25:04.589 Danube Delta[61103:70b] Multi-tasking -> Device: YES, App: YES
+2014-08-26 18:25:04.594 Danube Delta[61103:70b] Unlimited access to network resources
+2014-08-26 18:25:04.596 Danube Delta[61103:70b] 
+
+Started backup to iCloud! Please be careful.
+Your application might rejected by Apple if you store too much data.
+For more information please read "iOS Data Storage Guidelines"
+You could find it at the following address https://developer.apple.com/icloud/documentation/data-storage/ .
+
+2014-08-26 18:25:04.615 Danube Delta[61103:70b] [CDVTimer][statusbar] 5.950987ms
+2014-08-26 18:25:04.616 Danube Delta[61103:70b] [CDVTimer][TotalPluginStartup] 6.429970ms
+2014-08-26 18:25:04.676 Danube Delta[61103:70b] Resetting plugins due to page load.
+2014-08-26 18:25:04.810 Danube Delta[61103:70b] Finished load of: file:///Users/da_petcu21/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/C923AE63-3C76-47B7-9ABA-33D47A9FF3B6/Danube%20Delta.app/www/index.html
+objc[63928]: Class AXEmojiUtilities is implemented in both /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/PrivateFrameworks/AccessibilityUtilities.framework/AccessibilityUtilities and /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/libAXSpeechManager.dylib. One of the two will be used. Which one is undefined.
+2014-08-26 18:26:16.419 Danube Delta[63928:70b] Cannot find executable for CFBundle 0xc133270 </Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/AccessibilityBundles/CertUIFramework.axbundle> (not loaded)
+2014-08-26 18:26:16.444 Danube Delta[63928:70b] Cannot find executable for CFBundle 0xc13da00 </Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/AccessibilityBundles/MusicLibrary.axbundle> (not loaded)
+2014-08-26 18:26:16.447 Danube Delta[63928:70b] Cannot find executable for CFBundle 0xbd48dd0 </Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/AccessibilityBundles/GeoServices.axbundle> (not loaded)
+2014-08-26 18:26:16.470 Danube Delta[63928:70b] Multi-tasking -> Device: YES, App: YES
+2014-08-26 18:26:16.476 Danube Delta[63928:70b] Unlimited access to network resources
+2014-08-26 18:26:16.478 Danube Delta[63928:70b] 
+
+Started backup to iCloud! Please be careful.
+Your application might rejected by Apple if you store too much data.
+For more information please read "iOS Data Storage Guidelines"
+You could find it at the following address https://developer.apple.com/icloud/documentation/data-storage/ .
+
+2014-08-26 18:26:16.500 Danube Delta[63928:70b] [CDVTimer][statusbar] 6.567001ms
+2014-08-26 18:26:16.500 Danube Delta[63928:70b] [CDVTimer][TotalPluginStartup] 7.076979ms
+2014-08-26 18:26:16.561 Danube Delta[63928:70b] Resetting plugins due to page load.
+2014-08-26 18:26:16.749 Danube Delta[63928:70b] Finished load of: file:///Users/da_petcu21/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/C923AE63-3C76-47B7-9ABA-33D47A9FF3B6/Danube%20Delta.app/www/index.html
+objc[77906]: Class AXEmojiUtilities is implemented in both /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/PrivateFrameworks/AccessibilityUtilities.framework/AccessibilityUtilities and /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/libAXSpeechManager.dylib. One of the two will be used. Which one is undefined.
+2014-08-26 20:40:46.402 Danube Delta[77906:70b] Cannot find executable for CFBundle 0xcc927d0 </Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/AccessibilityBundles/MusicLibrary.axbundle> (not loaded)
+2014-08-26 20:40:46.407 Danube Delta[77906:70b] Cannot find executable for CFBundle 0x11b95b00 </Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/AccessibilityBundles/GeoServices.axbundle> (not loaded)
+2014-08-26 20:40:46.420 Danube Delta[77906:70b] Cannot find executable for CFBundle 0xccbced0 </Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/AccessibilityBundles/CertUIFramework.axbundle> (not loaded)
+2014-08-26 20:40:46.453 Danube Delta[77906:70b] Multi-tasking -> Device: YES, App: YES
+2014-08-26 20:40:46.458 Danube Delta[77906:70b] Unlimited access to network resources
+2014-08-26 20:40:46.460 Danube Delta[77906:70b] 
+
+Started backup to iCloud! Please be careful.
+Your application might rejected by Apple if you store too much data.
+For more information please read "iOS Data Storage Guidelines"
+You could find it at the following address https://developer.apple.com/icloud/documentation/data-storage/ .
+
+2014-08-26 20:40:46.478 Danube Delta[77906:70b] [CDVTimer][statusbar] 5.326986ms
+2014-08-26 20:40:46.481 Danube Delta[77906:70b] [CDVTimer][splashscreen] 2.573013ms
+2014-08-26 20:40:46.482 Danube Delta[77906:70b] [CDVTimer][TotalPluginStartup] 8.700013ms
+2014-08-26 20:40:46.538 Danube Delta[77906:70b] Resetting plugins due to page load.
+2014-08-26 20:40:46.673 Danube Delta[77906:70b] Finished load of: file:///Users/da_petcu21/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/C923AE63-3C76-47B7-9ABA-33D47A9FF3B6/Danube%20Delta.app/www/index.html
+objc[80664]: Class AXEmojiUtilities is implemented in both /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/PrivateFrameworks/AccessibilityUtilities.framework/AccessibilityUtilities and /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/libAXSpeechManager.dylib. One of the two will be used. Which one is undefined.
+2014-08-26 20:42:38.107 Danube Delta[80664:70b] Cannot find executable for CFBundle 0xcd246a0 </Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/AccessibilityBundles/MusicLibrary.axbundle> (not loaded)
+2014-08-26 20:42:38.113 Danube Delta[80664:70b] Cannot find executable for CFBundle 0xcf658b0 </Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/AccessibilityBundles/GeoServices.axbundle> (not loaded)
+2014-08-26 20:42:38.127 Danube Delta[80664:70b] Cannot find executable for CFBundle 0xcd3b640 </Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/AccessibilityBundles/CertUIFramework.axbundle> (not loaded)
+2014-08-26 20:42:38.142 Danube Delta[80664:70b] Multi-tasking -> Device: YES, App: YES
+2014-08-26 20:42:38.147 Danube Delta[80664:70b] Unlimited access to network resources
+2014-08-26 20:42:38.149 Danube Delta[80664:70b] 
+
+Started backup to iCloud! Please be careful.
+Your application might rejected by Apple if you store too much data.
+For more information please read "iOS Data Storage Guidelines"
+You could find it at the following address https://developer.apple.com/icloud/documentation/data-storage/ .
+
+2014-08-26 20:42:38.166 Danube Delta[80664:70b] [CDVTimer][statusbar] 4.694998ms
+2014-08-26 20:42:38.169 Danube Delta[80664:70b] [CDVTimer][splashscreen] 2.327025ms
+2014-08-26 20:42:38.169 Danube Delta[80664:70b] [CDVTimer][TotalPluginStartup] 7.682025ms
+2014-08-26 20:42:38.194 Danube Delta[80664:70b] Resetting plugins due to page load.
+2014-08-26 20:42:38.313 Danube Delta[80664:70b] Finished load of: file:///Users/da_petcu21/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/C923AE63-3C76-47B7-9ABA-33D47A9FF3B6/Danube%20Delta.app/www/index.html
+2014-08-26 20:48:44.044 Danube Delta[80664:70b] Resetting plugins due to page load.
+2014-08-26 20:48:44.386 Danube Delta[80664:70b] Finished load of: file:///Users/da_petcu21/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/C923AE63-3C76-47B7-9ABA-33D47A9FF3B6/Danube%20Delta.app/www/index.html
+2014-08-26 20:50:33.345 Danube Delta[80664:70b] Resetting plugins due to page load.
+2014-08-26 20:50:33.673 Danube Delta[80664:70b] Finished load of: file:///Users/da_petcu21/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/C923AE63-3C76-47B7-9ABA-33D47A9FF3B6/Danube%20Delta.app/www/index.html
+2014-08-26 20:50:35.289 Danube Delta[80664:70b] Resetting plugins due to page load.
+2014-08-26 20:50:35.609 Danube Delta[80664:70b] Finished load of: file:///Users/da_petcu21/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/C923AE63-3C76-47B7-9ABA-33D47A9FF3B6/Danube%20Delta.app/www/index.html
+objc[86414]: Class AXEmojiUtilities is implemented in both /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/PrivateFrameworks/AccessibilityUtilities.framework/AccessibilityUtilities and /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/usr/lib/libAXSpeechManager.dylib. One of the two will be used. Which one is undefined.
+2014-08-26 20:58:30.942 Danube Delta[86414:70b] Cannot find executable for CFBundle 0xbe88900 </Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/AccessibilityBundles/CertUIFramework.axbundle> (not loaded)
+2014-08-26 20:58:30.949 Danube Delta[86414:70b] Cannot find executable for CFBundle 0x1120ea30 </Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/AccessibilityBundles/MusicLibrary.axbundle> (not loaded)
+2014-08-26 20:58:30.953 Danube Delta[86414:70b] Cannot find executable for CFBundle 0xf822710 </Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator7.1.sdk/System/Library/AccessibilityBundles/GeoServices.axbundle> (not loaded)
+2014-08-26 20:58:30.984 Danube Delta[86414:70b] Multi-tasking -> Device: YES, App: YES
+2014-08-26 20:58:30.989 Danube Delta[86414:70b] Unlimited access to network resources
+2014-08-26 20:58:30.991 Danube Delta[86414:70b] 
+
+Started backup to iCloud! Please be careful.
+Your application might rejected by Apple if you store too much data.
+For more information please read "iOS Data Storage Guidelines"
+You could find it at the following address https://developer.apple.com/icloud/documentation/data-storage/ .
+
+2014-08-26 20:58:31.009 Danube Delta[86414:70b] [CDVTimer][statusbar] 5.371034ms
+2014-08-26 20:58:31.012 Danube Delta[86414:70b] [CDVTimer][splashscreen] 2.505004ms
+2014-08-26 20:58:31.012 Danube Delta[86414:70b] [CDVTimer][TotalPluginStartup] 8.642972ms
+2014-08-26 20:58:31.038 Danube Delta[86414:70b] Resetting plugins due to page load.
+2014-08-26 20:58:31.157 Danube Delta[86414:70b] Finished load of: file:///Users/da_petcu21/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/C923AE63-3C76-47B7-9ABA-33D47A9FF3B6/Danube%20Delta.app/www/index.html

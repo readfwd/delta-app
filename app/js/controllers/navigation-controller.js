@@ -5,6 +5,9 @@ var Famous = require('../shims/famous');
 function NavigationController() {
   ViewController.apply(this, arguments);
   var self = this;
+  self.propagateBackButton(function () {
+    return self.viewController;
+  });
   self.backHandler = function () {
     self.navigateBack();
   };
@@ -61,7 +64,9 @@ NavigationController.prototype.setNavigationItem = function (viewController) {
     commitAnimation();
   }
 
-  self.emit('navigate');
+  if (viewController) {
+    self.emit('navigate');
+  }
 };
 
 NavigationController.prototype.navigateBack = function () {

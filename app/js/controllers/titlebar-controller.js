@@ -22,13 +22,58 @@ util.inherits(TitleBarController, NavigationController);
 TitleBarController.prototype.buildContentTree = function (/*parentNode*/) {
 };
 
+TitleBarController.createTitleBarButton = function (align, icon) {
+  var container = new Famous.ContainerSurface({
+    size: [80, 65],
+  });
+
+  var sm = new Famous.StateModifier({
+    size: [44, 44],
+    origin: [align, 0.5],
+    align: [align, 0.5],
+  });
+
+  var iconModifier = new Famous.StateModifier({
+    origin: [0.5, 0.5],
+    align: [0.5, 0.5],
+  });
+
+  container.add(sm).add(iconModifier).add(icon);
+  return container;
+};
+
+TitleBarController.prototype.buildTitleText = function (rootNode) {
+  var self = this;
+
+  var titleText = new Famous.Surface({
+    classes: ['title-bar-text'],
+    content: self.options.title,
+    size: [true, true],
+  });
+
+  rootNode.add(titleText);
+};
+
 TitleBarController.prototype.buildBarItem = function () {
   var self = this;
   var root = new Famous.RenderNode();
 
-  var homeContainer = new Famous.ContainerSurface({
-    size: [44, 44],
+  var titleModifier = new Famous.Modifier();
+
+  var titleRoot = root.add(new Famous.StateModifier({
+    align: [0.5, 0.5],
+    origin: [0.5, 0.5],
+  })).add(titleModifier);
+
+  self.buildTitleText(titleRoot);
+
+  var homeIcon = new Famous.Surface({
+    classes: ['title-button', 'title-button-back'],
+    content: '<i class="fa fa-lg fa-fw ' + self.options.backIcon + '"></i>',
+    size: [true, true],
   });
+
+  var homeContainer = TitleBarController.createTitleBarButton(0, homeIcon);
 
   Famous.FastClick(homeContainer, function(evt) { 
     Famous.Timer.after(function () {
@@ -37,34 +82,17 @@ TitleBarController.prototype.buildBarItem = function () {
     evt.stopPropagation();
   });
 
-  var homeIcon = new Famous.Surface({
-    classes: ['title-button', 'title-button-back'],
-    content: '<i class="fa fa-lg fa-fw ' + self.options.backIcon + '"></i>',
-    size: [true, true],
-  });
-
-  var titleText = new Famous.Surface({
-    classes: ['title-bar-text'],
-    content: self.options.title,
-    size: [true, true],
-  });
-
-  var titleModifier = new Famous.Modifier();
-
-  root.add(new Famous.StateModifier({
-    align: [0.5, 0.5],
-    origin: [0.5, 0.5],
-  })).add(titleModifier).add(titleText);
-
   root.add(new Famous.StateModifier({
     align: [0, 0.5],
     origin: [0, 0.5],
   })).add(homeContainer);
 
-  homeContainer.add(new Famous.StateModifier({
-    align: [0.5, 0.5],
-    origin: [0.5, 0.5],
-  })).add(homeIcon);
+  if (self.options.rightBarButton) {
+    root.add(new Famous.StateModifier({
+      align: [1, 0.5],
+      origin: [1, 0.5],
+    })).add(self.options.rightBarButton.call(self));
+  }
 
   return {
     view: root,
@@ -109,9 +137,11 @@ TitleBarController.prototype.navigateAnimation = function (isOut) {
 TitleBarController.prototype.createNavRenderController = function () {
   var renderController = new Famous.RenderController({
     inTransition: {
-      method: 'spring',
-      period: 500,
-      dampingRatio: 0.5,
+      //method: 'spring',
+      //period: 500,
+      //dampingRatio: 0.5,
+      duration: 500,
+      curve: 'easeOut',
     },
     outTransition: {
       duration: 400,

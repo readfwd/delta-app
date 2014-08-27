@@ -7,17 +7,19 @@ var $ = require('jquery');
 function MapSurface(options) {
   var self = this;
 
-  console.log(options);
-
   options = options || {};
   options.layers = options.layers || [];
   options.views = options.views || [];
   options.features = options.features || [];
+  options.constructors = options.constructors || [];
+  self.mapOptions = options;
 
   var id = 'map-' + (Math.random().toString(36)+'00000000000000000').slice(2, 7);
-  options.content = '<div id="' + id + '" class="map" style="width: 100%; height: 100%"></div>';
+  var content = '<div id="' + id + '" class="map" style="width: 100%; height: 100%"></div>';
 
-  Famous.Surface.call(this, options);
+  Famous.Surface.call(this, {
+    content: content
+  });
 
   var resizeScheduled = false;
   function onResize() {
@@ -176,7 +178,7 @@ MapSurface.prototype.startLocationUpdates = function () {
       enableHighAccuracy: true,
       maximumAge: 15 * 60 * 1000,
     });
-  }
+  } 
 };
 
 MapSurface.prototype.stopHeadingUpdates = function () {
@@ -246,31 +248,9 @@ MapSurface.prototype.createJumpHomeControl = function () {
                  '</button>');
   control.append(button);
   button.on('click', function() {
-    if (!self.map || !self.lastLocation) {
-      return;
+    if (self.lastLocation) {
+      self.navigateToPoint(self.lastLocation);
     }
-    var viewIndices = self.boundingExtentsContaining(self.lastLocation);
-    if (!viewIndices.length) {
-      return;
-    }
-
-    if (!_.contains(viewIndices, self.currentViewIndex)) {
-      self.setView(viewIndices[0]);
-    }
-
-    var view = self.map.getView();
-    var pan = ol.animation.pan({
-      duration: 700,
-      source: view.getCenter()
-    });
-    var zoom = ol.animation.zoom({
-      duration: 700,
-      resolution: view.getResolution()
-    });
-    self.map.beforeRender(pan);
-    self.map.beforeRender(zoom);
-    view.setCenter(self.lastLocation);
-    view.setZoom(12);
   });
   self.jumpControl = control;
 
@@ -282,23 +262,117 @@ MapSurface.prototype.createJumpHomeControl = function () {
 MapSurface.prototype.setView = function (index) {
   var view = this.views[index];
   this.map.setView(view);
-  self.currentViewIndex = index;
+  this.currentViewIndex = index;
   if (view.initialOptions.extent) {
     view.fitExtent(view.initialOptions.extent, this.map.getSize());
-    view.setZoom(view.getZoom() + 1);
-    view.constrainResolution();
+    if (view.initialOptions.zoom) {
+      view.setZoom(view.initialOptions.zoom);
+    } else {
+      view.setZoom(view.getZoom() + 1);
+    }
   }
 };
 
-MapSurface.defaultVectorStyle = new ol.style.Style({
-  fill: new ol.style.Fill({
-    color: 'rgba(255, 255, 255, 0.6)'
-  }),
-  stroke: new ol.style.Stroke({
-    color: '#319FD3',
-    width: 1
-  }),
-});
+MapSurface.prototype.setViewAtCoordinates = function (coord) {
+  var self = this;
+  var viewIndices = self.boundingExtentsContaining(coord);
+  if (!viewIndices.length) {
+    return false;
+  }
+  if (!_.contains(viewIndices, self.currentViewIndex)) {
+    self.setView(viewIndices[0]);
+  }
+  return true;
+};
+
+MapSurface.prototype.navigateToPoint = function(coord, zoom, animated, isResolution) {
+  var self = this;
+
+  if (!self.map) {
+    return;
+  }
+
+  self.setViewAtCoordinates(coord);
+
+  if (animated === undefined) {
+    animated = true;
+  }
+
+  var view = self.map.getView();
+  if (animated && Famous.AnimationToggle.get()) {
+    self.map.beforeRender(ol.animation.pan({
+      duration: 700,
+      source: view.getCenter(),
+    }));
+    self.map.beforeRender(ol.animation.zoom({
+      duration: 700,
+      resolution: view.getResolution(),
+    }));
+  }
+
+  view.setCenter(coord);
+  if (isResolution) {
+    view.setResolution(zoom);
+  } else {
+    var zoomLevel = zoom || (view.initialOptions.maxZoom || 28);
+    view.setZoom(zoomLevel);
+  }
+};
+
+MapSurface.prototype.navigateToExtent = function(extent, animated) {
+  var self = this;
+
+  if (!self.map) {
+    return;
+  }
+
+  var view = self.map.getView();
+  var center = ol.extent.getCenter(extent);
+  var resolution = view.getResolutionForExtent(extent, self.map.getSize());
+  resolution = view.constrainResolution(resolution, 0, 1);
+
+  self.navigateToPoint(center, resolution, animated, true);
+};
+
+MapSurface.prototype.navigateToFeature = function(featureName, animated) {
+  var self = this;
+
+  self.lastFeatureName = featureName;
+  self.lastFeatureAnimated = animated;
+
+  if (!featureName) {
+    return;
+  }
+
+  if (!self.map) {
+    return;
+  }
+
+  var feature = _.find(self.mapOptions.features, function (a) {
+    return a.name === featureName;
+  });
+
+
+  if (!feature) {
+    return;
+  }
+
+  switch (feature.type) {
+    case 'point':
+      self.navigateToPoint(feature.coords, feature.zoomLevel, animated);
+      break;
+    case 'extent':
+      self.navigateToExtent(feature.coords, animated);
+      break;
+  }
+
+  // Refresh styles
+  _.each(self.map.getLayers().getArray(), function (layer) {
+    if (layer instanceof ol.layer.Vector) {
+      layer.setStyle(layer.getStyle());
+    }
+  });
+};
 
 MapSurface.prototype.createMap = function (opts) {
   var self = this;
@@ -313,8 +387,6 @@ MapSurface.prototype.createMap = function (opts) {
     var layerOptions = {
       extent: opt.extent,
     };
-
-    var vectorStyle = opt.style || MapSurface.defaultVectorStyle;
 
     if (opt.type === 'tile') {
       if (opt.url) {
@@ -337,7 +409,11 @@ MapSurface.prototype.createMap = function (opts) {
         });
       }
 
-      //layerOptions.style = vectorStyle;
+      if (opt.styleConstructor) {
+        layerOptions.style = opt.styleConstructor(self);
+      } else {
+        layerOptions.style = opt.style;
+      }
 
       layer = new ol.layer.Vector(layerOptions);
     }
@@ -356,9 +432,59 @@ MapSurface.prototype.createMap = function (opts) {
     return view;
   });
 
+  _.each(opts.features, function(f) {
+    if (f.type === 'point' && f.overlay) {
+      var overlay = f.overlay;
+      if (typeof(overlay) !== 'object') {
+        overlay = {};
+      }
+
+      overlay.color = overlay.color || '#f9645c';
+      overlay.positioning = overlay.positioning || 'bottom-center';
+
+      var content = [];
+      content.push('<div class="map-overlay-pin">');
+      if (overlay.popover) {
+        content.push('<div class="map-overlay-popover">');
+        content.push(overlay.popover);
+        content.push('</div>');
+      }
+      content.push('<i class="fa fa-map-marker"></i>');
+      content.push('</div>');
+      var $el = $(content.join(''));
+      $el[0].style.color = overlay.color;
+
+      if (overlay.popover) {
+        $el.on('mousedown touchstart', function() {
+          $el.toggleClass('overlay', true);
+        });
+
+        $el.on('mouseup mouseout touchend touchcancel', function() {
+          $el.toggleClass('overlay', false);
+        });
+      }
+
+      var mapOverlay = new ol.Overlay({
+        element: $el[0],
+        position: f.coords,
+        positioning: overlay.positioning,
+        stopEvent: !!(overlay.popover || overlay.click),
+      });
+
+      map.addOverlay(mapOverlay);
+    }
+  });
+
   self.setView(0);
+  if (self.lastFeatureName) {
+    self.navigateToFeature(self.lastFeatureName, self.lastFeatureAnimated);
+  }
   self.createNavDot();
   self.createJumpHomeControl();
+
+  _.each(opts.constructors, function(cb) {
+    cb(self);
+  });
 };
 
 module.exports = MapSurface;

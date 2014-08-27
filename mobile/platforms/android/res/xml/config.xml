@@ -20,6 +20,12 @@
     <feature name="EmailComposer">
         <param name="android-package" value="de.appplant.cordova.plugin.emailcomposer.EmailComposer" />
     </feature>
+    <feature name="StatusBar">
+        <param name="android-package" onload="true" value="org.apache.cordova.statusbar.StatusBar" />
+    </feature>
+    <feature name="SplashScreen">
+        <param name="android-package" value="org.apache.cordova.splashscreen.SplashScreen" />
+    </feature>
     <icon density="ldpi" src="res/icons/android/ldpi.png" />
     <icon density="mdpi" src="res/icons/android/mdpi.png" />
     <icon density="hdpi" src="res/icons/android/hdpi.png" />
@@ -33,4 +39,10 @@
     </author>
     <content src="index.html" />
     <access origin="*" />
+    <preference name="StatusBarOverlaysWebView" value="true" />
+    <preference name="StatusBarStyle" value="lightcontent" />
+    <preference name="SplashScreen" value="screen" />
+    <preference name="SplashScreenDelay" value="10000" />
+    <preference name="AutoHideSplashScreen" value="false" />
+    <preference name="ShowSplashScreenSpinner" value="false" />
 </widget>
