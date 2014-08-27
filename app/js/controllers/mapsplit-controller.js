@@ -65,6 +65,7 @@ MapSplitController.prototype.buildRenderTree = function (parentNode) {
   mapOptions.createTitleBar = false;
   mapOptions.preset = {
     extend: mapOptions.preset,
+    mapClasses: ['map-split'],
     constructors: [ function (mapSurface) {
       self.createMapFullScreenControl(mapSurface);
     } ],

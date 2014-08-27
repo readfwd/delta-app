@@ -12,10 +12,12 @@ function MapSurface(options) {
   options.views = options.views || [];
   options.features = options.features || [];
   options.constructors = options.constructors || [];
+  options.mapClasses = options.mapClasses || [];
+  options.mapClasses.push('map');
   self.mapOptions = options;
 
   var id = 'map-' + (Math.random().toString(36)+'00000000000000000').slice(2, 7);
-  var content = '<div id="' + id + '" class="map" style="width: 100%; height: 100%"></div>';
+  var content = '<div id="' + id + '" class="' + options.mapClasses.join(' ') + '" style="width: 100%; height: 100%"></div>';
 
   Famous.Surface.call(this, {
     content: content
