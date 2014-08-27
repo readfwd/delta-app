@@ -32,8 +32,11 @@ function MainMenuController(options) {
         en: 'Preserved areas',
       }),
       viewController: function () {
-        return new TemplateController({
+        return new MapSplitController({
           template: templates.ghid.restricted.index,
+          mapOptions: {
+            preset: 'restricted',
+          },
           title: T.span({
             ro: 'Zone strict protejate',
             en: 'Preserved areas',

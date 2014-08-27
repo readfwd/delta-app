@@ -370,9 +370,13 @@ MenuController.prototype.buildRenderTree = function (parentNode) {
   self.buildGrid(parentNode);
   self.buildNavRenderController(parentNode);
 
-  Famous.Timer.setTimeout(function () {
+  if (Famous.AnimationToggle.get()) {
+    Famous.Timer.after(function () {
+      self.presentIn();
+    }, 10);
+  } else {
     self.presentIn();
-  }, 600);
+  }
 };
 
 module.exports = MenuController;

@@ -19,13 +19,14 @@ MapController.prototype.buildContentTree = function (parentNode) {
     size: [undefined, undefined],
   });
 
-  this.map = new MapSurface(this.solvePreset(this.options.preset));
+  var map = new MapSurface(this.solvePreset(this.options.preset));
+  this.map = map;
 
   this.on('resize', function () {
     map.emit('resize');
   });
 
-  parentNode.add(modifier).add(this.map);
+  parentNode.add(modifier).add(map);
 };
 
 MapController.prototype.solvePreset = function (preset) {
@@ -40,7 +41,7 @@ MapController.prototype.solvePreset = function (preset) {
 
   var extend = this.solvePreset(preset.extend);
   var solved = _.extend({}, extend, preset);
-  var arrays = ['layers', 'views', 'features'];
+  var arrays = ['layers', 'views', 'features', 'constructors'];
   if (preset && extend) {
     for (var i = 0, n = arrays.length; i < n; i++) {
       var name = arrays[i];

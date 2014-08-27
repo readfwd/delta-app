@@ -15,16 +15,22 @@ function RootController () {
   self.buildRenderTree(self.context);
 
   if (cordova.present) {
-    document.addEventListener('backbutton', function () {
+    var backHandler = function () {
       self.menuController.emit('backbutton');
-    }, false);
+    };
+    self.menuController.on('navigate', function () {
+      document.addEventListener('backbutton', backHandler, false);
+    });
+    self.menuController.on('navigateBack', function () {
+      document.removeEventListener('backbutton', backHandler);
+    });
   }
 
-  self.menuController.on('back', function () {
-    if (navigator.app && navigator.app.exitApp) {
-      navigator.app.exitApp();
-    }
-  });
+  if (navigator.splashscreen) {
+    Famous.Timer.after(function () {
+      navigator.splashscreen.hide();
+    }, 1);
+  }
 }
 util.inherits(RootController, ViewController);
 
