@@ -109,6 +109,5 @@ if (process.env.MAP_GIST) {
 
 var res = JSON.parse(fs.readFileSync('./raw_restricted.geojson'));
 var resExtents = processGeo(res);
-console.log(resExtents);
 fs.writeFile('./app/js/content/restricted-extents.json', JSON.stringify(resExtents));
 fs.writeFile('./app/assets/restricted.geojson', JSON.stringify(res));
