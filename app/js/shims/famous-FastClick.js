@@ -17,6 +17,10 @@ function FastClick(element, callback) {
     });
     element.on('touchmove', function (event) {
       if (targeted) {
+        if (!(event instanceof window.TouchEvent) && 
+          (event.originalEvent instanceof window.TouchEvent)) {
+            event = event.originalEvent;
+        }
         var dist = Math.abs(event.pageX - currentEvent.pageX) +
           Math.abs(event.pageY - currentEvent.pageY);
         if (dist > 10) {

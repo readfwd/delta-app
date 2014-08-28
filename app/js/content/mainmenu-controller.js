@@ -123,6 +123,7 @@ function MainMenuController(options) {
       viewController: function () {
         return new MapController({
           backIcon: 'fa-home',
+          preset: 'all',
         });
       },
     },

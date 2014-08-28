@@ -1,6 +1,12 @@
 var ol = require('../lib/ol');
 var routeExtents = require('./route-extents');
+var restrictedExtents = require('./restricted-extents');
 var _ = require('lodash');
+var templates = require('../lib/templates');
+var T = require('../translate');
+var $ = require('jquery');
+var TemplateUtils = require('../controllers/template-utils');
+var Util = require('../util');
 
 var MapPresets = {};
 
@@ -8,13 +14,7 @@ MapPresets.registerPreset = function (name, preset) {
   MapPresets[name] = preset;
 };
 
-function gps2mp(ext) {
-  if (ext.length === 4) {
-    return ol.proj.transformExtent(ext, 'EPSG:4326', 'EPSG:3857');
-  } else {
-    return ol.proj.transform(ext, 'EPSG:4326', 'EPSG:3857');
-  }
-}
+var gps2mp = Util.GPSToMercador;
 
 var deltaExtent = gps2mp([28.1,44.3296,29.8324,45.6004]);
 
@@ -43,7 +43,7 @@ var styleCache = [{}, {}];
 
 function styleConstructor(mapSurface) {
   return function (feature) {
-    var route = feature.getProperties().NumarTrase;
+    var route = feature.getProperties().name;
     var routeIndex = parseInt(route.replace(/^D/, ''));
     route = /^D/.test(route) ? 'trail' + route : 'route' + route;
     var active = mapSurface.lastFeatureName === route ? 1 : 0;
@@ -78,7 +78,13 @@ function styleConstructor(mapSurface) {
 var restrictedStyleCache;
 function restrictedStyle() {
   if (!restrictedStyleCache) {
-    var styles = [];
+    var styles = [
+      new ol.style.Style({
+        fill: new ol.style.Fill({
+          color: 'rgba(231, 76, 60, 0.4)',
+        }),
+      }),
+    ];
     restrictedStyleCache = styles;
   }
   return restrictedStyleCache;
@@ -86,6 +92,7 @@ function restrictedStyle() {
 
 MapPresets.registerPreset('routes', {
   extend: 'default',
+  resetStyleOnHighlight: true,
   layers: [ {
     type: 'geojson',
     url: 'assets/routes.geojson',
@@ -105,6 +112,7 @@ MapPresets.registerPreset('routes', {
 
 MapPresets.registerPreset('trails', {
   extend: 'default',
+  resetStyleOnHighlight: true,
   layers: [ {
     type: 'geojson',
     url: 'assets/trails.geojson',
@@ -124,12 +132,64 @@ MapPresets.registerPreset('trails', {
 
 MapPresets.registerPreset('restricted', {
   extend: 'default',
-  //layers: [ {
-    //type: 'geojson',
-    //url: 'assets/restricted.geojson',
-    //extent: deltaExtent,
-    //style: restrictedStyleCache,
-  //} ],
+  layers: [ {
+    type: 'geojson',
+    url: 'assets/restricted.geojson',
+    extent: deltaExtent,
+    style: restrictedStyle,
+  } ],
+  features: _.map(_.keys(restrictedExtents), function(route) {
+    return {
+      type: 'extent',
+      coords: gps2mp(restrictedExtents[route]),
+      name: 'restricted' + route,
+    };
+  }),
+});
+
+var templates = [
+  templates.ghid.landmarks.history,
+  templates.ghid.landmarks.museums,
+  templates.ghid.about.geographical,
+];
+
+var templateTitles = [
+  T.span({ 
+    en: 'Historic objectives near the Reserve',
+    ro: 'Obiective istorice din vecinătatea Rezervaţiei' }),
+  T.span({ 
+    en: 'Museums and Memorial houses', 
+    ro: 'Muzee şi case memoriale' }),
+  T.span({ 
+    en: 'Spatial extension and geographical coordinates', 
+    ro: 'Extensiune spațială și coordonate geografice' }),
+];
+
+var templateColors = [
+  '#67809F',
+  '#a1605c',
+  '#27ae60',
+];
+
+MapPresets.registerPreset('all', {
+  extend: ['restricted', 'trails', 'routes'].concat(_.map(templates, function(t, idx) {
+    var $el = $('<div>' + t({T: T}) + '</div>');
+    var color = templateColors[idx];
+    var features = TemplateUtils.setUpMapLinks($el, false);
+    _.each(features, function(f) {
+      f.overlay.color = color;
+      f.overlay.click = function() {
+        //this is the map surface
+        this.emit('navigateToTemplate', {
+          template: t,
+          title: templateTitles[idx]
+        });
+      };
+    });
+    return {
+      features: features,
+    };
+  })),
 });
 
 module.exports = MapPresets;

@@ -7,6 +7,8 @@ var templates = require('../lib/templates');
 var _ = require('lodash');
 var T = require('../translate');
 var cordova = require('../shims/cordova');
+var Util = require('../util');
+var TemplateUtils = require('./template-utils');
 
 function TemplateController(options) {
   options = options || {};
@@ -169,55 +171,6 @@ TemplateController.prototype.setUpLinks = function (page) {
 
 };
 
-TemplateController.prototype.setUpMapLinks = function (page) {
-  var self = this;
-
-  var links = page.find('a.map-link');
-  links.on('click', function (evt) {
-    evt.preventDefault();
-  });
-  
-  var features = [];
-  var takenNames = {};
-  _.each($.makeArray(links), function (link, idx) {
-    var href = link.href;
-    var params = href.replace(/^map:(\/\/)?/, '').split('/');
-    var coords = MapController.GPSToMercador([
-      parseFloat(params[1]), 
-      parseFloat(params[0]),
-    ]);
-    var zoom = parseInt(params[2]);
-    var $el = $(link);
-    var name = $el.data('name') || ('map-link-' + idx);
-    var $label = $el.find('.map-label');
-
-    Famous.FastClick($el, function () {
-      var vc = new MapController({
-        preset: {
-          extend: 'default',
-          features: features,
-        },
-        titleBar: self.titleBar,
-      });
-      self.setNavigationItem(vc);
-      vc.navigateToFeature(name);
-    });
-
-    if (!takenNames[name]) {
-      features.push({
-        type: 'point',
-        overlay: {
-          popover: $label.length ? $label.html() : undefined,
-        },
-        coords: coords,
-        zoomLevel: isNaN(zoom) ? null : zoom,
-        name: name,
-      });
-      takenNames[name] = name;
-    }
-  });
-};
-
 TemplateController.prototype.setUpSettings = function (page) {
   var self = this;
 
@@ -246,7 +199,7 @@ TemplateController.prototype.setUpPage = function (page) {
   this.setUpLinks(page);
   this.setUpTemplateLinks(page);
   this.setUpSettings(page);
-  this.setUpMapLinks(page);
+  TemplateUtils.setUpMapLinks.call(this, page);
 };
 
 module.exports = TemplateController;
