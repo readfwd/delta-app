@@ -127,6 +127,22 @@ function MainMenuController(options) {
         });
       },
     },
+    'code-of-conduct': {
+      title: T.span({
+        ro: 'Cod de conduită',
+        en: 'Code of Conduct',
+      }),
+      viewController: function () {
+        return new TemplateController({
+          template: templates['code-of-conduct'],
+          title: T.span({
+            ro: 'Cod de conduită',
+            en: 'Code of Conduct'
+          }),
+          backIcon: 'fa-home',
+        });
+      }
+    },
     settings: {
       viewController: function () {
         return new TemplateController({
@@ -157,9 +173,10 @@ function MainMenuController(options) {
 
   options.buttonLayout = [
     ['routes', 'trails'],
+    ['maps'],
     ['landmarks', 'planning'],
     ['about', 'restricted'],
-    ['maps'],
+    ['code-of-conduct']
   ];
 
   options.title = T.span({
