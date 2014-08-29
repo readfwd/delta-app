@@ -4,6 +4,7 @@ var MapController = require('../controllers/map-controller');
 var Famous = require('../shims/famous');
 var templates = require('../lib/templates');
 var TemplateController = require('../controllers/template-controller');
+var EmergencyController = require('../controllers/emergency-controller');
 var MapSplitController = require('../controllers/mapsplit-controller');
 var T = require('../translate');
 
@@ -143,6 +144,22 @@ function MainMenuController(options) {
         });
       }
     },
+    'emergency': {
+      title: T.span({
+        ro: 'Urgențe',
+        en: 'Emergency',
+      }),
+      viewController: function () {
+        return new EmergencyController({
+          template: templates['emergency'],
+          title: T.span({
+            ro: 'Urgențe',
+            en: 'Emergency'
+          }),
+          backIcon: 'fa-home',
+        });
+      }
+    },
     settings: {
       viewController: function () {
         return new TemplateController({
@@ -176,7 +193,7 @@ function MainMenuController(options) {
     ['maps'],
     ['landmarks', 'planning'],
     ['about', 'restricted'],
-    ['code-of-conduct']
+    ['emergency','code-of-conduct']
   ];
 
   options.title = T.span({
