@@ -34,14 +34,16 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
 
   var id = 'template-' + (Math.random().toString(36)+'00000000000000000').slice(2, 7);
   var content = self.options.template(self.options.templateOptions);
-  content = '<div id="' + id + 
-    '" class="template-container"><div class="template-container-inner">' + 
+  content = '<div id="' + id +
+    '" class="template-container"><div class="template-container-inner">' +
     content + '</div></div>';
 
-  var surface = new Famous.Surface({
+  this.contentSurface = new Famous.Surface({
     content: content,
     size: [undefined, 0],
   });
+
+  var surface = this.contentSurface;
 
   var scrollView = new Famous.ScrollView();
   self.scrollView = scrollView;
@@ -101,6 +103,10 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
   scrollView.sequenceFrom([surface]);
   containerView.add(scrollView);
   parentNode.add(containerView);
+
+  // Emit an event to signal that the buildContentTree phase finished
+  // this.contentSurface is now available, but not yet deployed
+  this.emit('content-ready', this);
 };
 
 TemplateController.prototype.setUpTemplateLinks = function (page) {
