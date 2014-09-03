@@ -26,6 +26,9 @@
     <feature name="SplashScreen">
         <param name="android-package" value="org.apache.cordova.splashscreen.SplashScreen" />
     </feature>
+    <feature name="Sms">
+        <param name="android-package" value="org.apache.cordova.plugin.sms.Sms" />
+    </feature>
     <icon density="ldpi" src="res/icons/android/ldpi.png" />
     <icon density="mdpi" src="res/icons/android/mdpi.png" />
     <icon density="hdpi" src="res/icons/android/hdpi.png" />
@@ -45,4 +48,7 @@
     <preference name="SplashScreenDelay" value="10000" />
     <preference name="AutoHideSplashScreen" value="false" />
     <preference name="ShowSplashScreenSpinner" value="false" />
+    <feature name="Clipboard">
+        <param name="android-package" value="com.verso.cordova.clipboard.Clipboard" />
+    </feature>
 </widget>

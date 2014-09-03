@@ -1,7 +1,8 @@
 var util = require('util');
 var $ = require('jquery');
-var cordova = require('../shims/cordova');
+var Famous = require('../shims/famous');
 
+var T = require('../translate');
 var TemplateController = require('./template-controller');
 
 function EmergencyController(options) {
@@ -18,6 +19,70 @@ function EmergencyController(options) {
 util.inherits(EmergencyController, TemplateController);
 
 
+EmergencyController.prototype.hasGPS = function() {
+  return window || window.navigator || window.navigator.geolocation;
+};
+
+EmergencyController.prototype.updateLocation= function(position){
+  var latitude = position.coords.latitude;
+  var longitude = position.coords.longitude;
+
+  this.locationURL = [
+    'http://www.openstreetmap.org/?mlat=',
+    latitude,
+    '&mlon=',
+    longitude
+    ].join('');
+
+  $('.curent-coordinates').html([
+    'Lat:',
+    latitude,
+    '<br/>',
+    'Long:',
+    longitude
+    ].join(' '));
+};
+
+EmergencyController.prototype.buildTextMessage = function () {
+  var message;
+  var lang = T.getLanguage();
+  if(this.locationURL) {
+    switch(lang) {
+      case 'ro':
+        message = 'Sunt aici: ' + this.locationURL + ' <numele tau>';
+        break;
+      default:
+        message = 'I am here ' + this.locationURL + ' <your name>';
+    }
+  } else {
+    switch(lang) {
+      case 'ro':
+        message = 'Am nevoie de ajutor. Sunati-ma, va rog la acest numar! <numele tau>';
+        break;
+      default:
+        message = 'I need some assistance. Call me on this number! <your name>';
+    }
+  }
+  return message;
+};
+
+EmergencyController.prototype.cannotGPS = function(err) {
+  this.locationURL = undefined;
+  if (err.code) {
+    $('.emergency-has-gps').hide();
+    $('.emergency-no-gps').show();
+  }
+};
+
+
+EmergencyController.prototype.sendSMS = function(number, message) {
+  console.log('sms', window.sms, sms, JSON.stringify(sms));
+  var intent = "INTENT"; //leave empty for sending sms using default intent
+  var success = function () { console.log('Message sent successfully'); };
+  var error = function (e) { alert('Message Failed:' + e); };
+  sms.send(number, message, intent, success, error);
+};
+
 EmergencyController.prototype.setUpEmergencyLogic = function() {
   var self = this;
 
@@ -28,7 +93,7 @@ EmergencyController.prototype.setUpEmergencyLogic = function() {
       var hotelPhone = window.localStorage.getItem('hotelPhone') || '';
       var $hotelPhone = $('input.hotel-phone');
       var $callHotel = $('a.call-hotel');
-      var $smsHotel   = $('a.sms-hotel');
+      var $smsHotel   = $('.sms-hotel');
 
       $hotelPhone.val(hotelPhone);
 
@@ -37,35 +102,43 @@ EmergencyController.prototype.setUpEmergencyLogic = function() {
         window.localStorage.setItem('hotelPhone', hotelPhone);
 
         if(hotelPhone.match(/^[\d \+\(\)]{4,}$/)) {
-          $callHotel.unbind('click');
-          $smsHotel.unbind('click');
-
-          $callHotel.removeClass('disabled');
-          $smsHotel.removeClass('disabled');
+          $('.emergency-phone-number-ok').show();
+          $('.emergency-phone-number-not-ok').hide();
 
           $callHotel.attr('href', 'tel:' + encodeURIComponent(hotelPhone));
-          $smsHotel.attr('href', 'sms:' + encodeURIComponent(hotelPhone) + ';body=M-am rătăcit!');
+          $smsHotel.bind('click',function(e){
+            self.sendSMS(hotelPhone, this.buildTextMessage());
+            return false;
+          });
         } else {
-          // Disable
-          $callHotel.bind('click', function (e) { e.preventDefault(); return false; });
-          $smsHotel.bind('click', function (e) { e.preventDefault(); return false;});
-
-          $callHotel.attr('href', null);
-          $smsHotel.attr('href', null);
-
-          $callHotel.addClass('disabled');
-          $smsHotel.addClass('disabled');
+          $('.emergency-phone-number-ok').hide();
+          $('.emergency-phone-number-not-ok').show();
         }
       };
 
-      updateLinks();
+      if(self.hasGPS()) {
+        $('.emergency-has-gps').show();
+        $('.emergency-no-gps').hide();
+        window.navigator.geolocation.getCurrentPosition(self.updateLocation, self.cannotGPS);
 
+        $('button.update-coordinates').click(function() {
+          $('.curent-coordinates').text('...');
+          window.navigator.geolocation.getCurrentPosition(self.updateLocation, self.cannotGPS);
+        });
+      } else {
+        $('.emergency-has-gps').hide();
+        $('.emergency-no-gps').show();
+      }
+
+      // window.plugins.copy(text);
+
+      updateLinks();
       $hotelPhone.keyup(updateLinks);
       $hotelPhone.focus(updateLinks);
       $hotelPhone.blur(updateLinks);
 
     });
-  });
+});
 };
 
 module.exports = EmergencyController;

@@ -23,7 +23,7 @@
       != T.span({ en: 'Notes:', ro: 'Notițe:' })
     p.lang.lang-ro Scrie notițe, adrese, numere de telefon ale colegilor de excursie, al ghidului, contactul călăuzei etc.
     p.lang.lang-en Fill in important notes, addresses, phone numbers etc.
-    
+
     textarea.notes(id='emergency-notes', rows='5')
 
     p.center.lang.lang-ro Salvarea datelor se face automat, iar ceea ce completezi este confidențial și nu părăște telefonul tău. Coordonatele GPS sunt de asemenea confidențiale și nu sunt trimise fără acordul tău. Derulează în jos pentru opținui în caz de urgență.
@@ -60,17 +60,17 @@
         a.sms-hotel
           != T.span({ en: 'Text your hotel / host', ro: 'Trimite un SMS la hotel / gazdă' })
           span.emergency-has-gps
-            != T.span({ en: '(includes your coordinates)', ro: '(include) coordonatele'})
+            != T.span({ en: '(includes your coordinates)', ro: '(include coordonatele)'})
         a.call-hotel
           != T.span({ en: 'Call your hotel / host', ro: 'Sună la hotel / gazdă' })
 
-      .emergency-phone-number-ok.lang.lang-ro
+      .emergency-phone-number-not-ok.lang.lang-ro
         a.disabled Completează mai sus numărul de telefon al hotelului sau al gazdei tale pentru a putea suna și trimite SMS.
-      .emergency-phone-number-ok.lang.lang-en
+      .emergency-phone-number-not-ok.lang.lang-en
         a.disabled Fill the phone number  of your hotel / host above, so that you can call or send SMS.
 
       a.call112.lang.lang-ro  Sună la 112
         span (te rugăm nu abuza, sună doar dacă este o urgență adevărată)
 
-      a.call112.lang.lang-en  Call 112
+      a.call112.lang.lang-en(href='tel:112')  Call 112
         span.lang.lang-en (this is the 911-like emergency number, please use it as such)

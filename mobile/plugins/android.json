@@ -35,6 +35,14 @@
                         {
                             "xml": "<feature name=\"SplashScreen\"><param name=\"android-package\" value=\"org.apache.cordova.splashscreen.SplashScreen\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Sms\"><param name=\"android-package\" value=\"org.apache.cordova.plugin.sms.Sms\" /></feature>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"Clipboard\"><param name=\"android-package\" value=\"com.verso.cordova.clipboard.Clipboard\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -54,6 +62,16 @@
                     "/manifest/application": [
                         {
                             "xml": "<provider android:authorities=\"com.readfwd.deltaapp.plugin.emailcomposer.attachmentprovider\" android:name=\"de.appplant.cordova.plugin.emailcomposer.AttachmentProvider\"></provider>",
+                            "count": 1
+                        }
+                    ],
+                    "/manifest": [
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.SEND_SMS\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-feature android:name=\"android.hardware.telephony\" android:required=\"false\" />",
                             "count": 1
                         }
                     ]
@@ -84,6 +102,12 @@
             "PACKAGE_NAME": "com.readfwd.deltaapp"
         },
         "org.apache.cordova.splashscreen": {
+            "PACKAGE_NAME": "com.readfwd.deltaapp"
+        },
+        "org.apache.cordova.plugin.sms": {
+            "PACKAGE_NAME": "com.readfwd.deltaapp"
+        },
+        "com.verso.cordova.clipboard": {
             "PACKAGE_NAME": "com.readfwd.deltaapp"
         }
     },

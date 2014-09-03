@@ -45,6 +45,9 @@
         <param name="ios-package" value="CDVSplashScreen" />
         <param name="onload" value="true" />
     </feature>
+    <feature name="Sms">
+        <param name="ios-package" value="Sms" />
+    </feature>
     <icon height="60" src="res/icons/ios/AppIcon60x60.png" width="60" />
     <icon height="120" src="res/icons/ios/AppIcon60x60@2x.png" width="120" />
     <icon height="76" src="res/icons/ios/AppIcon76x76.png" width="76" />
@@ -74,4 +77,7 @@
     <preference name="SplashScreenDelay" value="10000" />
     <preference name="AutoHideSplashScreen" value="false" />
     <preference name="ShowSplashScreenSpinner" value="false" />
+    <feature name="Clipboard">
+        <param name="ios-package" value="CDVClipboard" />
+    </feature>
 </widget>
