@@ -21,8 +21,18 @@ function FastClick(element, callback) {
           (event.originalEvent instanceof window.TouchEvent)) {
             event = event.originalEvent;
         }
-        var dist = Math.abs(event.pageX - currentEvent.pageX) +
-          Math.abs(event.pageY - currentEvent.pageY);
+        if (event.touches.length !== 1) {
+          targeted = false;
+          return;
+        }
+        var dist;
+        if (event.pageX) { //Safari
+          dist = Math.abs(event.pageX - currentEvent.pageX) +
+                 Math.abs(event.pageY - currentEvent.pageY);
+        } else { //Chrome
+          dist = Math.abs(event.touches[0].clientX - currentEvent.touches[0].clientX) +
+                 Math.abs(event.touches[0].clientY - currentEvent.touches[0].clientY);
+        }
         if (dist > 10) {
           targeted = false;
         }

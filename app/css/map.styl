@@ -1,6 +1,10 @@
 .map
   background-color: #ccc
 
+.map-split
+  .ol-rotate
+    top: 3em
+
 .map-navdot
   width: 30px
   height: 30px
@@ -48,4 +52,19 @@
 
   &.overlay .map-overlay-popover
     display: block
+
+.ol-control 
+  padding: 0
+  background: transparent
+
+  button
+  button:focus
+  button:hover
+    margin: 0
+    background: rgba(#fff, 0.7)
+    color: #444
+    outline: 0
+
+  button:active
+    background: rgba(#ccc, 0.7)
 
