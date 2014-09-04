@@ -13,7 +13,6 @@ module.exports = {
     cordova.ready(function () {
       window.app = self;
       self.rootController = new RootController();
-<<<<<<< HEAD
       // self.rootController.menuController.navigateToLabel('emergency');
     });
   })
