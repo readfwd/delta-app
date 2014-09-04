@@ -1,3 +1,4 @@
+
 'use strict';
 
 require('famous-polyfills');
@@ -12,7 +13,6 @@ module.exports = {
     cordova.ready(function () {
       window.app = self;
       self.rootController = new RootController();
-      self.rootController.menuController.navigateToLabel('emergency');
     });
   })
 };
