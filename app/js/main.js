@@ -14,8 +14,8 @@ module.exports = {
     cordova.ready(function () {
       window.app = self;
       self.rootController = new RootController();
-      
-      analytics.init('UA-54503159-1');
+
+      analytics.init('UA-54503159-1', 'UA-54503159-2');
       analytics.trackEvent('Application', 'started', cordova.platformId || 'unknown');
     });
   })
