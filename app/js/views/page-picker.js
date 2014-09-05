@@ -32,10 +32,11 @@ function PagePicker(options) {
     }));
   }
 
-  var sync = new Famous.GenericSync({
-    'mouse': {},
-    'touch': {},
-  });
+  var supportsTouch = !!('ontouchstart' in window || navigator.msMaxTouchPoints);
+  var syncOpts = {};
+  syncOpts[supportsTouch ? 'touch' : 'mouse'] = {};
+
+  var sync = new Famous.GenericSync(syncOpts);
 
   container.pipe(sync);
 
