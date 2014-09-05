@@ -30,7 +30,7 @@ var Translate = {
       styleEl = $('<style id="language-style"></style');
       $(document.body).append(styleEl);
     }
-    styleEl.html('.lang:not(.lang-' + lang + ') { display: none; }');
+    styleEl.html('.lang:not(.lang-' + lang + ') { display: none !important; }');
   },
 
   getLanguage: function () {

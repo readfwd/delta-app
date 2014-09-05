@@ -2,7 +2,8 @@ var util = require('util');
 var NavigationController = require('./navigation-controller');
 var Famous = require('../shims/famous');
 var _ = require('lodash');
-var cordova = require('../shims/cordova.js');
+var cordova = require('../shims/cordova');
+var analytics = require('../shims/analytics');
 var W = require('when');
 
 function MenuController(options) {
@@ -77,6 +78,8 @@ MenuController.prototype.navigateToLabel = function (label) {
   if (!viewController) {
     return;
   }
+
+  analytics.trackPage(label);
 
   self.setNavigationItem(viewController);
 

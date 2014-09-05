@@ -1,0 +1,86 @@
+.emergency
+  max-width: 30em
+  margin: 0 auto
+  padding: 0 1em
+
+  p, ul, li
+    font-size: 80%
+
+  h3
+    opacity: 0.6
+    margin: 1em 0 0.5em 0
+    text-align: center
+
+  .emergency-contact
+    margin: 1em 0
+
+    label
+      font-size: 90%
+      font-weight: bold
+      margin-top: 1em
+      display: block
+
+    input[type='tel']
+      width: 100%
+      border: 1px solid #bbb
+      font-size: 130%
+      padding: 0.2em
+
+    textarea
+      width: 100%
+      border: 1px solid #bbb
+      font-size: 100%
+      padding: 0.2em
+
+  .emergency-actions
+
+    .emergency-coordinates-block
+      padding: 1em
+      border: 1px solid #bbb
+      text-align: center
+      background-color: highlight-color
+
+      span.curent-coordinates
+        display: block
+        font-size: 170%
+        margin: 1em 0
+
+      button.update-coordinates, button.copy-coordinates
+        display: block
+        margin: 0 auto
+        background: none
+        border: none
+        text-decoration: underline
+
+    .emergency-buttons
+      text-align: center
+      a, button
+        display: block
+        background-color: link-color
+        color: #fff
+        padding: 1em
+        margin: 0.3em 0 0 0
+        font-size: 120%
+
+        span
+          display: block
+          font-size: 90%
+
+        &:hover, &a:active
+          background: link-color-active
+
+        &.call112
+          background-color: emergency-link-color
+          &:hover, &:active
+            background-color: emergency-link-color-active
+
+          span
+            display: block
+            font-size: 70%
+            opacity: 0.8
+
+        &.disabled
+          background-color: disabled-link-color
+          color: disabled-link-color-active
+          cursor: default !important;
+          pointer-events: none;

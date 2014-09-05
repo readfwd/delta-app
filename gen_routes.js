@@ -6,7 +6,7 @@ var exec = require('child_process').exec;
 
 //Configurable vars
 
-var offset = [0, 0];
+var offset = [-0.001900034613999999999999999996993239897, -0.00033912515641479129895961294911968155929999999999];
 var trailOffsets = {
 };
 
