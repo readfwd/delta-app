@@ -31,7 +31,7 @@ public class DanubeDelta extends CordovaActivity
         super.init();
         // Set by <content src="index.html" /> in config.xml
         super.loadUrl(Config.getStartUrl());
-        //super.loadUrl("file:///android_asset/www/index.html");
+        //super.loadUrl("http://192.168.28.131:4000/index.html");
     }
 }
 

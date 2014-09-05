@@ -43,6 +43,10 @@
                         {
                             "xml": "<feature name=\"Clipboard\"><param name=\"android-package\" value=\"com.verso.cordova.clipboard.Clipboard\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"GAPlugin\"><param name=\"android-package\" value=\"com.adobe.plugins.GAPlugin\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -108,6 +112,9 @@
             "PACKAGE_NAME": "com.readfwd.deltaapp"
         },
         "com.verso.cordova.clipboard": {
+            "PACKAGE_NAME": "com.readfwd.deltaapp"
+        },
+        "com.adobe.plugins.GAPlugin": {
             "PACKAGE_NAME": "com.readfwd.deltaapp"
         }
     },

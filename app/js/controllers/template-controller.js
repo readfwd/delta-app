@@ -7,6 +7,7 @@ var templates = require('../lib/templates');
 var _ = require('lodash');
 var T = require('../translate');
 var cordova = require('../shims/cordova');
+var analytics = require('../shims/analytics');
 var Util = require('../util');
 var TemplateUtils = require('./template-utils');
 
@@ -129,6 +130,9 @@ TemplateController.prototype.setUpTemplateLinks = function (page) {
       title: $(evt.currentTarget).data('title'),
       template: t,
     });
+
+    analytics.trackEvent('Link', 'Click', $(evt.currentTarget).data('title'));
+
     self.setNavigationItem(viewController);
   });
 
@@ -155,6 +159,7 @@ TemplateController.prototype.setUpLinks = function (page) {
         var lang = T.getLanguage();
         navigator.notification.confirm(href.replace(/^tel:/, ''), function (index) {
           if (index === 2) {
+            analytics.trackEvent('Link', 'Telephone', href);
             window.open(href, '_system');
           }
         }, title[lang], buttons[lang]);
@@ -165,6 +170,7 @@ TemplateController.prototype.setUpLinks = function (page) {
     }
     if (/^mailto:/.test(href)) {
       if (window.plugin && window.plugin.email) {
+        analytics.trackEvent('Link', 'Email', href);
         window.plugin.email.open({ to: [ href.replace(/^mailto:/, '') ] });
       } else {
         window.open(href, '_self');

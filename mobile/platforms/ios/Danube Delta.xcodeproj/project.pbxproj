@@ -51,6 +51,10 @@
 		2E60E35E71B24524913B9E71 /* CDVSplashScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 66DC3BC0DD294BE6AC02BD16 /* CDVSplashScreen.m */; };
 		1DE14200F07248C0829DADBD /* Sms.m in Sources */ = {isa = PBXBuildFile; fileRef = 0367BFBD83714A7B8D9994C5 /* Sms.m */; };
 		2879DDFC4066499DA39AB1BC /* CDVClipboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FA620A7B8084035A5DF7134 /* CDVClipboard.m */; };
+		E907ABFF6718488C86928542 /* GAPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = D9EA30D2EA2046E88E1BDE41 /* GAPlugin.m */; };
+		A152B31D8F3746C48D149398 /* GoogleAnalytics.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F22779A7522643B78DEDCB3D /* GoogleAnalytics.a */; };
+		9CE55AB9CC0C43B0ADC4107F /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 579260C5812B41D7A6F6B263 /* CoreData.framework */; };
+		04EEAB049ECA474C8D829075 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 77333B6568224EDBB77A8C97 /* SystemConfiguration.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -138,6 +142,16 @@
 		102ABB2A39E54E95B07247B7 /* Sms.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Sms.h"; path = "org.apache.cordova.plugin.sms/Sms.h"; sourceTree = "<group>"; fileEncoding = 4; };
 		6FA620A7B8084035A5DF7134 /* CDVClipboard.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "CDVClipboard.m"; path = "com.verso.cordova.clipboard/CDVClipboard.m"; sourceTree = "<group>"; fileEncoding = 4; };
 		22116CB9AC844FB7985B0CE6 /* CDVClipboard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "CDVClipboard.h"; path = "com.verso.cordova.clipboard/CDVClipboard.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		D9EA30D2EA2046E88E1BDE41 /* GAPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "GAPlugin.m"; path = "com.adobe.plugins.GAPlugin/GAPlugin.m"; sourceTree = "<group>"; fileEncoding = 4; };
+		F22779A7522643B78DEDCB3D /* GoogleAnalytics.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "GoogleAnalytics.a"; path = "Danube Delta/Plugins/com.adobe.plugins.GAPlugin/GoogleAnalytics.a"; sourceTree = "<group>"; fileEncoding = 4; };
+		25B357365DA443788A27A5E1 /* GAITransactionItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "GAITransactionItem.h"; path = "com.adobe.plugins.GAPlugin/GAITransactionItem.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		02C36FFA944D4B5B9C81476F /* GAITransaction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "GAITransaction.h"; path = "com.adobe.plugins.GAPlugin/GAITransaction.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		D8C5EC0F864D410A94037384 /* GAITracker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "GAITracker.h"; path = "com.adobe.plugins.GAPlugin/GAITracker.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		04B695FABD6942B797EAA6F6 /* GAITrackedViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "GAITrackedViewController.h"; path = "com.adobe.plugins.GAPlugin/GAITrackedViewController.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		0D4A1F712B454FAFBB87D607 /* GAI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "GAI.h"; path = "com.adobe.plugins.GAPlugin/GAI.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		A9DF21ABF5E64E269ADB0841 /* GAPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "GAPlugin.h"; path = "com.adobe.plugins.GAPlugin/GAPlugin.h"; sourceTree = "<group>"; fileEncoding = 4; };
+		579260C5812B41D7A6F6B263 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "CoreData.framework"; path = "System/Library/Frameworks/CoreData.framework"; sourceTree = SDKROOT; fileEncoding = 4; };
+		77333B6568224EDBB77A8C97 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = "SystemConfiguration.framework"; path = "System/Library/Frameworks/SystemConfiguration.framework"; sourceTree = SDKROOT; fileEncoding = 4; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -152,6 +166,9 @@
 				5AEE5B35173C68D80009041E /* CoreLocation.framework in Frameworks */,
 				C8DEB74A6E6D49CFAF9ED460 /* AudioToolbox.framework in Frameworks */,
 				6AB3111664444BD1B71B20EC /* MessageUI.framework in Frameworks */,
+				A152B31D8F3746C48D149398 /* GoogleAnalytics.a in Frameworks */,
+				9CE55AB9CC0C43B0ADC4107F /* CoreData.framework in Frameworks */,
+				04EEAB049ECA474C8D829075 /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -248,6 +265,10 @@
 				305D5FD0115AB8F900A74A75 /* MobileCoreServices.framework */,
 				F1629085A0CD47B8A9199C29 /* AudioToolbox.framework */,
 				76E0F6AED3754A8481CE3DD7 /* MessageUI.framework */,
+				8F1D4A9795654B658935B742 /* libGoogleAnalyticsServices.a */,
+				F22779A7522643B78DEDCB3D /* GoogleAnalytics.a */,
+				579260C5812B41D7A6F6B263 /* CoreData.framework */,
+				77333B6568224EDBB77A8C97 /* SystemConfiguration.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -283,6 +304,13 @@
 				102ABB2A39E54E95B07247B7 /* Sms.h */,
 				6FA620A7B8084035A5DF7134 /* CDVClipboard.m */,
 				22116CB9AC844FB7985B0CE6 /* CDVClipboard.h */,
+				D9EA30D2EA2046E88E1BDE41 /* GAPlugin.m */,
+				25B357365DA443788A27A5E1 /* GAITransactionItem.h */,
+				02C36FFA944D4B5B9C81476F /* GAITransaction.h */,
+				D8C5EC0F864D410A94037384 /* GAITracker.h */,
+				04B695FABD6942B797EAA6F6 /* GAITrackedViewController.h */,
+				0D4A1F712B454FAFBB87D607 /* GAI.h */,
+				A9DF21ABF5E64E269ADB0841 /* GAPlugin.h */,
 			);
 			name = Plugins;
 			path = "Danube Delta/Plugins";
@@ -493,6 +521,7 @@
 				2E60E35E71B24524913B9E71 /* CDVSplashScreen.m in Sources */,
 				1DE14200F07248C0829DADBD /* Sms.m in Sources */,
 				2879DDFC4066499DA39AB1BC /* CDVClipboard.m in Sources */,
+				E907ABFF6718488C86928542 /* GAPlugin.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -573,6 +602,10 @@
 				);
 				PRODUCT_NAME = "Danube Delta";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Danube Delta/Plugins/com.adobe.plugins.GAPlugin\"",
+				);
 			};
 			name = Debug;
 		};
@@ -605,6 +638,10 @@
 				);
 				PRODUCT_NAME = "Danube Delta";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Danube Delta/Plugins/com.adobe.plugins.GAPlugin\"",
+				);
 			};
 			name = Release;
 		};

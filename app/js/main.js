@@ -5,6 +5,7 @@ require('famous-polyfills');
 
 var _ = require('lodash');
 var cordova = require('./shims/cordova');
+var analytics = require('./shims/analytics');
 var RootController = require('./controllers/root-controller');
 
 module.exports = {
@@ -13,7 +14,9 @@ module.exports = {
     cordova.ready(function () {
       window.app = self;
       self.rootController = new RootController();
-      // self.rootController.menuController.navigateToLabel('emergency');
+      
+      analytics.init('UA-54503159-1');
+      analytics.trackEvent('Application', 'started', cordova.platformId || 'unknown');
     });
   })
 };

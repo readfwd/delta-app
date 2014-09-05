@@ -59,6 +59,10 @@
                         {
                             "xml": "<feature name=\"Clipboard\"><param name=\"ios-package\" value=\"CDVClipboard\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"GAPlugin\"><param name=\"ios-package\" value=\"GAPlugin\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -88,7 +92,21 @@
                             "xml": "true",
                             "count": 2
                         }
-                    ]
+                    ],
+                    "SystemConfiguration.framework": [
+                        {
+                            "xml": "false",
+                            "count": 1
+                        }
+                    ],
+                    "CoreData.framework": [
+                        {
+                            "xml": "false",
+                            "count": 1
+                        }
+                    ],
+                    "libz.dylib": [],
+                    "libsqlite3.0.dylib": []
                 }
             }
         }
@@ -122,6 +140,9 @@
             "PACKAGE_NAME": "com.readfwd.deltaapp"
         },
         "com.verso.cordova.clipboard": {
+            "PACKAGE_NAME": "com.readfwd.deltaapp"
+        },
+        "com.adobe.plugins.GAPlugin": {
             "PACKAGE_NAME": "com.readfwd.deltaapp"
         }
     },
