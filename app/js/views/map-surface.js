@@ -169,7 +169,7 @@ MapSurface.prototype.startLocationUpdates = function () {
   }
   if (window.navigator.geolocation) {
     self.watchId = window.navigator.geolocation.watchPosition(function (position) {
-      var coords = [position.coords.latitude, position.coords.longitude];
+      var coords = [position.coords.longitude, position.coords.latitude];
       //Mock coords
       //coords = [28.787548, 45.172372]; //Fabrica de șnițele
       //coords = [26.030969, 44.930918]; //Service de MacBook-uri
