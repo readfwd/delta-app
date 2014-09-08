@@ -168,7 +168,7 @@ EmergencyController.prototype.setUpEmergencyLogic = function() {
       if('undefined' === typeof sms && cordova.ios) {
         var coordonatesWillBeCopiedText = '(coordonates will be copied, paste them in the message)';
         if(T.getLanguage() === 'ro') {
-          coordonatesWillBeCopiedText =  '(coordonatele vor fi copiate; apoi poți da "paste"/"lipește" în aplicația SMS)'
+          coordonatesWillBeCopiedText =  '(coordonatele vor fi copiate; apoi poți da "paste"/"lipește" în aplicația SMS)';
         }
         $smsHotel.find('span.emergency-has-gps').text(coordonatesWillBeCopiedText);
       }
