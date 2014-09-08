@@ -1,9 +1,13 @@
 var util = require('util');
-var $ = require('jquery');
-var Famous = require('../shims/famous');
+// TODO: put 'var back'
+$ = require('jquery');
 
 var T = require('../translate');
 var TemplateController = require('./template-controller');
+var cordova = require('../shims/cordova');
+
+var lastPosition;
+var lastLocationURL;
 
 function EmergencyController(options) {
   options = options || {};
@@ -23,16 +27,31 @@ EmergencyController.prototype.hasGPS = function() {
   return window || window.navigator || window.navigator.geolocation;
 };
 
+EmergencyController.prototype.cannotGPS = function(err) {
+  lastLocationURL = undefined;
+  lastPosition    = undefined;
+
+  if (err && err.code) {
+    $('.emergency-has-gps').hide();
+    $('.emergency-no-gps').show();
+  }
+};
+
 EmergencyController.prototype.updateLocation= function(position){
   var latitude = position.coords.latitude;
   var longitude = position.coords.longitude;
 
-  this.locationURL = [
-    'http://www.openstreetmap.org/?mlat=',
-    latitude,
-    '&mlon=',
-    longitude
-    ].join('');
+  latitude = latitude.toPrecision(6);
+  longitude = longitude.toPrecision(6);
+
+  lastPosition = position;
+
+  lastLocationURL = [
+  'http://www.openstreetmap.org/?mlat=',
+  latitude,
+  '&mlon=',
+  longitude
+  ].join('');
 
   $('.curent-coordinates').html([
     'Lat:',
@@ -46,40 +65,70 @@ EmergencyController.prototype.updateLocation= function(position){
 EmergencyController.prototype.buildTextMessage = function () {
   var message;
   var lang = T.getLanguage();
-  if(this.locationURL) {
+  if(lastLocationURL) {
     switch(lang) {
       case 'ro':
-        message = 'Sunt aici: ' + this.locationURL + ' <numele tau>';
-        break;
+      message = 'Sunt aici: ' + lastLocationURL + ' <numele tau>';
+      break;
       default:
-        message = 'I am here ' + this.locationURL + ' <your name>';
+      message = 'I am here ' + lastLocationURL + ' <your name>';
     }
   } else {
     switch(lang) {
       case 'ro':
-        message = 'Am nevoie de ajutor. Sunati-ma, va rog la acest numar! <numele tau>';
-        break;
+      message = 'Am nevoie de ajutor. Sunati-ma, va rog la acest numar! <numele tau>';
+      break;
       default:
-        message = 'I need some assistance. Call me on this number! <your name>';
+      message = 'I need some assistance. Call me on this number! <your name>';
     }
   }
   return message;
 };
 
-EmergencyController.prototype.cannotGPS = function(err) {
-  this.locationURL = undefined;
-  if (err.code) {
-    $('.emergency-has-gps').hide();
-    $('.emergency-no-gps').show();
+EmergencyController.prototype.copyTextToClipboard = function (text) {
+  if(!lastPosition) {
+    switch(T.getLanguage()) {
+      case 'ro':
+      alert('Poziția ta nu a fost determinată. Încearcă din nou atunci când în aplicație sunt afișate coordonatele tale.');
+      break;
+      default:
+      alert('Your location could not be ');
+    }
+    return;
+  }
+
+  if(cordova && cordova.present) {
+    window.cordova.plugins.clipboard.copy(text);
+    var old = $('.curent-coordinates').html();
+
+    $('.curent-coordinates').html('OK');
+    window.setTimeout(function() {
+      $('.curent-coordinates').html(old);
+    }, 1500);
+  } else {
+    switch(T.getLanguage()) {
+      case 'ro':
+      window.prompt("Copiază în clipboard: Ctrl+C sau Cmd + C, Enter", text);
+      break;
+      default:
+      window.prompt("Copy to clipboard: Ctrl+C or Cmd + C, Enter", text);
+    }
   }
 };
 
+EmergencyController.prototype.copyCoordinatesToClipboard = function () {
+  this.copyTextToClipboard($('.curent-coordinates').eq(0).text());
+};
 
-EmergencyController.prototype.sendSMS = function(number, message) {
-  console.log('sms', window.sms, sms, JSON.stringify(sms));
+EmergencyController.prototype.copyMapURLToClipboard = function () {
+  this.copyTextToClipboard(lastLocationURL);
+};
+
+// Unfortunately this is android only
+EmergencyController.prototype.sendTextMessage = function(number, message) {
   var intent = "INTENT"; //leave empty for sending sms using default intent
   var success = function () { console.log('Message sent successfully'); };
-  var error = function (e) { alert('Message Failed:' + e); };
+  var error = function (e) { console.log('Message Failed:' + e); };
   sms.send(number, message, intent, success, error);
 };
 
@@ -90,9 +139,9 @@ EmergencyController.prototype.setUpEmergencyLogic = function() {
   self.on('content-ready', function () {
     // then for contenSurface deploy
     self.contentSurface.on('deploy', function () {
-      var hotelPhone = window.localStorage.getItem('hotelPhone') || '';
+      var hotelPhone  = window.localStorage.getItem('hotelPhone') || '';
       var $hotelPhone = $('input.hotel-phone');
-      var $callHotel = $('a.call-hotel');
+      var $callHotel  = $('.call-hotel');
       var $smsHotel   = $('.sms-hotel');
 
       $hotelPhone.val(hotelPhone);
@@ -106,15 +155,35 @@ EmergencyController.prototype.setUpEmergencyLogic = function() {
           $('.emergency-phone-number-not-ok').hide();
 
           $callHotel.attr('href', 'tel:' + encodeURIComponent(hotelPhone));
-          $smsHotel.bind('click',function(e){
-            self.sendSMS(hotelPhone, this.buildTextMessage());
-            return false;
-          });
+          $smsHotel.attr('href',  'sms:' + encodeURIComponent(hotelPhone));
         } else {
           $('.emergency-phone-number-ok').hide();
           $('.emergency-phone-number-not-ok').show();
         }
       };
+
+      $callHotel.attr('target', cordova.present ? '_system' : '_blank');
+      $callHotel.attr('target', cordova.present ? '_system' : '_blank');
+
+      if('undefined' === typeof sms && cordova.ios) {
+        var coordonatesWillBeCopiedText = '(coordonates will be copied, paste them in the message)';
+        if(T.getLanguage() === 'ro') {
+          coordonatesWillBeCopiedText =  '(coordonatele vor fi copiate; apoi poți da "paste"/"lipește" în aplicația SMS)'
+        }
+        $smsHotel.find('span.emergency-has-gps').text(coordonatesWillBeCopiedText);
+      }
+
+      $smsHotel.bind('click',function(){
+        if('undefined' !== typeof sms) {
+          self.sendTextMessage(hotelPhone, self.buildTextMessage());
+        } else {
+          if(lastLocationURL) {
+            self.copyTextToClipboard(self.buildTextMessage());
+          }
+          return true;
+        }
+        return false;
+      });
 
       if(self.hasGPS()) {
         $('.emergency-has-gps').show();
@@ -126,13 +195,18 @@ EmergencyController.prototype.setUpEmergencyLogic = function() {
           window.navigator.geolocation.getCurrentPosition(self.updateLocation, self.cannotGPS);
         });
       } else {
-        $('.emergency-has-gps').hide();
-        $('.emergency-no-gps').show();
+        self.cannotGPS();
       }
 
-      // window.plugins.copy(text);
+      $('.copy-coordinates').click(function () {
+        self.copyCoordinatesToClipboard();
+      });
+      $('.copy-map-link').click(function () {
+        self.copyMapURLToClipboard();
+      });
 
       updateLinks();
+
       $hotelPhone.keyup(updateLinks);
       $hotelPhone.focus(updateLinks);
       $hotelPhone.blur(updateLinks);

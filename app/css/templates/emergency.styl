@@ -45,12 +45,13 @@
         font-size: 170%
         margin: 1em 0
 
-      button.update-coordinates, button.copy-coordinates
-        display: block
-        margin: 0 auto
-        background: none
-        border: none
-        text-decoration: underline
+      .emergency-has-gps
+        button
+          display: block
+          margin: 0 auto
+          background: none
+          border: none
+          text-decoration: underline
 
     .emergency-buttons
       text-align: center
@@ -62,10 +63,6 @@
         margin: 0.3em 0 0 0
         font-size: 120%
 
-        span
-          display: block
-          font-size: 90%
-
         &:hover, &a:active
           background: link-color-active
 
@@ -74,10 +71,10 @@
           &:hover, &:active
             background-color: emergency-link-color-active
 
-          span
-            display: block
-            font-size: 70%
-            opacity: 0.8
+        span.emergency-small
+          display: block
+          font-size: 70%
+          opacity: 0.8
 
         &.disabled
           background-color: disabled-link-color
