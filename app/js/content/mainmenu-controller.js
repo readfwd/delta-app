@@ -160,6 +160,22 @@ function MainMenuController(options) {
         });
       }
     },
+    // 'about-app': {
+    //   title: T.span({
+    //     ro: 'Despre aplicație',
+    //     en: 'About app',
+    //   }),
+    //   viewController: function () {
+    //     return new TemplateController({
+    //       template: templates['about-app'],
+    //       title: T.span({
+    //         ro: 'Despre aplicație',
+    //         en: 'About app',
+    //       }),
+    //       backIcon: 'fa-home',
+    //     });
+    //   }
+    // },
     settings: {
       viewController: function () {
         return new TemplateController({
@@ -194,6 +210,7 @@ function MainMenuController(options) {
     ['landmarks', 'planning'],
     ['about', 'restricted'],
     ['emergency','code-of-conduct']
+    // ['about-app','settings']
   ];
 
   options.title = T.span({
