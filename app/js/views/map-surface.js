@@ -264,6 +264,16 @@ MapSurface.prototype.createJumpHomeControl = function () {
 
 MapSurface.prototype.setView = function (index) {
   var view = this.views[index];
+  var oldTileLayer = null;
+  _.each(this.map.getLayers().getArray(), function(l) {
+    if (l instanceof ol.layer.Tile) {
+      oldTileLayer = l;
+    }
+  });
+  if (oldTileLayer) {
+    this.map.removeLayer(oldTileLayer);
+  }
+  this.map.addLayer(this.tileLayers[index]);
   this.map.setView(view);
   this.currentViewIndex = index;
   if (view.initialOptions.extent) {
@@ -393,6 +403,8 @@ MapSurface.prototype.createMap = function (opts) {
   });
   self.map = map;
 
+  self.tileLayers = [];
+
   _.each(opts.layers, function (opt) {
     var layer;
     var layerOptions = {
@@ -433,7 +445,12 @@ MapSurface.prototype.createMap = function (opts) {
       self.trimLayer(layer, opt.extent);
     }
 
-    map.addLayer(layer);
+
+    if (opt.type === 'tile') {
+      self.tileLayers.push(layer);
+    } else {
+      map.addLayer(layer);
+    }
   });
 
   self.views = _.map(opts.views, function (opt) {
