@@ -177,6 +177,10 @@ function MainMenuController(options) {
       }
     },
     settings: {
+      title: T.span({
+        ro: 'Setări/Settings',
+        en: 'Setări/Settings',
+      }),
       viewController: function () {
         return new TemplateController({
           template: templates.ghid.settings.index,
@@ -209,8 +213,8 @@ function MainMenuController(options) {
     ['maps'],
     ['landmarks', 'planning'],
     ['about', 'restricted'],
-    ['emergency','code-of-conduct']
-    // ['about-app','settings']
+    ['emergency','code-of-conduct'],
+    ['about-app','settings']
   ];
 
   options.title = T.span({
