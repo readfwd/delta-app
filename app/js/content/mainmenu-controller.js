@@ -160,22 +160,22 @@ function MainMenuController(options) {
         });
       }
     },
-    // 'about-app': {
-    //   title: T.span({
-    //     ro: 'Despre aplicație',
-    //     en: 'About app',
-    //   }),
-    //   viewController: function () {
-    //     return new TemplateController({
-    //       template: templates['about-app'],
-    //       title: T.span({
-    //         ro: 'Despre aplicație',
-    //         en: 'About app',
-    //       }),
-    //       backIcon: 'fa-home',
-    //     });
-    //   }
-    // },
+    'about-app': {
+      title: T.span({
+        ro: 'Despre aplicație',
+        en: 'About app',
+      }),
+      viewController: function () {
+        return new TemplateController({
+          template: templates['about-app'],
+          title: T.span({
+            ro: 'Despre aplicație',
+            en: 'About app',
+          }),
+          backIcon: 'fa-home',
+        });
+      }
+    },
     settings: {
       viewController: function () {
         return new TemplateController({
