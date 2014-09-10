@@ -121,8 +121,8 @@ MapSplitController.prototype.createInfoFullScreenControl = function () {
 MapSplitController.prototype.createMapFullScreenControl = function (mapSurface) {
   var self = this;
 
-  var $el = $('<div class="ol-full-screen ol-unselectable ol-control"></div>');
-  var $button = $('<button class="ol-has-tooltip"><span role="tooltip">Toggle full-screen</span></button>');
+  var $el = $('<div class="ol-unselectable ol-control ol-full-screen"></div>');
+  var $button = $('<button class="ol-has-tooltip"><span role="tooltip">Toggle full-screen</span><i class="full-screen-false fa fa-fw fa-arrows-alt"></i><i class="full-screen-true fa fa-fw fa-chevron-up"></i></button>');
   var state = false;
   function setState() {
     $button.toggleClass('ol-full-screen-true', state);

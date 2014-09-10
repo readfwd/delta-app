@@ -33,7 +33,7 @@ function FastClick(element, callback) {
           dist = Math.abs(event.touches[0].clientX - currentEvent.touches[0].clientX) +
                  Math.abs(event.touches[0].clientY - currentEvent.touches[0].clientY);
         }
-        if (dist > 10) {
+        if (dist > 25) {
           targeted = false;
         }
       }

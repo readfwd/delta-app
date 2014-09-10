@@ -169,7 +169,7 @@ MapSurface.prototype.startLocationUpdates = function () {
   }
   if (window.navigator.geolocation) {
     self.watchId = window.navigator.geolocation.watchPosition(function (position) {
-      var coords = [position.coords.latitude, position.coords.longitude];
+      var coords = [position.coords.longitude, position.coords.latitude];
       //Mock coords
       //coords = [28.787548, 45.172372]; //Fabrica de șnițele
       //coords = [26.030969, 44.930918]; //Service de MacBook-uri
@@ -247,7 +247,7 @@ MapSurface.prototype.createJumpHomeControl = function () {
 
   var control = $('<div class="ol-control ol-unselectable map-jumpcontrol hidden"></div>');
   var button = $('<button class="ol-has-tooltip" type="button">' +
-                    '<span role="tooltip">Jump to my location</span>I' +
+                    '<span role="tooltip">Jump to my location</span><i class="fa fa-fw fa-crosshairs"></i>' +
                  '</button>');
   control.append(button);
   button.on('click', function() {
@@ -284,7 +284,9 @@ MapSurface.prototype.setView = function (index) {
       view.setZoom(view.getZoom() + 1);
     }
   }
+  this.emit('switchView', index);
 };
+
 
 MapSurface.prototype.setViewAtCoordinates = function (coord) {
   var self = this;
