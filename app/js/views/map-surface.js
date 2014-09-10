@@ -14,6 +14,7 @@ function MapSurface(options) {
   options.constructors = options.constructors || [];
   options.mapClasses = options.mapClasses || [];
   options.mapClasses.push('map');
+
   self.mapOptions = options;
 
   var id = 'map-' + (Math.random().toString(36)+'00000000000000000').slice(2, 7);
@@ -264,20 +265,18 @@ MapSurface.prototype.createJumpHomeControl = function () {
 
 MapSurface.prototype.setView = function (index) {
   var view = this.views[index];
-  var oldTileLayer = null;
-  _.each(this.map.getLayers().getArray(), function(l) {
-    if (l instanceof ol.layer.Tile) {
-      oldTileLayer = l;
-    }
+  var map = this.map;
+  _.each(map.getLayers().getArray(), function(l) {
+    map.removeLayer(l);
   });
-  if (oldTileLayer) {
-    this.map.removeLayer(oldTileLayer);
-  }
-  this.map.addLayer(this.tileLayers[index]);
-  this.map.setView(view);
+  map.addLayer(this.tileLayers[index]);
+  _.each(this.nonTileLayers, function (l) {
+    map.addLayer(l);
+  });
+  map.setView(view);
   this.currentViewIndex = index;
   if (view.initialOptions.extent) {
-    view.fitExtent(view.initialOptions.extent, this.map.getSize());
+    view.fitExtent(view.initialOptions.extent, map.getSize());
     if (view.initialOptions.zoom) {
       view.setZoom(view.initialOptions.zoom);
     } else {
@@ -406,6 +405,7 @@ MapSurface.prototype.createMap = function (opts) {
   self.map = map;
 
   self.tileLayers = [];
+  self.nonTileLayers = [];
 
   _.each(opts.layers, function (opt) {
     var layer;
@@ -451,7 +451,7 @@ MapSurface.prototype.createMap = function (opts) {
     if (opt.type === 'tile') {
       self.tileLayers.push(layer);
     } else {
-      map.addLayer(layer);
+      self.nonTileLayers.push(layer);
     }
   });
 
