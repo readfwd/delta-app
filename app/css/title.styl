@@ -1,9 +1,8 @@
 .title-bar
-  background-color: #fdfdfd
-  border-bottom: 1px solid #ddd
+  background-color: title-bar-color
 
 .title-bar-text
-  color: #333
+  color: text-color
   font-family: 'Source Sans Pro', sans-serif
   font-size: 17pt
   text-overflow: ellipsis
@@ -14,4 +13,11 @@
   pointer-events: none
 
 .title-button
-  color: #333
+  color: text-color
+  font-family: 'Source Sans Pro', sans-serif
+  font-size: 17pt
+
+.title-button:active 
+.title-button.active 
+  color: alpha(text-color, 70%)
+
