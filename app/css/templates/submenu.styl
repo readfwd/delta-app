@@ -1,3 +1,7 @@
+border-color=#ddd
+submenu-text-color=#444
+submenu-caption-color=#666
+
 ul.submenu
   list-style-type: none
   padding: 0
@@ -15,11 +19,11 @@ ul.submenu
       width: 1em
       height: 3.5em
       content: ''
-      border-bottom: #ddd 1px solid
+      border-bottom: border-color 1px solid
 
     a
       padding: 0.5em 0.5em 0.5em 0
-      border-bottom: #ddd 1px solid
+      border-bottom: border-color 1px solid
       display: table-cell
       vertical-align: middle
 
@@ -32,10 +36,10 @@ ul.submenu
       &:visited
       &:hover
         text-decoration: none
-        color: #444
+        color: submenu-text-color
 
       .submenu-caption
-        color: #666
+        color: submenu-caption-color
         font-size: 80%
 
       .submenu-title

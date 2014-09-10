@@ -78,6 +78,7 @@ TitleBarController.prototype.buildBarItem = function () {
   var homeContainer = TitleBarController.createTitleBarButton(0, homeIcon);
 
   Famous.FastClick(homeContainer, function(evt) { 
+    homeIcon.setClasses(['title-button', 'title-button-back', 'active']);
     Famous.Timer.after(function () {
       self.emit('back'); 
     }, 1);

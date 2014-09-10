@@ -11,6 +11,7 @@ function MapController(options) {
   options = options || {};
   options.title = options.title || T.span({ en:'Map', ro: 'Hartă' });
   options.preset = options.preset || 'default';
+  options.rightBarButton = this.makeRightButton;
   TitleBarController.call(this, options);
 }
 util.inherits(MapController, TitleBarController);
@@ -29,6 +30,10 @@ MapController.prototype.buildContentTree = function (parentNode) {
     map.emit('resize');
   });
 
+  map.on('switchView', function () {
+    self.updateRightButton();
+  });
+
   map.on('navigateToTemplate', function (t) {
     var vc = new TemplateController({
       template: t.template,
@@ -40,6 +45,35 @@ MapController.prototype.buildContentTree = function (parentNode) {
   });
 
   parentNode.add(modifier).add(map);
+};
+
+MapController.prototype.goToNextView = function () {
+  if (!this.map) {
+    return;
+  }
+  this.map.setView((this.map.currentViewIndex + 1) % this.map.views.length);
+};
+
+MapController.prototype.updateRightButton = function () {
+  if (this.rightButton) {
+    var index = this.map.currentViewIndex;
+    var views = this.map.views;
+    var name = views[index].initialOptions.switchButton || (views.length > 1 ? index : '');
+    this.rightButton.setContent(name);
+  }
+};
+
+MapController.prototype.makeRightButton = function () {
+  var icon = new Famous.Surface({
+    classes: ['title-button', 'title-button-world'],
+    size: [true, true],
+  });
+
+  this.rightButton = icon;
+
+  Famous.FastClick(icon, this.goToNextView.bind(this));
+
+  return TitleBarController.createTitleBarButton(1, icon);
 };
 
 MapController.prototype.solvePreset = function (preset, skip) {
