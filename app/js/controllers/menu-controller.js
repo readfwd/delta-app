@@ -16,7 +16,7 @@ function MenuController(options) {
 
   self.buttons = [];
   self.on('navigateBack:before', function() {
-    self.presentIn(300);
+    self.presentIn(300, true);
   });
 }
 util.inherits(MenuController, NavigationController);
@@ -55,7 +55,9 @@ MenuController.prototype.buildButtonForLabel = function(label) {
   modifier.label = label;
 
   Famous.FastClick(surface, function () {
-    self.navigateToLabel(label);
+    if (self.userInput) {
+      self.navigateToLabel(label);
+    }
   });
 
   buttonText.pipe(surface);
@@ -93,7 +95,7 @@ MenuController.prototype.navigateToLabel = function (label) {
   }
 };
 
-MenuController.prototype.present = function (isIn, skip, globalDelay) {
+MenuController.prototype.present = function (isIn, skip, globalDelay, callback, back) {
   var self = this;
 
   globalDelay = globalDelay || 0;
@@ -148,6 +150,10 @@ MenuController.prototype.present = function (isIn, skip, globalDelay) {
       modifier.transformFrom(function() {
         return Famous.Transform.translate(0, 0, (1 - state.get()) * distance);
       });
+    } else {
+      modifier.transformFrom(function() {
+        return Famous.Transform.translate(0, 0, 0);
+      });
     }
   }
 
@@ -155,7 +161,7 @@ MenuController.prototype.present = function (isIn, skip, globalDelay) {
   _.each(buttons, function(button, i) {
     var shouldSkip = button.modifier.label === skip;
     var delay = shouldSkip ? 150 : i * delayOff;
-    presentSurface(button.modifier, button.showModifier, !shouldSkip, delay);
+    presentSurface(button.modifier, button.showModifier, !shouldSkip && !back, delay);
   });
 
   presentSurface(self.titleBarModifier, self.titleBarShowModifier, false, 0);
@@ -165,6 +171,9 @@ MenuController.prototype.present = function (isIn, skip, globalDelay) {
     _.each(afterActions, function (cb) {
       cb();
     });
+    if (callback) {
+      callback();
+    }
   });
 };
 
@@ -172,8 +181,12 @@ MenuController.prototype.presentOut = function (label, delay) {
   this.present(false, label, delay);
 };
 
-MenuController.prototype.presentIn = function (delay) {
-  this.present(true, null, delay);
+MenuController.prototype.presentIn = function (delay, back) {
+  var self = this;
+  self.userInput = false;
+  self.present(true, null, delay, function () {
+    self.userInput = true;
+  }, back);
 };
 
 MenuController.prototype.buildGrid = function (parentNode) {
@@ -311,7 +324,9 @@ MenuController.prototype.buildGrid = function (parentNode) {
       });
 
       Famous.FastClick(settingsContainer, function () {
-        self.navigateToLabel('settings');
+        if (self.userInput) {
+          self.navigateToLabel('settings');
+        }
       });
 
       titleBarRoot.add(new Famous.StateModifier({
