@@ -3,6 +3,7 @@ var util = require('util');
 var Famous = require('../shims/famous');
 var TitleBar = require('./title-bar');
 var cordova = require('../shims/cordova');
+var analytics = require('../shims/analytics');
 
 function TitleBarController(options) {
   options = options || {};
@@ -51,6 +52,7 @@ TitleBarController.prototype.buildTitleText = function (rootNode) {
     size: [true, true],
   });
 
+  analytics.trackPage(self.options.title);
   rootNode.add(titleText);
 };
 

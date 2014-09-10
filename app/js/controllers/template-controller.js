@@ -7,6 +7,7 @@ var templates = require('../lib/templates');
 var _ = require('lodash');
 var T = require('../translate');
 var cordova = require('../shims/cordova');
+var analytics = require('../shims/analytics');
 var Util = require('../util');
 var TemplateUtils = require('./template-utils');
 
@@ -34,14 +35,16 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
 
   var id = 'template-' + (Math.random().toString(36)+'00000000000000000').slice(2, 7);
   var content = self.options.template(self.options.templateOptions);
-  content = '<div id="' + id + 
-    '" class="template-container"><div class="template-container-inner">' + 
+  content = '<div id="' + id +
+    '" class="template-container"><div class="template-container-inner">' +
     content + '</div></div>';
 
-  var surface = new Famous.Surface({
+  this.contentSurface = new Famous.Surface({
     content: content,
     size: [undefined, 0],
   });
+
+  var surface = this.contentSurface;
 
   var scrollView = new Famous.ScrollView();
   self.scrollView = scrollView;
@@ -101,6 +104,10 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
   scrollView.sequenceFrom([surface]);
   containerView.add(scrollView);
   parentNode.add(containerView);
+
+  // Emit an event to signal that the buildContentTree phase finished
+  // this.contentSurface is now available, but not yet deployed
+  this.emit('content-ready', this);
 };
 
 TemplateController.prototype.setUpTemplateLinks = function (page) {
@@ -123,6 +130,9 @@ TemplateController.prototype.setUpTemplateLinks = function (page) {
       title: $(evt.currentTarget).data('title'),
       template: t,
     });
+
+    analytics.trackEvent('Link', 'Click', $(evt.currentTarget).data('title'));
+
     self.setNavigationItem(viewController);
   });
 
@@ -149,6 +159,7 @@ TemplateController.prototype.setUpLinks = function (page) {
         var lang = T.getLanguage();
         navigator.notification.confirm(href.replace(/^tel:/, ''), function (index) {
           if (index === 2) {
+            analytics.trackEvent('Link', 'Telephone', href);
             window.open(href, '_system');
           }
         }, title[lang], buttons[lang]);
@@ -159,6 +170,7 @@ TemplateController.prototype.setUpLinks = function (page) {
     }
     if (/^mailto:/.test(href)) {
       if (window.plugin && window.plugin.email) {
+        analytics.trackEvent('Link', 'Email', href);
         window.plugin.email.open({ to: [ href.replace(/^mailto:/, '') ] });
       } else {
         window.open(href, '_self');
