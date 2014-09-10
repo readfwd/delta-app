@@ -111,7 +111,7 @@ MapPresets.registerPreset('routes', {
 });
 
 MapPresets.registerPreset('trails', {
-  extend: 'default',
+  extend: ['default', 'restricted'],
   resetStyleOnHighlight: true,
   layers: [ {
     type: 'geojson',
@@ -131,7 +131,7 @@ MapPresets.registerPreset('trails', {
 });
 
 MapPresets.registerPreset('restricted', {
-  extend: 'default',
+  extend: ['default', 'restricted'],
   layers: [ {
     type: 'geojson',
     url: 'assets/restricted.geojson',
