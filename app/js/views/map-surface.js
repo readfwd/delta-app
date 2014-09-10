@@ -14,6 +14,7 @@ function MapSurface(options) {
   options.constructors = options.constructors || [];
   options.mapClasses = options.mapClasses || [];
   options.mapClasses.push('map');
+
   self.mapOptions = options;
 
   var id = 'map-' + (Math.random().toString(36)+'00000000000000000').slice(2, 7);
@@ -169,7 +170,7 @@ MapSurface.prototype.startLocationUpdates = function () {
   }
   if (window.navigator.geolocation) {
     self.watchId = window.navigator.geolocation.watchPosition(function (position) {
-      var coords = [position.coords.latitude, position.coords.longitude];
+      var coords = [position.coords.longitude, position.coords.latitude];
       //Mock coords
       //coords = [28.787548, 45.172372]; //Fabrica de șnițele
       //coords = [26.030969, 44.930918]; //Service de MacBook-uri
@@ -247,7 +248,7 @@ MapSurface.prototype.createJumpHomeControl = function () {
 
   var control = $('<div class="ol-control ol-unselectable map-jumpcontrol hidden"></div>');
   var button = $('<button class="ol-has-tooltip" type="button">' +
-                    '<span role="tooltip">Jump to my location</span>I' +
+                    '<span role="tooltip">Jump to my location</span><i class="fa fa-fw fa-crosshairs"></i>' +
                  '</button>');
   control.append(button);
   button.on('click', function() {
@@ -264,17 +265,27 @@ MapSurface.prototype.createJumpHomeControl = function () {
 
 MapSurface.prototype.setView = function (index) {
   var view = this.views[index];
-  this.map.setView(view);
+  var map = this.map;
+  _.each(map.getLayers().getArray(), function(l) {
+    map.removeLayer(l);
+  });
+  map.addLayer(this.tileLayers[index]);
+  _.each(this.nonTileLayers, function (l) {
+    map.addLayer(l);
+  });
+  map.setView(view);
   this.currentViewIndex = index;
   if (view.initialOptions.extent) {
-    view.fitExtent(view.initialOptions.extent, this.map.getSize());
+    view.fitExtent(view.initialOptions.extent, map.getSize());
     if (view.initialOptions.zoom) {
       view.setZoom(view.initialOptions.zoom);
     } else {
       view.setZoom(view.getZoom() + 1);
     }
   }
+  this.emit('switchView', index);
 };
+
 
 MapSurface.prototype.setViewAtCoordinates = function (coord) {
   var self = this;
@@ -393,6 +404,9 @@ MapSurface.prototype.createMap = function (opts) {
   });
   self.map = map;
 
+  self.tileLayers = [];
+  self.nonTileLayers = [];
+
   _.each(opts.layers, function (opt) {
     var layer;
     var layerOptions = {
@@ -433,7 +447,12 @@ MapSurface.prototype.createMap = function (opts) {
       self.trimLayer(layer, opt.extent);
     }
 
-    map.addLayer(layer);
+
+    if (opt.type === 'tile') {
+      self.tileLayers.push(layer);
+    } else {
+      self.nonTileLayers.push(layer);
+    }
   });
 
   self.views = _.map(opts.views, function (opt) {
