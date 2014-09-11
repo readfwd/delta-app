@@ -91,7 +91,7 @@ function restrictedStyle() {
 }
 
 MapPresets.registerPreset('routes', {
-  extend: 'default',
+  extend: ['default', 'restricted'],
   resetStyleOnHighlight: true,
   layers: [ {
     type: 'geojson',

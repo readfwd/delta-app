@@ -387,7 +387,7 @@ MapSurface.prototype.navigateToFeature = function(featureName, animated) {
   }
 
   // Refresh styles
-  if (self.options.resetStyleOnHighlight) {
+  if (self.mapOptions.resetStyleOnHighlight) {
     _.each(self.map.getLayers().getArray(), function (layer) {
       if (layer instanceof ol.layer.Vector) {
         layer.setStyle(layer.getStyle());
