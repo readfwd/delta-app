@@ -1,5 +1,4 @@
 var cordova = require('./cordova');
-var $ = require('jquery');
 
 var analytics = {};
 
@@ -43,7 +42,7 @@ analytics.trackEvent = function(category, action, label, value) {
 cordova.ready(function(){
   var gaPlugin = window.plugins && window.plugins.gaPlugin;
   if (gaPlugin) {
-    analytics.init = function (mobileId, webId) {
+    analytics.init = function (mobileId /*, webId*/) {
       gaPlugin.init(onSuccess, onError, mobileId, 10); // each 10 seconds, send the batch
     };
     analytics.trackPage = function (page) {

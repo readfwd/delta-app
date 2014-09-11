@@ -4,9 +4,9 @@
 
     p Completează câteva date care să te scoată dintr-o eventuală încurcătură. Având datele contact, și telefon cu GPS, le vei putea spune sau scrie celorlalți unde te afli cu exactitate. Operatorii de telefonie mobilă au o acoperire bună în Deltă, vei putea deci să ceri ajutor.
   .emergency-intro.lang.lang-en
-    p It is easy to get lost while wondering in the Delta if you do not have a guide. For your safety, charge your phone fully before going anywhere and, of course, take it with you. You do not need other maps, since this app includes one that works perfectly offline. Also, make sure that roaming (for voice) is activated and you can make calls or send text messages. No need for data roaming for this app.
+    p It is easy to get lost while wondering in the Delta without a guide. For your safety, charge your phone fully before going anywhere and, of course, take it with you. You do not need other maps, since this app includes one that works perfectly offline. Also, make sure that roaming (for voice) is activated and you can make calls or send text messages. No need for data roaming in this app.
 
-    p Fill in some information below, it can help you get you out of trouble. With contact data and a GPS device, you'll be able to tell or text the others precisely where you are. Mobile operators have good coverage in the Delta so you'll be able to ask for help
+    p Fill in some information below; it can help get you out of trouble. With contact data and a GPS device, you'll be able to tell or text the others precisely where you are. Mobile operators have good coverage in the Delta, so you'll be able to ask for help.
 
   //-----------------------------------------------------------------------
 
@@ -40,7 +40,8 @@
         | Coordonatele tale geografice sunt:
         span.curent-coordinates În curs de actualizare
         button.update-coordinates Actualizează poziția
-        button.copy-coordinates Copiază în clipboard
+        button.copy-coordinates Copiază coordonatele
+        button.copy-map-link Copiază link hartă
       .emergency-no-gps
         | Din păcate aplicația nu poate obține coordonatele tale pentru că fie nu ai un dispozitiv de localizare integrat (GPS), fie nu ai acordat permisiunea de localizare.
 
@@ -50,7 +51,8 @@
         | Your GPS coordinates are:
         span.curent-coordinates [Updating, please wait]
         button.update-coordinates Update my location
-        button.copy-coordinates Copy in clipboard
+        button.copy-coordinates Copy coordinates
+        button.copy-map-link Copy map link
       .emergency-no-gps
         | Unfortunately the app cannot determine your coordinates because either you do not have an embedded GPS device or you did not allow this app to use your location.
 
@@ -59,7 +61,7 @@
       .emergency-phone-number-ok
         a.sms-hotel
           != T.span({ en: 'Text your hotel / host', ro: 'Trimite un SMS la hotel / gazdă' })
-          span.emergency-has-gps
+          span.emergency-has-gps.emergency-small
             != T.span({ en: '(includes your coordinates)', ro: '(include coordonatele)'})
         a.call-hotel
           != T.span({ en: 'Call your hotel / host', ro: 'Sună la hotel / gazdă' })
@@ -69,8 +71,8 @@
       .emergency-phone-number-not-ok.lang.lang-en
         a.disabled Fill the phone number  of your hotel / host above, so that you can call or send SMS.
 
-      a.call112.lang.lang-ro  Sună la 112
-        span (te rugăm nu abuza, sună doar dacă este o urgență adevărată)
+      a.call112.lang.lang-ro(href='tel:112') Sună la 112
+        span.emergency-small (te rugăm nu abuza, sună doar dacă este o urgență adevărată)
 
       a.call112.lang.lang-en(href='tel:112')  Call 112
-        span.lang.lang-en (this is the 911-like emergency number, please use it as such)
+        span.emergency-small (this is the 911-like emergency number, please use it as such)

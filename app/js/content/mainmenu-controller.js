@@ -160,7 +160,27 @@ function MainMenuController(options) {
         });
       }
     },
+    'about-app': {
+      title: T.span({
+        ro: 'Despre aplicație',
+        en: 'About app',
+      }),
+      viewController: function () {
+        return new TemplateController({
+          template: templates['about-app'],
+          title: T.span({
+            ro: 'Despre aplicație',
+            en: 'About app',
+          }),
+          backIcon: 'fa-home',
+        });
+      }
+    },
     settings: {
+      title: T.span({
+        ro: 'Setări/Settings',
+        en: 'Setări/Settings',
+      }),
       viewController: function () {
         return new TemplateController({
           template: templates.ghid.settings.index,
@@ -193,7 +213,8 @@ function MainMenuController(options) {
     ['maps'],
     ['landmarks', 'planning'],
     ['about', 'restricted'],
-    ['emergency','code-of-conduct']
+    ['emergency','code-of-conduct'],
+    ['about-app','settings']
   ];
 
   options.title = T.span({

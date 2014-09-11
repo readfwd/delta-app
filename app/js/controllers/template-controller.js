@@ -1,5 +1,4 @@
 var TitleBarController = require('./titlebar-controller');
-var MapController = require('./map-controller');
 var util = require('util');
 var Famous = require('../shims/famous');
 var $ = require('jquery');
@@ -8,7 +7,6 @@ var _ = require('lodash');
 var T = require('../translate');
 var cordova = require('../shims/cordova');
 var analytics = require('../shims/analytics');
-var Util = require('../util');
 var TemplateUtils = require('./template-utils');
 
 function TemplateController(options) {
@@ -157,7 +155,7 @@ TemplateController.prototype.setUpLinks = function (page) {
           ro: 'Număr de telefon',
         };
         var lang = T.getLanguage();
-        navigator.notification.confirm(href.replace(/^tel:/, ''), function (index) {
+        navigator.notification.confirm(decodeURIComponent(href.replace(/^tel:/, '')), function (index) {
           if (index === 2) {
             analytics.trackEvent('Link', 'Telephone', href);
             window.open(href, '_system');
