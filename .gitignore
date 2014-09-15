@@ -8,3 +8,6 @@ npm-debug.log
 coverage
 app/js/lib/templates.js
 
+# OBB files for Google Play
+*.obb
+

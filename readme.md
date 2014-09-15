@@ -55,6 +55,16 @@ This will compile a minimal working version (*not* production-ready) of the proj
 $ gulp build:dist
 ```
 
+This will compile a production-ready minified and optimized build into the `./dist' folder.
+
+#### Android OBB build
+
+This will do build:dist, then take the maps out of the assets folder and put it into an OBB file for upload to Google Play. Afterwards, we move `./dist` over `./.tmp` so that it can be picked up by cordova (which has its `www` folder symlinked to `./.tmp`)
+
+```bash
+$ gulp build:dist:android
+```
+
 This will run `gulp build` as a prerequisite and then proceed to perform a number of additional transformations (`uglify`, `csso`, `html-minify`, etc), outputting into the `./dist` folder.
 
 #### Cleaning
