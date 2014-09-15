@@ -10,7 +10,7 @@ var T = require('../translate');
 
 function MainMenuController(options) {
   options = options || {};
-  options.borderWidth = 10;
+  options.borderWidth = 7;
   options.buttonDescriptors = {
     about: {
       title: T.span({
