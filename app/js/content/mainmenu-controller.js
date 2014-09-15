@@ -10,6 +10,7 @@ var T = require('../translate');
 
 function MainMenuController(options) {
   options = options || {};
+  options.borderWidth = 10;
   options.buttonDescriptors = {
     about: {
       title: T.span({
@@ -176,7 +177,7 @@ function MainMenuController(options) {
         });
       }
     },
-    settings: {
+    setari: {
       title: T.span({
         ro: 'Setări/Settings',
         en: 'Setări/Settings',
@@ -214,7 +215,7 @@ function MainMenuController(options) {
     ['landmarks', 'planning'],
     ['about', 'restricted'],
     ['emergency','code-of-conduct'],
-    ['about-app','settings']
+    ['about-app','setari']
   ];
 
   options.title = T.span({
