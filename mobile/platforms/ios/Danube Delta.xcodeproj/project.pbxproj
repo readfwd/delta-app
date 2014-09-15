@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		04EEAB049ECA474C8D829075 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 77333B6568224EDBB77A8C97 /* SystemConfiguration.framework */; };
 		1D3623260D0F684500981E51 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* AppDelegate.m */; };
@@ -52,6 +53,8 @@
 		B6A5C29E5F5343478B70610B /* CDVDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 4905EE34FA814F21B0561BF3 /* CDVDevice.m */; };
 		BDEE8B9F7DF34811B056C175 /* CDVNotification.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 259C4370571246E5AB4BBE6D /* CDVNotification.bundle */; };
 		C1E4A12019C7066C00F6A9B9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C1E4A11E19C7066C00F6A9B9 /* InfoPlist.strings */; };
+		C1E4A12A19C71EC800F6A9B9 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C1E4A12919C71EC800F6A9B9 /* libsqlite3.dylib */; };
+		C1E4A12C19C71EDE00F6A9B9 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C1E4A12B19C71EDE00F6A9B9 /* libz.dylib */; };
 		C8DEB74A6E6D49CFAF9ED460 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1629085A0CD47B8A9199C29 /* AudioToolbox.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		D4A0D8761607E02300AEF8BB /* Default-568h@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = D4A0D8751607E02300AEF8BB /* Default-568h@2x~iphone.png */; };
 		E907ABFF6718488C86928542 /* GAPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = D9EA30D2EA2046E88E1BDE41 /* GAPlugin.m */; };
@@ -140,6 +143,8 @@
 		940CA014683E4F9CB2629E5E /* CDVNotification.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDVNotification.m; path = org.apache.cordova.dialogs/CDVNotification.m; sourceTree = "<group>"; };
 		A9DF21ABF5E64E269ADB0841 /* GAPlugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GAPlugin.h; path = com.adobe.plugins.GAPlugin/GAPlugin.h; sourceTree = "<group>"; };
 		C1E4A11F19C7066C00F6A9B9 /* ro */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ro; path = ro.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		C1E4A12919C71EC800F6A9B9 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		C1E4A12B19C71EDE00F6A9B9 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		CD1DEC9BEE764C26B8BCF487 /* CDVCompass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDVCompass.m; path = "org.apache.cordova.device-orientation/CDVCompass.m"; sourceTree = "<group>"; };
 		D4A0D8751607E02300AEF8BB /* Default-568h@2x~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x~iphone.png"; sourceTree = "<group>"; };
 		D8C5EC0F864D410A94037384 /* GAITracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GAITracker.h; path = com.adobe.plugins.GAPlugin/GAITracker.h; sourceTree = "<group>"; };
@@ -161,6 +166,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C1E4A12C19C71EDE00F6A9B9 /* libz.dylib in Frameworks */,
+				C1E4A12A19C71EC800F6A9B9 /* libsqlite3.dylib in Frameworks */,
 				5B1594DD16A7569C00FEF299 /* AssetsLibrary.framework in Frameworks */,
 				301BF552109A68D80062928A /* libCordova.a in Frameworks */,
 				288765FD0DF74451002DB57D /* CoreGraphics.framework in Frameworks */,
@@ -262,6 +269,8 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C1E4A12B19C71EDE00F6A9B9 /* libz.dylib */,
+				C1E4A12919C71EC800F6A9B9 /* libsqlite3.dylib */,
 				5AEE5B34173C68D80009041E /* CoreLocation.framework */,
 				5B1594DC16A7569C00FEF299 /* AssetsLibrary.framework */,
 				288765FC0DF74451002DB57D /* CoreGraphics.framework */,
@@ -597,6 +606,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -625,6 +635,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = "Danube Delta";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -635,6 +646,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Danube Delta/Danube Delta-Prefix.pch";
@@ -661,6 +673,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = "Danube Delta";
+				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
