@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		04EEAB049ECA474C8D829075 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 77333B6568224EDBB77A8C97 /* SystemConfiguration.framework */; };
 		1D3623260D0F684500981E51 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* AppDelegate.m */; };
