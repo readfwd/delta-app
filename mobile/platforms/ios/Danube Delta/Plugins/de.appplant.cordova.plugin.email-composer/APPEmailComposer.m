@@ -143,12 +143,13 @@
  * @param {MFMailComposeViewController} draft
  *      The email composer view
  */
+
 - (void) openDraft:(MFMailComposeViewController*)draft
 {
-    [self.commandDelegate runInBackground:^{
+    dispatch_async(dispatch_get_main_queue(), ^{
         [self.viewController presentViewController:draft
                                           animated:YES completion:NULL];
-    }];
+    });
 }
 
 /**
