@@ -47,6 +47,10 @@
                         {
                             "xml": "<feature name=\"UniversalAnalytics\"><param name=\"android-package\" value=\"com.danielcwilson.plugins.analytics.UniversalAnalyticsPlugin\" /></feature>",
                             "count": 1
+                        },
+                        {
+                            "xml": "<feature name=\"XAPKReader\"><param name=\"android-package\" value=\"org.apache.cordova.xapkreader.XAPKReader\" /><param name=\"onload\" value=\"true\" /></feature>",
+                            "count": 1
                         }
                     ]
                 }
@@ -84,6 +88,62 @@
                         },
                         {
                             "xml": "<uses-feature android:name=\"android.hardware.telephony\" android:required=\"false\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.INTERNET\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.WAKE_LOCK\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"com.android.vending.CHECK_LICENSE\" />",
+                            "count": 1
+                        }
+                    ],
+                    "application": [
+                        {
+                            "xml": "<activity android:configChanges=\"orientation|keyboardHidden|keyboard|screenSize|locale\" android:label=\"@string/app_name\" android:name=\"org.apache.cordova.xapkreader.XAPKDownloaderActivity\"><intent-filter /></activity>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<service android:name=\".XAPKDownloaderService\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<receiver android:name=\".XAPKAlarmReceiver\" />",
+                            "count": 1
+                        }
+                    ]
+                }
+            },
+            "res/values/xapkreader.xml": {
+                "parents": {
+                    "/*": [
+                        {
+                            "xml": "<integer name=\"main_version\">1</integer>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<integer name=\"patch_version\">1</integer>",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<integer name=\"file_size\">22400177</integer>",
                             "count": 1
                         }
                     ]
@@ -123,6 +183,12 @@
             "PACKAGE_NAME": "com.readfwd.deltaapp"
         },
         "com.danielcwilson.plugins.googleanalytics": {
+            "PACKAGE_NAME": "com.readfwd.deltaapp"
+        },
+        "org.apache.cordova.xapkreader": {
+            "MAIN_VERSION": "1",
+            "PATCH_VERSION": "1",
+            "FILE_SIZE": "22400177",
             "PACKAGE_NAME": "com.readfwd.deltaapp"
         }
     },

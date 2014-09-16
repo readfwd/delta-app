@@ -35,6 +35,10 @@
     <feature name="UniversalAnalytics">
         <param name="android-package" value="com.danielcwilson.plugins.analytics.UniversalAnalyticsPlugin" />
     </feature>
+    <feature name="XAPKReader">
+        <param name="android-package" value="org.apache.cordova.xapkreader.XAPKReader" />
+        <param name="onload" value="true" />
+    </feature>
     <icon density="ldpi" src="res/icons/android/ldpi.png" />
     <icon density="mdpi" src="res/icons/android/mdpi.png" />
     <icon density="hdpi" src="res/icons/android/hdpi.png" />

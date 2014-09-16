@@ -419,7 +419,15 @@ MapSurface.prototype.createMap = function (opts) {
           attributions: [
             ol.source.OSM.DATA_ATTRIBUTION
           ],
-          url: opt.url + '/{z}/{x}/{y}.png'
+          url: opt.url + '/{z}/{x}/{y}.png',
+          tileLoadFunction: window.XAPKReader ? function (tile, url) {
+            url = url.replace(/\/?assets\/maps\//, '');
+            window.XAPKReader.get(url, function(dataUrl) {
+              tile.getImage().src = dataUrl;
+            });
+          } : function (tile, url) {
+            tile.getImage().src = url;
+          }
         });
       }
 
