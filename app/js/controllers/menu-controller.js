@@ -192,7 +192,7 @@ MenuController.prototype.presentIn = function (delay, back) {
 MenuController.prototype.buildGrid = function (parentNode) {
   var self = this;
 
-  var borderWidth = 15;
+  var borderWidth = self.options.borderWidth || 10;
   var buttonHeight = 100;
   var hasTitleBar = !!(self.options.title || self.options.buttonDescriptors.settings);
 
@@ -298,12 +298,20 @@ MenuController.prototype.buildGrid = function (parentNode) {
   if (hasTitleBar) {
     self.titleBarShowModifier = new Famous.ShowModifier({ visible: false });
     self.titleBarModifier = new Famous.Modifier();
-    self.titleBarModifier.transformFrom(
-      Famous.Transform.multiply(Famous.Transform.behind, Famous.Transform.behind)
-    );
+    self.titleBarModifier.transformFrom(Famous.Transform.identity);
+
+    var behind = Famous.Transform.behind;
+    for (var i = 0; i < 5; i++) {
+      behind = Famous.Transform.multiply(behind, Famous.Transform.behind);
+    }
+
+    var behindModifier = new Famous.StateModifier({
+      transform: behind
+    });
 
     var titleBarRoot = verticalGutter.header
       .add(self.titleBarShowModifier)
+      .add(behindModifier)
       .add(self.titleBarModifier);
 
     if (self.options.title) {

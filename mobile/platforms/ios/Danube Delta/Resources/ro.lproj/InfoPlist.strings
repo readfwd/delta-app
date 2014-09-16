@@ -1,0 +1,9 @@
+/* 
+  InfoPlist.strings
+  Danube Delta
+
+  Created by Marius Petcu on 15/09/14.
+
+*/
+"CFBundleDisplayName" = "Delta Dunării";
+"CFBundleName" = "Delta Dunării";

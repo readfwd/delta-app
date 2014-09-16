@@ -173,16 +173,14 @@ EmergencyController.prototype.setUpEmergencyLogic = function() {
         $smsHotel.find('span.emergency-has-gps').text(coordonatesWillBeCopiedText);
       }
 
-      $smsHotel.bind('click',function(){
+      $smsHotel.bind('click',function(evt){
+        var textMessage = self.buildTextMessage();
+        self.copyTextToClipboard(textMessage);
         if('undefined' !== typeof sms) {
-          self.sendTextMessage(hotelPhone, self.buildTextMessage());
-        } else {
-          if(lastLocationURL) {
-            self.copyTextToClipboard(self.buildTextMessage());
-          }
-          return true;
+          self.sendTextMessage(hotelPhone, textMessage);
         }
-        return false;
+        evt.preventDefault();
+        evt.stopPropagation();
       });
 
       if(self.hasGPS()) {

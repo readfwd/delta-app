@@ -145,7 +145,7 @@ function setUpAssets(prefix, root) {
 
   // Copies over assets for production.
   gulp.task(prefix + 'assets:dist', function () {
-    return gulp.src(paths.app + root + '/assets/**/*')
+    return gulp.src([paths.app + root + '/assets/**/*', '!**/.DS_Store', '!**/.*.sw*'])
        .pipe(gulp.dest(paths.dist + root + '/assets/'));
   });
 }
@@ -173,6 +173,30 @@ gulp.task('device-demo:dist', ['device-demo:css', 'device-demo:html', 'device-de
 // Production-ready build.
 gulp.task('build:dist', ['index.html', 'js', 'css', 'assets:dist'], function () {
   return prepareForDistribution(paths.tmp + '/index.html', paths.dist);
+});
+
+gulp.task('zipmaps', ['build:dist'], function () {
+  return gulp.src(paths.dist + '/assets/maps/**/*')
+    .pipe($.zip('main.1.com.readfwd.deltaapp.obb'))
+    .pipe(gulp.dest('./'));
+});
+
+function moveDist() {
+  return nodefn.call(exec, 'rm -r "' + paths.tmp + '"')
+    .catch(function (){})
+    .then(function () {
+      return nodefn.call(exec, 'mv "' + paths.dist + '" "' + paths.tmp + '"');
+    });
+}
+
+gulp.task('build:dist:android', ['zipmaps'], function () { 
+  return nodefn.call(exec, 'rm -r "' + paths.dist + '/assets/maps"')
+    .catch(function (){})
+    .then(moveDist);
+});
+
+gulp.task('build:dist:ios', ['build:dist'], function () {
+  return moveDist();
 });
 
 function prepareForDistribution(pathIn, pathOut) {

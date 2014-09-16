@@ -8,6 +8,7 @@ var T = require('../translate');
 var cordova = require('../shims/cordova');
 var analytics = require('../shims/analytics');
 var TemplateUtils = require('./template-utils');
+var url = require('url');
 
 function TemplateController(options) {
   options = options || {};
@@ -167,9 +168,15 @@ TemplateController.prototype.setUpLinks = function (page) {
       return;
     }
     if (/^mailto:/.test(href)) {
+
       if (window.plugin && window.plugin.email) {
         analytics.trackEvent('Link', 'Email', href);
-        window.plugin.email.open({ to: [ href.replace(/^mailto:/, '') ] });
+        var parsedUrl = url.parse(href, true);
+        window.plugin.email.open({
+          to: [ parsedUrl.auth + '@' + parsedUrl.host ],
+          subject: parsedUrl.query.subject,
+          body: parsedUrl.query.body,
+        });
       } else {
         window.open(href, '_self');
       }
