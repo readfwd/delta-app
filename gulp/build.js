@@ -145,7 +145,7 @@ function setUpAssets(prefix, root) {
 
   // Copies over assets for production.
   gulp.task(prefix + 'assets:dist', function () {
-    return gulp.src(paths.app + root + '/assets/**/*')
+    return gulp.src([paths.app + root + '/assets/**/*', '!**/.DS_Store', '!**/.*.sw*'])
        .pipe(gulp.dest(paths.dist + root + '/assets/'));
   });
 }
