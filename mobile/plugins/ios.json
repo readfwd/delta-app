@@ -61,7 +61,7 @@
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"GAPlugin\"><param name=\"ios-package\" value=\"GAPlugin\" /></feature>",
+                            "xml": "<feature name=\"UniversalAnalytics\"><param name=\"ios-package\" value=\"UniversalAnalyticsPlugin\" /></feature>",
                             "count": 1
                         }
                     ]
@@ -105,8 +105,18 @@
                             "count": 1
                         }
                     ],
-                    "libz.dylib": [],
-                    "libsqlite3.0.dylib": []
+                    "libz.dylib": [
+                        {
+                            "xml": "false",
+                            "count": 1
+                        }
+                    ],
+                    "libsqlite3.0.dylib": [
+                        {
+                            "xml": "false",
+                            "count": 1
+                        }
+                    ]
                 }
             }
         }
@@ -142,7 +152,7 @@
         "com.verso.cordova.clipboard": {
             "PACKAGE_NAME": "com.readfwd.deltaapp"
         },
-        "com.adobe.plugins.GAPlugin": {
+        "com.danielcwilson.plugins.googleanalytics": {
             "PACKAGE_NAME": "com.readfwd.deltaapp"
         }
     },

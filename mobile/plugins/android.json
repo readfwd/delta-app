@@ -45,7 +45,7 @@
                             "count": 1
                         },
                         {
-                            "xml": "<feature name=\"GAPlugin\"><param name=\"android-package\" value=\"com.adobe.plugins.GAPlugin\" /></feature>",
+                            "xml": "<feature name=\"UniversalAnalytics\"><param name=\"android-package\" value=\"com.danielcwilson.plugins.analytics.UniversalAnalyticsPlugin\" /></feature>",
                             "count": 1
                         }
                     ]
@@ -61,6 +61,14 @@
                         {
                             "xml": "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />",
                             "count": 2
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.INTERNET\" />",
+                            "count": 1
+                        },
+                        {
+                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />",
+                            "count": 1
                         }
                     ],
                     "/manifest/application": [
@@ -114,7 +122,7 @@
         "com.verso.cordova.clipboard": {
             "PACKAGE_NAME": "com.readfwd.deltaapp"
         },
-        "com.adobe.plugins.GAPlugin": {
+        "com.danielcwilson.plugins.googleanalytics": {
             "PACKAGE_NAME": "com.readfwd.deltaapp"
         }
     },

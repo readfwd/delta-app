@@ -40,19 +40,19 @@ analytics.trackEvent = function(category, action, label, value) {
 };
 
 cordova.ready(function(){
-  var gaPlugin = window.plugins && window.plugins.gaPlugin;
+  var gaPlugin = window.analytics;
   if (gaPlugin) {
     analytics.init = function (mobileId /*, webId*/) {
-      gaPlugin.init(onSuccess, onError, mobileId, 10); // each 10 seconds, send the batch
+      gaPlugin.startTrackerWithId(mobileId);
     };
     analytics.trackPage = function (page) {
-      gaPlugin.trackPage(onSuccess, onError, page);
+      gaPlugin.trackView(page);
     };
     analytics.trackEvent = function(category, action, label, value) {
       action = action || 'default';
       label = label || 'default';
       value = (value !== undefined) ? value : 1;
-      gaPlugin.trackEvent(onSuccess, onError, category, action, label, value);
+      gaPlugin.trackEvent(category, action, label, value);
     };
   }
 });
