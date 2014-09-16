@@ -51,8 +51,8 @@
     <feature name="Clipboard">
         <param name="ios-package" value="CDVClipboard" />
     </feature>
-    <feature name="GAPlugin">
-        <param name="ios-package" value="GAPlugin" />
+    <feature name="UniversalAnalytics">
+        <param name="ios-package" value="UniversalAnalyticsPlugin" />
     </feature>
     <icon height="60" src="res/icons/ios/AppIcon60x60.png" width="60" />
     <icon height="120" src="res/icons/ios/AppIcon60x60@2x.png" width="120" />
