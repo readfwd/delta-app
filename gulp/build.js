@@ -177,7 +177,7 @@ gulp.task('build:dist', ['index.html', 'js', 'css', 'assets:dist'], function () 
 
 gulp.task('zipmaps', ['build:dist'], function () {
   return gulp.src(paths.dist + '/assets/maps/**/*')
-    .pipe($.zip('main.1.com.readfwd.deltaapp.obb', { compress: false }))
+    .pipe($.zip('main.10000.com.readfwd.deltaapp.obb', { compress: false }))
     .pipe(gulp.dest('./'));
 });
 

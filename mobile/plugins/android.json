@@ -139,7 +139,7 @@
                             "count": 1
                         },
                         {
-                            "xml": "<integer name=\"patch_version\">1</integer>",
+                            "xml": "<integer name=\"patch_version\">10000</integer>",
                             "count": 1
                         },
                         {
@@ -187,7 +187,7 @@
         },
         "org.apache.cordova.xapkreader": {
             "MAIN_VERSION": "1",
-            "PATCH_VERSION": "1",
+            "PATCH_VERSION": "10000",
             "FILE_SIZE": "22400177",
             "PACKAGE_NAME": "com.readfwd.deltaapp"
         }

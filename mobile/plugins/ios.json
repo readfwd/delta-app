@@ -157,7 +157,7 @@
         },
         "org.apache.cordova.xapkreader": {
             "MAIN_VERSION": "1",
-            "PATCH_VERSION": "1",
+            "PATCH_VERSION": "10000",
             "FILE_SIZE": "22400177",
             "PACKAGE_NAME": "com.readfwd.deltaapp"
         }

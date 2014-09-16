@@ -67,11 +67,7 @@ public class XAPKReader extends CordovaPlugin {
         cordova.getThreadPool().execute(new Runnable() {
             public void run() {
                 try {
-                    if (!triedToGetExpansionFile) {
-                        triedToGetExpansionFile = false;
-                        Context context = cordova.getActivity().getApplicationContext();
-                        expansionFile = APKExpansionSupport.getAPKExpansionZipFile(context, mainVersion, patchVersion);
-                    }
+                    getExpansionZipFile(cordova.getActivity().getApplicationContext());
                 }
                 catch(Exception e) {
                     e.printStackTrace();
@@ -80,6 +76,13 @@ public class XAPKReader extends CordovaPlugin {
         });
 
         super.initialize(cordova, webView);
+    }
+
+    private void getExpansionZipFile(Context context) throws IOException {
+        if (!triedToGetExpansionFile) {
+            triedToGetExpansionFile = true;
+            expansionFile = APKExpansionSupport.getAPKExpansionZipFile(context, mainVersion != 0 ? patchVersion : 0, mainVersion != 0 ? 0 : patchVersion);
+        }
     }
 
     /**
@@ -131,10 +134,7 @@ public class XAPKReader extends CordovaPlugin {
      */
     private PluginResult readFile(Context ctx, String filename, int mainVersion, int patchVersion, final int resultType) throws IOException {
         // Get APKExpensionFile
-        if (!triedToGetExpansionFile) {
-            triedToGetExpansionFile = false;
-            expansionFile = APKExpansionSupport.getAPKExpansionZipFile(ctx, mainVersion, patchVersion);
-        }
+        getExpansionZipFile(ctx);
 
         if (null == expansionFile) {
             Log.e(LOG_TAG, "APKExpansionFile not found.");
@@ -142,9 +142,6 @@ public class XAPKReader extends CordovaPlugin {
         }
 
         // Find file in ExpansionFile
-        String fileName = Helpers.getExpansionAPKFileName(ctx, true, patchVersion);
-        fileName = fileName.substring(0, fileName.lastIndexOf("."));
-        Log.e(LOG_TAG, "Trying (" + fileName + "/" + filename + ").");
         InputStream inputStream = null;
         try {
             inputStream = expansionFile.getInputStream(filename);
