@@ -199,4 +199,8 @@ Scrollview.prototype.setPageSpring = function (position) {
   _setSpring.call(this, position, SpringStates.PAGE);
 };
 
+Scrollview.prototype.setEdgeSpring = function (position) {
+  _setSpring.call(this, position, SpringStates.EDGE);
+};
+
 module.exports = Scrollview;
