@@ -33,6 +33,7 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
   var self = this;
 
   var id = 'template-' + (Math.random().toString(36)+'00000000000000000').slice(2, 7);
+  self.elementId = id;
   var content = self.options.template(self.options.templateOptions);
   content = '<div id="' + id +
     '" class="template-container"><div class="template-container-inner">' +
@@ -107,6 +108,19 @@ TemplateController.prototype.buildContentTree = function (parentNode) {
   // Emit an event to signal that the buildContentTree phase finished
   // this.contentSurface is now available, but not yet deployed
   this.emit('content-ready', this);
+};
+
+TemplateController.prototype.scrollTo = function (query) {
+  if (!this._deployed) {
+    this.queuedScrollTo = query;
+    return;
+  }
+  var container = $('#' + this.elementId);
+  var el = container.find('> .template-container-inner ' + query);
+  if (!el.length) { return; }
+  var pos = el.offset().top - container.offset().top;
+  this.scrollView.setPosition(pos);
+  this.scrollView.setEdgeSpring(pos);
 };
 
 TemplateController.prototype.setUpTemplateLinks = function (page) {
@@ -217,6 +231,10 @@ TemplateController.prototype.setUpPage = function (page) {
   this.setUpTemplateLinks(page);
   this.setUpSettings(page);
   TemplateUtils.setUpMapLinks.call(this, page);
+  if (this.queuedScrollTo) {
+    this.scrollTo(this.queuedScrollTo);
+    this.queuedScrollTo = null;
+  }
 };
 
 module.exports = TemplateController;
