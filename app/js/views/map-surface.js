@@ -2,6 +2,7 @@ var util = require('util');
 var _ = require('lodash');
 var ol = require('../lib/ol');
 var Famous = require('../shims/famous');
+var cordova = require('../shims/cordova');
 var $ = require('jquery');
 
 function MapSurface(options) {
@@ -420,7 +421,7 @@ MapSurface.prototype.createMap = function (opts) {
             ol.source.OSM.DATA_ATTRIBUTION
           ],
           url: opt.url + '/{z}/{x}/{y}.png',
-          tileLoadFunction: window.XAPKReader ? function (tile, url) {
+          tileLoadFunction: (cordova.android && window.XAPKReader) ? function (tile, url) {
             url = url.replace(/\/?assets\/maps\//, '');
             window.XAPKReader.get(url, function(dataUrl) {
               tile.getImage().src = dataUrl;

@@ -19,6 +19,7 @@ var cordova = {
 
   _onReady: function () {
     this.iOS = /iP(hone|ad|od)/.test(window.navigator.userAgent);
+    this.android = /Android/.test(window.navigator.userAgent);
     this.iOS7App = (this.present &&
                     window.device.platform === 'iOS' &&
                     parseInt(window.device.version) >= 7);
