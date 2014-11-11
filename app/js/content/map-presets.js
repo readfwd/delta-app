@@ -130,8 +130,9 @@ MapPresets.registerPreset('trails', {
   }),
 });
 
+
 MapPresets.registerPreset('restricted', {
-  extend: ['default', 'restricted'],
+  extend: ['default'],
   layers: [ {
     type: 'geojson',
     url: 'assets/restricted.geojson',
@@ -147,7 +148,33 @@ MapPresets.registerPreset('restricted', {
   }),
 });
 
-var templates = [
+MapPresets.registerPreset('restricted-tap', {
+  extend: ['restricted'],
+  constructors: [ function (self) {
+    self.map.on('singleclick', function (evt) {
+      var foundRestricted = null;
+      self.map.forEachFeatureAtPixel(evt.pixel, function (feature) {
+        var props = feature.getProperties();
+        if (props.featureType === 'restrictedArea') {
+          foundRestricted = props.name;
+        }
+      });
+      if (foundRestricted !== null) {
+        var labelName = 'area' + (foundRestricted + 1);
+        var template = templates.ghid.restricted[labelName];
+        var $el = $(templates.ghid.restricted.index({T: T}));
+        $el = $el.find('a[href="ghid/restricted/' + labelName + '"]');
+        var title = $el.data('title') || T('Restricted Area', 'Zonă protejată');
+        self.emit('navigateToTemplate', {
+          template: template,
+          title: title,
+        });
+      }
+    });
+  } ],
+});
+
+var templateFunctions = [
   templates.ghid.landmarks.history,
   templates.ghid.landmarks.museums,
   templates.ghid.about.geographical,
@@ -172,7 +199,7 @@ var templateColors = [
 ];
 
 MapPresets.registerPreset('all', {
-  extend: ['restricted', 'trails', 'routes'].concat(_.map(templates, function(t, idx) {
+  extend: ['restricted-tap', 'trails', 'routes'].concat(_.map(templateFunctions, function(t, idx) {
     var $el = $('<div>' + t({T: T}) + '</div>');
     var color = templateColors[idx];
     var features = TemplateUtils.setUpMapLinks($el, false);

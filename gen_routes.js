@@ -14,12 +14,13 @@ var filter = /^.*$/;
 
 //End of configurable vars
 
-function processGeo(geo) {
+function processGeo(geo, extraProps) {
   var extents = {};
+  extraProps = extraProps || {};
 
   _.each(geo.features, function (feature) {
     var traseu = feature.properties.NumarTrase || feature.properties.name;
-    feature.properties = { name: traseu };
+    feature.properties = _.extend({ name: traseu }, extraProps);
     var off = trailOffsets[traseu] || [0, 0];
     off[0] += offset[0];
     off[1] += offset[1];
@@ -108,6 +109,6 @@ if (process.env.MAP_GIST) {
 }
 
 var res = JSON.parse(fs.readFileSync('./raw_restricted.geojson'));
-var resExtents = processGeo(res);
+var resExtents = processGeo(res, { featureType: 'restrictedArea' });
 fs.writeFile('./app/js/content/restricted-extents.json', JSON.stringify(resExtents));
 fs.writeFile('./app/assets/restricted.geojson', JSON.stringify(res));
