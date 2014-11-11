@@ -41,6 +41,10 @@ MapController.prototype.buildContentTree = function (parentNode) {
       titleBar: self.titleBar,
     });
 
+    if (t.scrollTo) {
+      vc.scrollTo(t.scrollTo);
+    }
+
     self.setNavigationItem(vc);
   });
 

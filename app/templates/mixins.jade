@@ -50,7 +50,7 @@ mixin submenu-caption(T, en, ro)
     != T.span({ en: en, ro: ro })
 
 mixin maplink(posY, posX, name)
-  a(href='map://' + posY + '/' + posX, data-name=name).link.map-link
+  a(href='map://' + posY + '/' + posX, data-name=name, class='maplink-' + name).link.map-link
     if block
       block
 

@@ -182,6 +182,7 @@ MapPresets.registerPreset('all', {
         //this is the map surface
         this.emit('navigateToTemplate', {
           template: t,
+          scrollTo: '.maplink-' + f.name + ':visible',
           title: templateTitles[idx]
         });
       };
