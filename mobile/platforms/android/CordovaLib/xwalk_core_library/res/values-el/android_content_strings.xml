@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-<string name="actionbar_share">"Κοινοποίηση"</string>
+<string name="actionbar_share">"Κοινή χρήση"</string>
 <string name="actionbar_web_search">"Αναζήτηση στον Ιστό"</string>
 <string name="accessibility_content_view">"Προβολή ιστού"</string>
 <string name="date_picker_dialog_title">"Ορισμός ημερομηνίας"</string>
 <string name="date_picker_dialog_set">"Ορισμός"</string>
-<string name="date_picker_dialog_clear">"Εκκαθάριση"</string>
+<string name="date_picker_dialog_clear">"Διαγραφή"</string>
 <string name="date_picker_dialog_other_button_label">"Άλλο"</string>
 <string name="date_time_picker_dialog_title">"Ορισμός ημερομηνίας και ώρας"</string>
 <string name="time_picker_dialog_title">"Ορισμός χρόνου"</string>
