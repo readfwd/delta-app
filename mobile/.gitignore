@@ -6,6 +6,7 @@ platforms/**/bin
 platforms/**/gen
 platforms/**/local.properties
 platforms/**/console.log
+*.apk
 
 # Cordova doesn't use package.jsons
 !platforms/**/node_modules
